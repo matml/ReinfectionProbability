@@ -6,6 +6,7 @@ from numpy.linalg import inv
 #import scipy
 #from scipy import linalg
 import time
+
 			
 def i(m,n,N):
 	return 1.0/m
@@ -248,6 +249,7 @@ def AlgorithmIj(j,invHI,PI,bI,pS,pR,pI,AkkI,AkkMinus1I,AkkPlus1I,gam,bet,alpI,al
 
 def probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0):
 	
+
 	HS=[np.zeros((k-1,k-1)) for k in range(1,N+1)]
 	invHS=[np.zeros((k-1,k-1)) for k in range(1,N+1)]
 	AkkS=[np.zeros((k-1,k-1)) for k in range(1,N+1)]
