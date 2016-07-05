@@ -248,7 +248,7 @@ def AlgorithmIj(j,invHI,PI,bI,pS,pR,pI,AkkI,AkkMinus1I,AkkPlus1I,gam,bet,alpI,al
 	for k in reversed(range(1,N)):
 		pI[j-1][k-1]=invHI[k-1].dot(AkkPlus1I[k-1].dot(pI[j-1][k])+PI[j-1][k-1])	
 
-def probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0):
+def p_reinfection_SIR(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0):
 	
 
 	HS=[np.zeros((k-1,k-1)) for k in range(1,N+1)]
