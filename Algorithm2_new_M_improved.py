@@ -290,6 +290,9 @@ def probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0):
 	AkkMinus1I=[np.zeros((k,k-1)) for k in range(2,N+1)]
 	AkkPlus1I=[np.zeros((k-1,k)) for k in range(2,N+1)]
 
+hjcdvgcjhedcvb
+
+
 	k=1
 	BuildAkkI(AkkI[k-1],k)
 	HI[k-1]=np.asmatrix(np.eye(k))-AkkI[k-1]
