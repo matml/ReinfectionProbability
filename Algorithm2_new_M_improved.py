@@ -1,8 +1,13 @@
 #import matplotlib.pyplot as plt
 import random, math
 import numpy as np
-from numpy import linalg
+# from numpy import linalg
+import scipy
+from scipy import sparse
+from scipy.sparse import linalg
+# from scipy.sparse.linalg import inv
 import time
+
 			
 def i(m,n,N):
 	return 1.0/m
@@ -248,12 +253,12 @@ start_time = time.time()
 	
 #h=0.000001
 gam=0.5/7.0
-bet=10.0/(7.0*284)
+bet=10.0/(7.0*285)
 alpI=gam
 alpR=0.0
 sig=0.0
 
-N=284
+N=285
 M=3
 
 HS=[np.asmatrix(np.zeros((k-1,k-1))) for k in range(1,N+1)]
@@ -265,7 +270,11 @@ AkkPlus1S=[np.asmatrix(np.zeros((k-2,k-1))) for k in range(2,N+1)]
 k=2
 BuildAkkSI(AkkS[k-1],k)
 HS[k-1]=np.asmatrix(np.eye(k-1))-AkkS[k-1]
+# sparseHS=scipy.sparse.csr_matrix(HS[k-1])
+# invSparseHS=inv(sparseHS)
+# invHS[k-1]=todense(invSparseHS)
 invHS[k-1]=HS[k-1].I
+
 
 for k in xrange(3,N+1):
 	BuildAkkSI(AkkS[k-1],k)
