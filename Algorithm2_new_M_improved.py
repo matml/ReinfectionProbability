@@ -1,6 +1,6 @@
 #import matplotlib.pyplot as plt
 import random, math
-# import numpy as np
+import numpy as np
 # from numpy import linalg
 # from numpy.linalg import inv
 import scipy
@@ -114,7 +114,7 @@ def BuildAkkPlus1R(AkkPlus1,k,gam,bet,alpI,alpR,sig,N):
 		AkkPlus1[i-1,i-1]=alpR*(N-k)*wbar(m,n,N)/thetamn
 		AkkPlus1[i-1,i]=sig*bet*(N-k)*n*ebar(m,n,N)/thetamn
 
-def BuildbkRj(j,bRj,k,pSj,pIjPlus1,gam,bet,alpI,alpR,sig,N):
+def BuildbkRj(j,bRj,k,pSj,pIjPlus1,gam,bet,alpI,alpR,sig,N,M):
 	for i in range(1,k+1):
 		m=k-i
 		n=i
@@ -200,7 +200,7 @@ def BuildAkkPlus1S(AkkPlus1,k,gam,bet,alpI,alpR,sig,N):
 		AkkPlus1[i-1,i-1]=alpR*(N-k)/thetamn
 		AkkPlus1[i-1,i]=sig*bet*(N-k)*n/thetamn
 
-def BuildbkSj(j,bSj,k,pIjPlus1,gam,bet,alpI,alpR,sig,N):
+def BuildbkSj(j,bSj,k,pIjPlus1,gam,bet,alpI,alpR,sig,N,M):
 	for p in range(1,k):
 		m=k-p
 		n=p
@@ -211,12 +211,12 @@ def BuildbkSj(j,bSj,k,pIjPlus1,gam,bet,alpI,alpR,sig,N):
 			prod=pIjPlus1[k-1][n,0]
 		bSj[k-1][n-1,0]=bet*m*n*i(m,n,N)*prod/thetamn
 
-def AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S,gam,bet,alpI,alpR,sig,N):
+def AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S,gam,bet,alpI,alpR,sig,N,M):
 	k=2
-	BuildbkSj(j,bS[j],k,pI[j],gam,bet,alpI,alpR,sig,N)
+	BuildbkSj(j,bS[j],k,pI[j],gam,bet,alpI,alpR,sig,N,M)
 	PS[j][k-1]=bS[j][k-1]
 	for k in range(3,N+1):
-		BuildbkSj(j,bS[j],k,pI[j],gam,bet,alpI,alpR,sig,N)
+		BuildbkSj(j,bS[j],k,pI[j],gam,bet,alpI,alpR,sig,N,M)
 		PS[j][k-1]=AkkMinus1S[k-2].dot(invHS[k-2].dot(PS[j][k-2]))+bS[j][k-1]
 	k=N
 	pS[j][k-1]=invHS[k-1].dot(PS[j][k-1])
@@ -224,19 +224,19 @@ def AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S,gam,bet,alpI,alpR,
 		pS[j][k-1]=invHS[k-1].dot(AkkPlus1S[k-1].dot(pS[j][k])+PS[j][k-1])
 
 		
-def AlgorithmRj(j,invHR,PR,bR,pS,pI,pR,AkkR,AkkMinus1R,AkkPlus1R,gam,bet,alpI,alpR,sig,N):
+def AlgorithmRj(j,invHR,PR,bR,pS,pI,pR,AkkR,AkkMinus1R,AkkPlus1R,gam,bet,alpI,alpR,sig,N,M):
 	k=1
-	BuildbkRj(j,bR[j-1],k,pS[j],pI[j],gam,bet,alpI,alpR,sig,N)
+	BuildbkRj(j,bR[j-1],k,pS[j],pI[j],gam,bet,alpI,alpR,sig,N,M)
 	PR[j-1][k-1]=bR[j-1][k-1]
 	for k in range(2,N):
-		BuildbkRj(j,bR[j-1],k,pS[j],pI[j],gam,bet,alpI,alpR,sig,N)
+		BuildbkRj(j,bR[j-1],k,pS[j],pI[j],gam,bet,alpI,alpR,sig,N,M)
 		PR[j-1][k-1]=AkkMinus1R[k-2].dot(invHR[k-2].dot(PR[j-1][k-2]))+bR[j-1][k-1]
 	k=N-1
 	pR[j-1][k-1]=invHR[k-1].dot(PR[j-1][k-1])
 	for k in reversed(range(1,N-1)):
 		pR[j-1][k-1]=invHR[k-1].dot(AkkPlus1R[k-1].dot(pR[j-1][k])+PR[j-1][k-1])
 		
-def AlgorithmIj(j,invHI,PI,bI,pS,pR,pI,AkkI,AkkMinus1I,AkkPlus1I,gam,bet,alpI,alpR,sig,N):
+def AlgorithmIj(j,invHI,PI,bI,pS,pR,pI,AkkI,AkkMinus1I,AkkPlus1I,gam,bet,alpI,alpR,sig,N,M):
 	k=1
 	BuildbkIj(j,bI[j-1],k,pS[j],pR[j-1],gam,bet,alpI,alpR,sig,N)
 	PI[j-1][k-1]=bI[j-1][k-1]
@@ -316,32 +316,31 @@ def probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0):
 	bR=[[np.zeros((k,1)) for k in range(1,N+1)] for j in range(M)]
 
 	j=M-1
-	AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S,gam,bet,alpI,alpR,sig,N)
+	AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S,gam,bet,alpI,alpR,sig,N,M)
 	for j in reversed(range(M-1)):
-		AlgorithmRj(j+1,invHR,PR,bR,pS,pI,pR,AkkR,AkkMinus1R,AkkPlus1R,gam,bet,alpI,alpR,sig,N)
-		AlgorithmIj(j+1,invHI,PI,bI,pS,pR,pI,AkkI,AkkMinus1I,AkkPlus1I,gam,bet,alpI,alpR,sig,N)
-		AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S,gam,bet,alpI,alpR,sig,N)
+		AlgorithmRj(j+1,invHR,PR,bR,pS,pI,pR,AkkR,AkkMinus1R,AkkPlus1R,gam,bet,alpI,alpR,sig,N,M)
+		AlgorithmIj(j+1,invHI,PI,bI,pS,pR,pI,AkkI,AkkMinus1I,AkkPlus1I,gam,bet,alpI,alpR,sig,N,M)
+		AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S,gam,bet,alpI,alpR,sig,N,M)
 
 	return pS[0][s0+i0-1][i0-1,0]
 	
 
 
+# gam=0.5/7.0
+# bet=10.0/(7.0*285)
+# alpI=gam
+# alpR=0
+# sig=0
 
-gam=0.5/7.0
-bet=10.0/(7.0*285)
-alpI=gam
-alpR=0
-sig=0
+# N=285
+# M=3
 
-N=285
-M=3
+# i0=1
+# s0=N-1
+# r0=N-i0-s0
+# start_time = time.time()
+# probability = probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0)
+# print(probability)
+# print probability
 
-i0=1
-s0=N-1
-r0=N-i0-s0
-start_time = time.time()
-probability=probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0)
-
-print probability
-
-elapsed_time = time.time() - start_time
+# elapsed_time = time.time() - start_time
