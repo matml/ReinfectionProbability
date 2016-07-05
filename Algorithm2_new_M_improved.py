@@ -37,7 +37,7 @@ def w(m,n,N):
 def wbar(m,n,N):
 	return ((float)(N-m-n-1.0))/((float)(N-m-n))
 
-def BuildAkkSI(Akk,k):
+def BuildAkkSI(Akk,k,gam,bet,alpI,alpR,sig,N):
 	m=k-1
 	n=1
 	thetamn=bet*m*n+gam*n+alpI*n+alpR*(N-m-n)+sig*bet*n*(N-m-n)
@@ -56,14 +56,14 @@ def BuildAkkSI(Akk,k):
 	if k>2:
 		Akk[i,i-1]=alpI*n/thetamn
 
-def BuildAkkMinus1SI(AkkMinus1,k):
+def BuildAkkMinus1SI(AkkMinus1,k,gam,bet,alpI,alpR,sig,N):
 	for i in range(1,k-1):
 		m=k-(i+1)
 		n=i+1
 		thetamn=bet*m*n+gam*n+alpI*n+alpR*(N-m-n)+sig*bet*n*(N-m-n)
 		AkkMinus1[i,i-1]=gam*n/thetamn
 
-def BuildAkkPlus1SI(AkkPlus1,k):
+def BuildAkkPlus1SI(AkkPlus1,k,gam,bet,alpI,alpR,sig,N):
 	for i in range(1,k):
 		m=k-i
 		n=i
@@ -71,14 +71,14 @@ def BuildAkkPlus1SI(AkkPlus1,k):
 		AkkPlus1[i-1,i-1]=alpR*(N-k)/thetamn
 		AkkPlus1[i-1,i]=sig*bet*(N-k)*n/thetamn
 
-def BuildbkSI(bk,k):
+def BuildbkSI(bk,k,gam,bet,alpI,alpR,sig,N):
 	for j in range(1,k):
 		m=k-j
 		n=j
 		thetamn=bet*m*n+gam*n+alpI*n+alpR*(N-m-n)+sig*bet*n*(N-m-n)
 		bk[j-1,0]=bet*m*n*i(m,n,N)/thetamn
 
-def BuildAkkR(Akk,k):
+def BuildAkkR(Akk,k,gam,bet,alpI,alpR,sig,N):
 	m=k-1
 	n=1
 	thetamn=bet*m*n+gam*n+alpI*n+alpR*(N-m-n)+sig*bet*n*(N-m-n)
@@ -97,14 +97,14 @@ def BuildAkkR(Akk,k):
 	if k>2:
 		Akk[i,i-1]=alpI*n/thetamn
 
-def BuildAkkMinus1R(AkkMinus1,k):
+def BuildAkkMinus1R(AkkMinus1,k,gam,bet,alpI,alpR,sig,N):
 	for i in range(1,k):
 		m=k-(i+1)
 		n=i+1
 		thetamn=bet*m*n+gam*n+alpI*n+alpR*(N-m-n)+sig*bet*n*(N-m-n)
 		AkkMinus1[i,i-1]=gam*n/thetamn
 
-def BuildAkkPlus1R(AkkPlus1,k):
+def BuildAkkPlus1R(AkkPlus1,k,gam,bet,alpI,alpR,sig,N):
 	for i in range(1,k+1):
 		m=k-i
 		n=i
@@ -112,7 +112,7 @@ def BuildAkkPlus1R(AkkPlus1,k):
 		AkkPlus1[i-1,i-1]=alpR*(N-k)*wbar(m,n,N)/thetamn
 		AkkPlus1[i-1,i]=sig*bet*(N-k)*n*ebar(m,n,N)/thetamn
 
-def BuildbkRj(j,bRj,k,pSj,pIjPlus1):
+def BuildbkRj(j,bRj,k,pSj,pIjPlus1,gam,bet,alpI,alpR,sig,N):
 	for i in range(1,k+1):
 		m=k-i
 		n=i
@@ -123,7 +123,7 @@ def BuildbkRj(j,bRj,k,pSj,pIjPlus1):
 			prod=pIjPlus1[k-1][n-1,0]
 		bRj[k-1][i-1,0]=(alpR*(N-k)*w(m,n,N)*pSj[k][n-1,0]+sig*bet*(N-k)*n*e(m,n,N)*prod)/thetamn
 
-def BuildAkkI(Akk,k):
+def BuildAkkI(Akk,k,gam,bet,alpI,alpR,sig,N):
 	m=k-1
 	n=1
 	thetamn=bet*m*n+gam*n+alpI*n+alpR*(N-m-n)+sig*bet*n*(N-m-n)
@@ -142,14 +142,14 @@ def BuildAkkI(Akk,k):
 	if k>2:
 		Akk[i,i-1]=alpI*n*dbar(m,n,N)/thetamn
 
-def BuildAkkMinus1I(AkkMinus1,k):
+def BuildAkkMinus1I(AkkMinus1,k,gam,bet,alpI,alpR,sig,N):
 	for i in range(1,k):
 		m=k-(i+1)
 		n=i+1
 		thetamn=bet*m*n+gam*n+alpI*n+alpR*(N-m-n)+sig*bet*n*(N-m-n)
 		AkkMinus1[i,i-1]=gam*n*rbar(m,n,N)/thetamn
 
-def BuildAkkPlus1I(AkkPlus1,k):
+def BuildAkkPlus1I(AkkPlus1,k,gam,bet,alpI,alpR,sig,N):
 	for i in range(1,k+1):
 		m=k-i
 		n=i
@@ -157,14 +157,14 @@ def BuildAkkPlus1I(AkkPlus1,k):
 		AkkPlus1[i-1,i-1]=alpR*(N-k)/thetamn
 		AkkPlus1[i-1,i]=sig*bet*(N-k)*n/thetamn
 
-def BuildbkIj(j,bIj,k,pSj,pRj):
+def BuildbkIj(j,bIj,k,pSj,pRj,gam,bet,alpI,alpR,sig,N):
 	for i in range(2,k+1):
 		m=k-i
 		n=i
 		thetamn=bet*m*n+gam*n+alpI*n+alpR*(N-m-n)+sig*bet*n*(N-m-n)
 		bIj[k-1][i-1,0]=(n*gam*r(m,n,N)*pRj[k-2][n-2,0]+n*alpI*d(m,n,N)*pSj[k-1][n-2,0])/thetamn
 
-def BuildAkkS(Akk,k):
+def BuildAkkS(Akk,k,gam,bet,alpI,alpR,sig,N):
 	m=k-1
 	n=1
 	thetamn=bet*m*n+gam*n+alpI*n+alpR*(N-m-n)+sig*bet*n*(N-m-n)
@@ -183,14 +183,14 @@ def BuildAkkS(Akk,k):
 	if k>2:
 		Akk[i,i-1]=alpI*n/thetamn
 
-def BuildAkkMinus1S(AkkMinus1,k):
+def BuildAkkMinus1S(AkkMinus1,k,gam,bet,alpI,alpR,sig,N):
 	for i in range(1,k-1):
 		m=k-(i+1)
 		n=i+1
 		thetamn=bet*m*n+gam*n+alpI*n+alpR*(N-m-n)+sig*bet*n*(N-m-n)
 		AkkMinus1[i,i-1]=gam*n/thetamn
 
-def BuildAkkPlus1S(AkkPlus1,k):
+def BuildAkkPlus1S(AkkPlus1,k,gam,bet,alpI,alpR,sig,N):
 	for i in range(1,k):
 		m=k-i
 		n=i
@@ -198,7 +198,7 @@ def BuildAkkPlus1S(AkkPlus1,k):
 		AkkPlus1[i-1,i-1]=alpR*(N-k)/thetamn
 		AkkPlus1[i-1,i]=sig*bet*(N-k)*n/thetamn
 
-def BuildbkSj(j,bSj,k,pIjPlus1):
+def BuildbkSj(j,bSj,k,pIjPlus1,gam,bet,alpI,alpR,sig,N):
 	for p in range(1,k):
 		m=k-p
 		n=p
@@ -209,12 +209,12 @@ def BuildbkSj(j,bSj,k,pIjPlus1):
 			prod=pIjPlus1[k-1][n,0]
 		bSj[k-1][n-1,0]=bet*m*n*i(m,n,N)*prod/thetamn
 
-def AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S):
+def AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S,gam,bet,alpI,alpR,sig,N):
 	k=2
-	BuildbkSj(j,bS[j],k,pI[j])
+	BuildbkSj(j,bS[j],k,pI[j],gam,bet,alpI,alpR,sig,N)
 	PS[j][k-1]=bS[j][k-1]
 	for k in range(3,N+1):
-		BuildbkSj(j,bS[j],k,pI[j])
+		BuildbkSj(j,bS[j],k,pI[j],gam,bet,alpI,alpR,sig,N)
 		PS[j][k-1]=AkkMinus1S[k-2]*invHS[k-2]*PS[j][k-2]+bS[j][k-1]
 	k=N
 	pS[j][k-1]=invHS[k-1]*PS[j][k-1]
@@ -222,24 +222,24 @@ def AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S):
 		pS[j][k-1]=invHS[k-1]*(AkkPlus1S[k-1]*pS[j][k]+PS[j][k-1])
 
 		
-def AlgorithmRj(j,invHR,PR,bR,pS,pI,pR,AkkR,AkkMinus1R,AkkPlus1R):
+def AlgorithmRj(j,invHR,PR,bR,pS,pI,pR,AkkR,AkkMinus1R,AkkPlus1R,gam,bet,alpI,alpR,sig,N):
 	k=1
-	BuildbkRj(j,bR[j-1],k,pS[j],pI[j])
+	BuildbkRj(j,bR[j-1],k,pS[j],pI[j],gam,bet,alpI,alpR,sig,N)
 	PR[j-1][k-1]=bR[j-1][k-1]
 	for k in range(2,N):
-		BuildbkRj(j,bR[j-1],k,pS[j],pI[j])
+		BuildbkRj(j,bR[j-1],k,pS[j],pI[j],gam,bet,alpI,alpR,sig,N)
 		PR[j-1][k-1]=AkkMinus1R[k-2]*invHR[k-2]*PR[j-1][k-2]+bR[j-1][k-1]
 	k=N-1
 	pR[j-1][k-1]=invHR[k-1]*PR[j-1][k-1]
 	for k in reversed(range(1,N-1)):
 		pR[j-1][k-1]=invHR[k-1]*(AkkPlus1R[k-1]*pR[j-1][k]+PR[j-1][k-1])
 		
-def AlgorithmIj(j,invHI,PI,bI,pS,pR,pI,AkkI,AkkMinus1I,AkkPlus1I):
+def AlgorithmIj(j,invHI,PI,bI,pS,pR,pI,AkkI,AkkMinus1I,AkkPlus1I,gam,bet,alpI,alpR,sig,N):
 	k=1
-	BuildbkIj(j,bI[j-1],k,pS[j],pR[j-1])
+	BuildbkIj(j,bI[j-1],k,pS[j],pR[j-1],gam,bet,alpI,alpR,sig,N)
 	PI[j-1][k-1]=bI[j-1][k-1]
 	for k in range(2,N+1):
-		BuildbkIj(j,bI[j-1],k,pS[j],pR[j-1])
+		BuildbkIj(j,bI[j-1],k,pS[j],pR[j-1],gam,bet,alpI,alpR,sig,N)
 		PI[j-1][k-1]=AkkMinus1I[k-2]*invHI[k-2]*PI[j-1][k-2]+bI[j-1][k-1]
 	k=N
 	pI[j-1][k-1]=invHI[k-1]*PI[j-1][k-1]
@@ -255,14 +255,14 @@ def probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0):
 	AkkPlus1S=[np.zeros((k-2,k-1)) for k in range(2,N+1)]
 
 	k=2
-	BuildAkkSI(AkkS[k-1],k)
+	BuildAkkSI(AkkS[k-1],k,gam,bet,alpI,alpR,sig,N)
 	HS[k-1]=np.eye(k-1)-AkkS[k-1]
 	invHS[k-1]=inv(HS[k-1])
 
 	for k in range(3,N+1):
-		BuildAkkSI(AkkS[k-1],k)
-		BuildAkkMinus1SI(AkkMinus1S[k-2],k)
-		BuildAkkPlus1SI(AkkPlus1S[k-2],k-1)
+		BuildAkkSI(AkkS[k-1],k,gam,bet,alpI,alpR,sig,N)
+		BuildAkkMinus1SI(AkkMinus1S[k-2],k,gam,bet,alpI,alpR,sig,N)
+		BuildAkkPlus1SI(AkkPlus1S[k-2],k-1,gam,bet,alpI,alpR,sig,N)
 		HS[k-1]=np.asmatrix(np.eye(k-1))-AkkS[k-1]-AkkMinus1S[k-2]*invHS[k-2]*AkkPlus1S[k-2]
 		invHS[k-1]=inv(HS[k-1])
 
@@ -273,14 +273,14 @@ def probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0):
 	AkkPlus1R=[np.zeros((k-1,k)) for k in range(2,N)]
 
 	k=1
-	BuildAkkR(AkkR[k-1],k)
+	BuildAkkR(AkkR[k-1],k,gam,bet,alpI,alpR,sig,N)
 	HR[k-1]=np.asmatrix(np.eye(k))-AkkR[k-1]
 	invHR[k-1]=inv(HR[k-1])
 
 	for k in range(2,N):
-		BuildAkkR(AkkR[k-1],k)
-		BuildAkkMinus1R(AkkMinus1R[k-2],k)
-		BuildAkkPlus1R(AkkPlus1R[k-2],k-1)
+		BuildAkkR(AkkR[k-1],k,gam,bet,alpI,alpR,sig,N)
+		BuildAkkMinus1R(AkkMinus1R[k-2],k,gam,bet,alpI,alpR,sig,N)
+		BuildAkkPlus1R(AkkPlus1R[k-2],k-1,gam,bet,alpI,alpR,sig,N)
 		HR[k-1]=np.asmatrix(np.eye(k))-AkkR[k-1]-AkkMinus1R[k-2]*invHR[k-2]*AkkPlus1R[k-2]
 		invHR[k-1]=inv(HR[k-1])
 
@@ -290,18 +290,15 @@ def probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0):
 	AkkMinus1I=[np.zeros((k,k-1)) for k in range(2,N+1)]
 	AkkPlus1I=[np.zeros((k-1,k)) for k in range(2,N+1)]
 
-hjcdvgcjhedcvb
-
-
 	k=1
-	BuildAkkI(AkkI[k-1],k)
+	BuildAkkI(AkkI[k-1],k,gam,bet,alpI,alpR,sig,N)
 	HI[k-1]=np.asmatrix(np.eye(k))-AkkI[k-1]
 	invHI[k-1]=inv(HI[k-1])
 
 	for k in range(2,N+1):
-		BuildAkkI(AkkI[k-1],k)
-		BuildAkkMinus1I(AkkMinus1I[k-2],k)
-		BuildAkkPlus1I(AkkPlus1I[k-2],k-1)
+		BuildAkkI(AkkI[k-1],k,gam,bet,alpI,alpR,sig,N)
+		BuildAkkMinus1I(AkkMinus1I[k-2],k,gam,bet,alpI,alpR,sig,N)
+		BuildAkkPlus1I(AkkPlus1I[k-2],k-1,gam,bet,alpI,alpR,sig,N)
 		HI[k-1]=np.eye(k)-AkkI[k-1]-AkkMinus1I[k-2]*invHI[k-2]*AkkPlus1I[k-2]
 		invHI[k-1]=inv(HI[k-1])
 
@@ -316,10 +313,32 @@ hjcdvgcjhedcvb
 	bR=[[np.zeros((k,1)) for k in range(1,N+1)] for j in range(M)]
 
 	j=M-1
-	AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S)
+	AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S,gam,bet,alpI,alpR,sig,N)
 	for j in reversed(range(M-1)):
-		AlgorithmRj(j+1,invHR,PR,bR,pS,pI,pR,AkkR,AkkMinus1R,AkkPlus1R)
-		AlgorithmIj(j+1,invHI,PI,bI,pS,pR,pI,AkkI,AkkMinus1I,AkkPlus1I)
-		AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S)
+		AlgorithmRj(j+1,invHR,PR,bR,pS,pI,pR,AkkR,AkkMinus1R,AkkPlus1R,gam,bet,alpI,alpR,sig,N)
+		AlgorithmIj(j+1,invHI,PI,bI,pS,pR,pI,AkkI,AkkMinus1I,AkkPlus1I,gam,bet,alpI,alpR,sig,N)
+		AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S,gam,bet,alpI,alpR,sig,N)
 
-	return pS#[0][s0+i0-1][i0-1,0]
+	return pS[0][s0+i0-1][i0-1,0]
+	
+
+
+
+gam=0.5/7.0
+bet=10.0/(7.0*285)
+alpI=gam
+alpR=0
+sig=0
+
+N=285
+M=3
+
+i0=1
+s0=N-1
+r0=N-i0-s0
+start_time = time.time()
+probability=probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0)
+
+print probability
+
+elapsed_time = time.time() - start_time
