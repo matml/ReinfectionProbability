@@ -1,10 +1,11 @@
 #import matplotlib.pyplot as plt
 import random, math
-import numpy as np
-from numpy import linalg
-from numpy.linalg import inv
-#import scipy
-#from scipy import linalg
+# import numpy as np
+# from numpy import linalg
+# from numpy.linalg import inv
+import scipy
+from scipy import linalg
+from scipy.linalg import inv
 import time
 
 			
@@ -216,11 +217,11 @@ def AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S,gam,bet,alpI,alpR,
 	PS[j][k-1]=bS[j][k-1]
 	for k in range(3,N+1):
 		BuildbkSj(j,bS[j],k,pI[j],gam,bet,alpI,alpR,sig,N)
-		PS[j][k-1]=AkkMinus1S[k-2]*invHS[k-2]*PS[j][k-2]+bS[j][k-1]
+		PS[j][k-1]=AkkMinus1S[k-2].dot(invHS[k-2].dot(PS[j][k-2]))+bS[j][k-1]
 	k=N
-	pS[j][k-1]=invHS[k-1]*PS[j][k-1]
+	pS[j][k-1]=invHS[k-1].dot(PS[j][k-1])
 	for k in reversed(range(2,N)):
-		pS[j][k-1]=invHS[k-1]*(AkkPlus1S[k-1]*pS[j][k]+PS[j][k-1])
+		pS[j][k-1]=invHS[k-1].dot(AkkPlus1S[k-1].dot(pS[j][k])+PS[j][k-1])
 
 		
 def AlgorithmRj(j,invHR,PR,bR,pS,pI,pR,AkkR,AkkMinus1R,AkkPlus1R,gam,bet,alpI,alpR,sig,N):
@@ -229,11 +230,11 @@ def AlgorithmRj(j,invHR,PR,bR,pS,pI,pR,AkkR,AkkMinus1R,AkkPlus1R,gam,bet,alpI,al
 	PR[j-1][k-1]=bR[j-1][k-1]
 	for k in range(2,N):
 		BuildbkRj(j,bR[j-1],k,pS[j],pI[j],gam,bet,alpI,alpR,sig,N)
-		PR[j-1][k-1]=AkkMinus1R[k-2]*invHR[k-2]*PR[j-1][k-2]+bR[j-1][k-1]
+		PR[j-1][k-1]=AkkMinus1R[k-2].dot(invHR[k-2].dot(PR[j-1][k-2]))+bR[j-1][k-1]
 	k=N-1
-	pR[j-1][k-1]=invHR[k-1]*PR[j-1][k-1]
+	pR[j-1][k-1]=invHR[k-1].dot(PR[j-1][k-1])
 	for k in reversed(range(1,N-1)):
-		pR[j-1][k-1]=invHR[k-1]*(AkkPlus1R[k-1]*pR[j-1][k]+PR[j-1][k-1])
+		pR[j-1][k-1]=invHR[k-1].dot(AkkPlus1R[k-1].dot(pR[j-1][k])+PR[j-1][k-1])
 		
 def AlgorithmIj(j,invHI,PI,bI,pS,pR,pI,AkkI,AkkMinus1I,AkkPlus1I,gam,bet,alpI,alpR,sig,N):
 	k=1
@@ -241,11 +242,11 @@ def AlgorithmIj(j,invHI,PI,bI,pS,pR,pI,AkkI,AkkMinus1I,AkkPlus1I,gam,bet,alpI,al
 	PI[j-1][k-1]=bI[j-1][k-1]
 	for k in range(2,N+1):
 		BuildbkIj(j,bI[j-1],k,pS[j],pR[j-1],gam,bet,alpI,alpR,sig,N)
-		PI[j-1][k-1]=AkkMinus1I[k-2]*invHI[k-2]*PI[j-1][k-2]+bI[j-1][k-1]
+		PI[j-1][k-1]=AkkMinus1I[k-2].dot(invHI[k-2].dot(PI[j-1][k-2]))+bI[j-1][k-1]
 	k=N
-	pI[j-1][k-1]=invHI[k-1]*PI[j-1][k-1]
+	pI[j-1][k-1]=invHI[k-1].dot(PI[j-1][k-1])
 	for k in reversed(range(1,N)):
-		pI[j-1][k-1]=invHI[k-1]*(AkkPlus1I[k-1]*pI[j-1][k]+PI[j-1][k-1])	
+		pI[j-1][k-1]=invHI[k-1].dot(AkkPlus1I[k-1].dot(pI[j-1][k])+PI[j-1][k-1])	
 
 def probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0):
 	
@@ -265,7 +266,7 @@ def probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0):
 		BuildAkkSI(AkkS[k-1],k,gam,bet,alpI,alpR,sig,N)
 		BuildAkkMinus1SI(AkkMinus1S[k-2],k,gam,bet,alpI,alpR,sig,N)
 		BuildAkkPlus1SI(AkkPlus1S[k-2],k-1,gam,bet,alpI,alpR,sig,N)
-		HS[k-1]=np.asmatrix(np.eye(k-1))-AkkS[k-1]-AkkMinus1S[k-2]*invHS[k-2]*AkkPlus1S[k-2]
+		HS[k-1]=np.asmatrix(np.eye(k-1))-AkkS[k-1]-AkkMinus1S[k-2].dot(invHS[k-2].dot(AkkPlus1S[k-2]))
 		invHS[k-1]=inv(HS[k-1])
 
 	HR=[np.zeros((k,k)) for k in range(1,N+1)]
@@ -283,7 +284,7 @@ def probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0):
 		BuildAkkR(AkkR[k-1],k,gam,bet,alpI,alpR,sig,N)
 		BuildAkkMinus1R(AkkMinus1R[k-2],k,gam,bet,alpI,alpR,sig,N)
 		BuildAkkPlus1R(AkkPlus1R[k-2],k-1,gam,bet,alpI,alpR,sig,N)
-		HR[k-1]=np.asmatrix(np.eye(k))-AkkR[k-1]-AkkMinus1R[k-2]*invHR[k-2]*AkkPlus1R[k-2]
+		HR[k-1]=np.asmatrix(np.eye(k))-AkkR[k-1]-AkkMinus1R[k-2].dot(invHR[k-2].dot(AkkPlus1R[k-2]))
 		invHR[k-1]=inv(HR[k-1])
 
 	HI=[np.zeros((k,k)) for k in range(1,N+1)]
@@ -301,7 +302,7 @@ def probabilities(gam,bet,alpI,alpR,sig,N,M,i0,s0,r0):
 		BuildAkkI(AkkI[k-1],k,gam,bet,alpI,alpR,sig,N)
 		BuildAkkMinus1I(AkkMinus1I[k-2],k,gam,bet,alpI,alpR,sig,N)
 		BuildAkkPlus1I(AkkPlus1I[k-2],k-1,gam,bet,alpI,alpR,sig,N)
-		HI[k-1]=np.eye(k)-AkkI[k-1]-AkkMinus1I[k-2]*invHI[k-2]*AkkPlus1I[k-2]
+		HI[k-1]=np.eye(k)-AkkI[k-1]-AkkMinus1I[k-2].dot(invHI[k-2].dot(AkkPlus1I[k-2]))
 		invHI[k-1]=inv(HI[k-1])
 
 	pS=[[np.zeros((k-1,1)) for k in range(1,N+1)] for j in range(M)]
