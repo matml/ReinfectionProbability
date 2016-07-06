@@ -5,7 +5,7 @@ start_me <- function() {
 	python.load(file.path(dir_python, "Algorithm2_new_M_improved.py"))
 
 	dir_project <<- path.expand("~/work/projects/ReinfectionProbability")
-	dir_python <<- dir_project
+	dir_python <<- dir_project %>% file.path("python")
 	dir_R <<- dir_project %>% file.path("R")
 
 }
