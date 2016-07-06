@@ -58,3 +58,7 @@ Manuscript/ReinfectionProbability.aux
 Manuscript/ReinfectionProbability.pdf
 *.synctex
 Manuscript/ReinfectionProbability.synctex
+
+*.fdb_latexmk
+
+*.gz

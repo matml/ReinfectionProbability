@@ -10,9 +10,9 @@ start_me <- function() {
 
 }
 
-p_reinfection_SIR <- function(gamma = 0, beta = 0, alpha_I = 0, alpha_R = 0, sigma = 0, n_pop, n_reinfection, S_0, I_0, R_0) {
+p_reinfection_SIR <- function(gamma = 0, gamma_A = gamma, beta = 0, beta_A_C = beta, beta_C_A = beta, alpha_I = 0, alpha_I_A = alpha_I, alpha_R = 0, alpha_R_A = alpha_R, sigma = 0, sigma_A = sigma, n_pop, n_reinfection, S_0, I_0, R_0) {
 
-	python.call("p_reinfection_SIR", gam = gamma, bet = beta, alpI = alpha_I, alpR = alpha_R, sig = sigma, N = n_pop, M = n_reinfection, i0 = I_0, s0 = S_0, r0 = R_0)
+	python.call("p_reinfection_SIR", gam = gamma, gamA = gamma_A, bet = beta, betAc = beta_A_C, betcA = beta_C_A , alpI = alpha_I, alpIA = alpha_I_A, alpR = alpha_R, alpRA = alpha_R_A, sig = sigma, sigA = sigma_A, N = n_pop, M = n_reinfection, i0 = I_0, s0 = S_0, r0 = R_0)
 
 }
 
