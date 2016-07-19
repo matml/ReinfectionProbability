@@ -1,12 +1,16 @@
 start_me <- function() {
 
 	library(rPython)
+	# library(plyr)
 	library(dplyr)
-	python.load(file.path(dir_python, "Algorithm2_new_M_improved.py"))
+	library(tidyr)
+	# library(multidplyr)
 
 	dir_project <<- path.expand("~/work/projects/ReinfectionProbability")
 	dir_python <<- dir_project %>% file.path("python")
 	dir_R <<- dir_project %>% file.path("R")
+
+	python.load(file.path(dir_python, "Algorithm2_new_M_improved.py"))
 
 }
 
@@ -66,7 +70,9 @@ logLike_0123 <- function(data = c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0
 		cat(paste(c("E[0] =", "E[1] =", "E[2] =", "E[3+] =", "logLike = "), c(E,round(logLike, 3)), collapse = "; "), "\t")
 	}
 
-	return(logLike)
+	ans <- data_frame(p_0, p_1, p_2, p_3_or_more, logLike)
+
+	return(ans)
 
 }
 
@@ -98,10 +104,165 @@ logLike_PPI <- function(x, data, D_infection, n_pop, S_0, I_0, R_0) {
 	R0 <- x[1]
 	partial_protection <- x[2]
 
-	logLike_0123(data, p_reinfection_PPI, R0, D_infection, partial_protection, n_pop, S_0, I_0, R_0, echo = TRUE)
+	logLike_0123(data, p_reinfection_PPI, R0, D_infection, partial_protection, n_pop, S_0, I_0, R_0)
 
 }
 
+
+grid_logLike_SIRS <- function(R0, D_immunity, ...) {
+
+	expand.grid(R0 = R0, D_immunity = D_immunity) %>% 
+	group_by(R0, D_immunity) %>% 
+	do(logLike_SIRS(x = c(.$R0, .$D_immunity), ...)) %>% 
+	ungroup
+
+}
+
+grid_logLike_AoN <- function(R0, prop_immunity, ...) {
+
+	expand.grid(R0 = R0, prop_immunity = prop_immunity) %>% 
+	group_by(R0, prop_immunity) %>% 
+	do(logLike_AoN(x = c(.$R0, .$prop_immunity), ...)) %>% 
+	ungroup
+
+}
+
+grid_logLike_PPI <- function(R0, partial_protection, ...) {
+
+	expand.grid(R0 = R0, partial_protection = partial_protection) %>% 
+	group_by(R0, partial_protection) %>% 
+	do(logLike_PPI(x = c(.$R0, .$partial_protection), ...)) %>% 
+	ungroup
+
+}
+
+grid_logLike_SIRS_parallel <- function(R0, D_immunity, i_job, n_job, ...) {
+
+	browser()
+	sink()
+
+	df_input <- expand.grid(R0 = R0, D_immunity = D_immunity)
+	index <- seq_len(nrow(df_input))
+	df_input <- df_input[]
+
+
+	df_output <- df_input %>% 
+	group_by(R0, D_immunity) %>% 
+	do(logLike_SIRS(x = c(.$R0, .$D_immunity), ...)) %>% 
+	ungroup
+
+}
+
+grid_logLike_AoN_parallel <- function(R0, prop_immunity, i_job, n_job, ...) {
+
+	df_input <- expand.grid(R0 = R0, prop_immunity = prop_immunity)
+	index <- seq(i_job, nrow(df_input), n_job)
+	df_input <- df_input[index, ]
+
+
+	df_input
+	group_by(R0, prop_immunity) %>% 
+	do(logLike_AoN(x = c(.$R0, .$prop_immunity), ...)) %>% 
+	ungroup
+
+}
+
+
+grid_logLike_SIRS_parallel <- function(R0, D_immunity, i_job, n_job, ...) {
+
+	df_input <- expand.grid(R0 = R0, D_immunity = D_immunity)
+	index <- seq(i_job, nrow(df_input), n_job)
+	df_input <- df_input[index, ]
+
+
+	df_input
+	group_by(R0, D_immunity) %>% 
+	do(logLike_SIRS(x = c(.$R0, .$D_immunity), ...)) %>% 
+	ungroup
+
+}
+
+
+grid_logLike_PPI_parallel <- function(R0, partial_protection, i_job, n_job, ...) {
+
+	df_input <- expand.grid(R0 = R0, partial_protection = partial_protection)
+	index <- seq(i_job, nrow(df_input), n_job)
+	df_input <- df_input[index, ]
+
+
+	df_input
+	group_by(R0, partial_protection) %>% 
+	do(logLike_PPI(x = c(.$R0, .$partial_protection), ...)) %>% 
+	ungroup
+
+}
+
+
+grid_logLike_AoN_multidplyr <- function(R0, prop_immunity, data, D_infection, n_pop, S_0, I_0, R_0) {
+
+	# n_reinfection <- 2
+	
+	# R0 <- 10
+	# D_infection <- 3
+	# n_pop <- 285
+	# S_0 <- n_pop - 2
+	# I_0 <- 1
+	# R_0 <- 0
+
+	# D_immunity <- 60
+	# prop_immunity <- 0.45
+	# partial_protection <- 0.95
+
+	# data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)
+
+
+	my_cluster <- create_cluster(cores = 2)
+	set_default_cluster(my_cluster)
+	
+	# cluster_call(my_cluster, logLike_0123)
+	# cluster_call(my_cluster, p_reinfection_AoN)
+	# cluster_call(my_cluster, p_reinfection_SIR)
+	# cluster_assign_value(my_cluster, "logLike_0123", logLike_0123)
+	# cluster_assign_value(my_cluster, "D_infection", D_infection)
+	# cluster_assign_value(my_cluster, "n_pop", n_pop)
+	# cluster_assign_value(my_cluster, "S_0", S_0)
+	# cluster_assign_value(my_cluster, "I_0", I_0)
+	# cluster_assign_value(my_cluster, "R_0", R_0)
+	# cluster_assign_value(my_cluster, "p_reinfection_SIR", p_reinfection_SIR)
+	# cluster_assign_value(my_cluster, "start_me", start_me)
+	# cluster_call(my_cluster, start_me)
+
+
+	# cluster_call(my_cluster, logLike_AoN(x = c(2, 0.5), data, D_infection, n_pop, S_0, I_0, R_0))
+	
+
+	# cluster_ls(my_cluster)
+	# cluster_assign_value(my_cluster, "data", data)
+
+	# my_cluster %>% 
+	# cluster_call(logLike_AoN) %>% 
+	party_df <- expand.grid(R0 = R0, prop_immunity = prop_immunity) %>% 
+	partition(R0, prop_immunity, cluster = my_cluster) 
+
+
+
+	# %>% 
+	cluster_library(party_df, "rPython")
+	cluster_assign_value(party_df, "logLike_AoN", logLike_AoN)
+	cluster_assign_value(party_df, "logLike_0123", logLike_0123)
+	cluster_assign_value(party_df, "p_reinfection_AoN", p_reinfection_AoN)
+
+	cluster_ls(party_df)
+
+	party_df %>% 
+	do(logLike_AoN(x = c(.$R0, .$prop_immunity), data, D_infection, n_pop, S_0, I_0, R_0)) 
+
+	# %>% 
+	# collect()
+
+	# vignette(multidplyr)
+
+}
 
 
 test <- function() {
@@ -124,35 +285,86 @@ test <- function() {
 	# p3 <- p_reinfection_PPI(n_reinfection, R0, D_infection, partial_protection, n_pop, S_0, I_0, R_0)
 
 	data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)
-	logLike_0123(data, p_reinfection_SIRS, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0, echo = TRUE)
-	logLike_0123(data, p_reinfection_AoN, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0, echo = TRUE)
-	logLike_0123(data, p_reinfection_PPI, R0, D_infection, partial_protection, n_pop, S_0, I_0, R_0, echo = TRUE)
+	# logLike_0123(data, p_reinfection_SIRS, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0, echo = TRUE)
+	# logLike_0123(data, p_reinfection_AoN, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0, echo = TRUE)
+	# logLike_0123(data, p_reinfection_PPI, R0, D_infection, partial_protection, n_pop, S_0, I_0, R_0, echo = TRUE)
 
-	df_PPI_grid <- expand.grid(R0 = 1:20, partial_protection = seq(0,1,0.1))
-	df_PPI_logLike_grid <- df_PPI_grid %>% group_by(R0, partial_protection) %>% do(logLike = logLike_PPI(x = c(.$R0, .$partial_protection), data = data, D_infection = D_infection, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0))
+	# df_PPI_grid <- expand.grid(R0 = 1:20, partial_protection = seq(0,1,0.1))
+	# df_PPI_logLike_grid <- df_PPI_grid %>% group_by(R0, partial_protection) %>% do(logLike = logLike_PPI(x = c(.$R0, .$partial_protection), data = data, D_infection = D_infection, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0))
 
 
-	df_PPI_grid <- expand.grid(R0 = 1:20, partial_protection = seq(0,1,0.1))
-	df_PPI_logLike_grid <- df_PPI_grid %>% group_by(R0, partial_protection) %>% do(logLike = logLike_PPI(x = c(.$R0, .$partial_protection), data = data, D_infection = D_infection, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0))
+	# df_PPI_grid <- expand.grid(R0 = 1:20, partial_protection = seq(0,1,0.1))
+	# df_PPI_logLike_grid <- df_PPI_grid %>% group_by(R0, partial_protection) %>% do(logLike = logLike_PPI(x = c(.$R0, .$partial_protection), data = data, D_infection = D_infection, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0))
 
 	# df_SIRS_grid <- expand.grid(R0 = 1:20, D_immunity = seq(5, 50, 5))
 	# df_SIRS_logLike_grid <- df_SIRS_grid %>% group_by(R0, D_immunity) %>% do(logLike = logLike_SIRS(x = c(.$R0, .$D_immunity), data = data, D_infection = D_infection, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0))
 
-	df_AoN_grid <- expand.grid(R0 = 1:20, prop_immunity = seq(0,1,0.1))
-	df_AoN_logLike_grid <- df_AoN_grid %>% group_by(R0, prop_immunity) %>% do(logLike = logLike_AoN(x = c(.$R0, .$prop_immunity), data = data, D_infection = D_infection, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0))
 
-	library(tidyr)
-	df_AoN_logLike_grid2 <- df_AoN_logLike_grid %>% unnest(logLike) %>% mutate(model = "AoN") %>% rename(y = prop_immunity)
-	df_PPI_logLike_grid2 <- df_PPI_logLike_grid %>% unnest(logLike) %>% mutate(model = "PPI") %>% rename(y = partial_protection)
+	grid_logLike_AoN_parallel(R0 = seq(1, 50, 0.5), prop_immunity = seq(0.01,1, 0.01), i_job = 2, n_job = 10,  data, D_infection, n_pop, S_0, I_0, R_0)
 
-	df_models_logLike <- df_AoN_logLike_grid2 %>% bind_rows(df_PPI_logLike_grid2)
+
+	# df_AoN_grid <- expand.grid(R0 = 1:20, prop_immunity = seq(0,1,0.1))
+	# df_AoN_logLike_grid <- df_AoN_grid %>% group_by(R0, prop_immunity) %>% do(logLike = logLike_AoN(x = c(.$R0, .$prop_immunity), data = data, D_infection = D_infection, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0))
+
 	
-	p <- ggplot(df_models_logLike, aes(x = R0, y = y)) + facet_wrap(~model, scales = "free_y")
-	p <- p + geom_raster(aes(fill = log(-logLike)))
-	p <- p + stat_density_2d(aes(fill = logLike), geom = "polygon")
-	p
-	# logLike_PPI(x = c(R0, partial_protection), data = data, D_infection = D_infection, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0)
-	# optim(par = c(R0, partial_protection), fn = logLike_PPI, data = data, D_infection = D_infection, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0, method = "L-BFGS-B", lower = c(0,0), upper = c(20, 1))
+	# df_AoN_logLike_grid2 <- df_AoN_logLike_grid %>% unnest(logLike) %>% mutate(model = "AoN") %>% rename(y = prop_immunity)
+	# df_PPI_logLike_grid2 <- df_PPI_logLike_grid %>% unnest(logLike) %>% mutate(model = "PPI") %>% rename(y = partial_protection)
+
+	# df_models_logLike <- df_AoN_logLike_grid2 %>% bind_rows(df_PPI_logLike_grid2)
+	
+	# p <- ggplot(df_models_logLike, aes(x = R0, y = y)) + facet_wrap(~model, scales = "free_y")
+	# p <- p + geom_raster(aes(fill = log(-logLike)), interpolate =TRUE)
+	# # p <- p + stat_density_2d(aes(fill = logLike), geom = "polygon")
+	# p
+	# # logLike_PPI(x = c(R0, partial_protection), data = data, D_infection = D_infection, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0)
+	# # optim(par = c(R0, partial_protection), fn = logLike_PPI, data = data, D_infection = D_infection, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0, method = "L-BFGS-B", lower = c(0,0), upper = c(20, 1))
+
+}
+
+
+main_cluster <- function() {
+
+	start_me()
+
+	model <- Sys.getenv("model")
+	analysis <- Sys.getenv("analysis")
+	jobDir <- Sys.getenv("jobDir")
+	i_job <- as.numeric(Sys.getenv("process")) + 1
+	n_job <- as.numeric(Sys.getenv("replicate"))
+
+	message("Model:",sQuote(model), "\nanalysis:", analysis, "\ni_job:", i_job, "\nn_job:", n_job)
+
+	D_infection <- 2
+	n_pop <- 285
+	S_0 <- n_pop - 2
+	I_0 <- 1
+	R_0 <- 0
+
+	# R0 <- seq(1, 50, 0.5)
+	R0 <- seq(5, 14, 1)
+	# prop_immunity <- seq(0.01,1, 0.01)
+	prop_immunity <- seq(0,1, 0.1)
+	partial_protection <- prop_immunity
+	D_immunity <- prop_immunity*100
+
+	data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)
+	
+	if(model == "AoN"){
+
+		ans <- grid_logLike_AoN_parallel(R0 = R0, prop_immunity = prop_immunity, i_job = i_job, n_job = n_job,  data, D_infection, n_pop, S_0, I_0, R_0)
+
+	} else if (model == "PPI") {
+
+		ans <- grid_logLike_PPI_parallel(R0 = R0, partial_protection = partial_protection, i_job = i_job, n_job = n_job,  data, D_infection, n_pop, S_0, I_0, R_0)
+
+
+	} else if (model == "SIRS") {
+
+		ans <- grid_logLike_SIRS_parallel(R0 = R0, D_immunity = D_immunity, i_job = i_job, n_job = n_job,  data, D_infection, n_pop, S_0, I_0, R_0)
+
+	}
+
+	saveRDS(file.path(jobDir, sprintf("ans_%s_job_%s_of_%s.rds", analysis, i_job, n_job)))
 
 }
 
@@ -162,7 +374,11 @@ main <- function() {
 	start_me()
 
 	# test()
+
 }
 
 
-main()
+# main()
+main_cluster()
+
+
