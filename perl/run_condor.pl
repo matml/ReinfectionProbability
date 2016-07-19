@@ -4,7 +4,6 @@
 #######################################################
 my $HOME="/users/ecologie/camacho";
 my $projectDir="$HOME/work/projects/ReinfectionProbability";
-
 my $Condor_job_identifier="Rscript";
 
 #------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -54,7 +53,7 @@ foreach $model (@model_list)
   my $in= "$scriptDir/$Rscript";
   my $out= "$jobDir/out_R\$(Process).txt";
 
-  my $Condor_jobname="$Condor_job_identifier.$Rscript";
+  my $Condor_jobname="$Condor_job_identifier_$model";
   print "generate $Condor_jobname\n";
   open(Condor_SCRIPT,">$Condor_jobname.txt");
   print Condor_SCRIPT "executable = $exe\n";
