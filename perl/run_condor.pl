@@ -40,7 +40,7 @@ $my_requirements=substr($my_requirements,0,-1);
 foreach $model (@model_list)
 {
 
-  my $jobDir="$HOME/cluster_output/$model";
+  my $jobDir="$projectDir/cluster_output/$model";
 
   # remove the .txt (submission, out, log and error files)
   system("mkdir -p $jobDir");
@@ -73,7 +73,7 @@ foreach $model (@model_list)
     print Condor_SCRIPT "output = $out\n";
     print Condor_SCRIPT "error = $jobDir/error_R\$(Process).txt\n";
     print Condor_SCRIPT "log = $jobDir/log_R\$(Process).txt\n";
-    print Condor_SCRIPT "environment = process=\$(Process);model=$model;analysis=$analysis;jobDir=$jobDir\n";
+    print Condor_SCRIPT "environment = process=\$(Process);replicate=$replicate;model=$model;analysis=$analysis;jobDir=$jobDir\n";
     # print Condor_SCRIPT "environment = analysis=$analysis\n";
 
 
