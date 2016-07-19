@@ -138,15 +138,9 @@ grid_logLike_PPI <- function(R0, partial_protection, ...) {
 
 grid_logLike_SIRS_parallel <- function(R0, D_immunity, i_job, n_job, ...) {
 
-	browser()
-	sink()
-
-	df_input <- expand.grid(R0 = R0, D_immunity = D_immunity)
-	index <- seq_len(nrow(df_input))
-	df_input <- df_input[]
-
-
-	df_output <- df_input %>% 
+	expand.grid(R0 = R0, D_immunity = D_immunity) %>% 
+	mutate(i = 1:n()) %>% 
+	filter(i%in%seq(i_job, n(), n_job)) %>% 
 	group_by(R0, D_immunity) %>% 
 	do(logLike_SIRS(x = c(.$R0, .$D_immunity), ...)) %>% 
 	ungroup
@@ -155,12 +149,9 @@ grid_logLike_SIRS_parallel <- function(R0, D_immunity, i_job, n_job, ...) {
 
 grid_logLike_AoN_parallel <- function(R0, prop_immunity, i_job, n_job, ...) {
 
-	df_input <- expand.grid(R0 = R0, prop_immunity = prop_immunity)
-	index <- seq(i_job, nrow(df_input), n_job)
-	df_input <- df_input[index, ]
-
-
-	df_input
+	expand.grid(R0 = R0, prop_immunity = prop_immunity) %>% 
+	mutate(i = 1:n()) %>% 
+	filter(i%in%seq(i_job, n(), n_job)) %>% 
 	group_by(R0, prop_immunity) %>% 
 	do(logLike_AoN(x = c(.$R0, .$prop_immunity), ...)) %>% 
 	ungroup
@@ -168,29 +159,11 @@ grid_logLike_AoN_parallel <- function(R0, prop_immunity, i_job, n_job, ...) {
 }
 
 
-grid_logLike_SIRS_parallel <- function(R0, D_immunity, i_job, n_job, ...) {
-
-	df_input <- expand.grid(R0 = R0, D_immunity = D_immunity)
-	index <- seq(i_job, nrow(df_input), n_job)
-	df_input <- df_input[index, ]
-
-
-	df_input
-	group_by(R0, D_immunity) %>% 
-	do(logLike_SIRS(x = c(.$R0, .$D_immunity), ...)) %>% 
-	ungroup
-
-}
-
-
 grid_logLike_PPI_parallel <- function(R0, partial_protection, i_job, n_job, ...) {
 
-	df_input <- expand.grid(R0 = R0, partial_protection = partial_protection)
-	index <- seq(i_job, nrow(df_input), n_job)
-	df_input <- df_input[index, ]
-
-
-	df_input
+	expand.grid(R0 = R0, partial_protection = partial_protection) %>% 
+	mutate(i = 1:n()) %>% 
+	filter(i%in%seq(i_job, n(), n_job)) %>% 
 	group_by(R0, partial_protection) %>% 
 	do(logLike_PPI(x = c(.$R0, .$partial_protection), ...)) %>% 
 	ungroup
@@ -300,8 +273,9 @@ test <- function() {
 	# df_SIRS_logLike_grid <- df_SIRS_grid %>% group_by(R0, D_immunity) %>% do(logLike = logLike_SIRS(x = c(.$R0, .$D_immunity), data = data, D_infection = D_infection, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0))
 
 
-	grid_logLike_AoN_parallel(R0 = seq(1, 50, 0.5), prop_immunity = seq(0.01,1, 0.01), i_job = 2, n_job = 10,  data, D_infection, n_pop, S_0, I_0, R_0)
+	# grid_logLike_AoN_parallel(R0 = seq(1, 50, 0.5), prop_immunity = seq(0.01,1, 0.01), i_job = 2, n_job = 10,  data, D_infection, n_pop, S_0, I_0, R_0)
 
+	# grid_logLike_SIRS_parallel(R0 = 3:4, D_immunity = 4, i_job = 1, n_job = 2,  data, D_infection, n_pop, S_0, I_0, R_0)
 
 	# df_AoN_grid <- expand.grid(R0 = 1:20, prop_immunity = seq(0,1,0.1))
 	# df_AoN_logLike_grid <- df_AoN_grid %>% group_by(R0, prop_immunity) %>% do(logLike = logLike_AoN(x = c(.$R0, .$prop_immunity), data = data, D_infection = D_infection, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0))
@@ -373,7 +347,7 @@ main <- function() {
 
 	start_me()
 
-	# test()
+	test()
 
 }
 
