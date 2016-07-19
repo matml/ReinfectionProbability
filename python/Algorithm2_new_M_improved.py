@@ -316,7 +316,7 @@ s0=N-1
 r0=N-i0-s0
 start_time = time.time()
 probability=p_reinfection_SIR(gam,gamA,bet,betAc,betcA,alpI,alpIA,alpR,alpRA,sig,sigA,N,M,i0,s0,r0)
+elapsed_time = time.time() - start_time
 
 print(probability)
-
-elapsed_time = time.time() - start_time
+print(elapsed_time)
