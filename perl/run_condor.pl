@@ -2,7 +2,8 @@
 #######################################################
 # run R script on the cluster                         #
 #######################################################
-my $HOME="/users/ecologie/camacho/work/projects/ReinfectionProbability";
+my $HOME="/users/ecologie/camacho";
+my $projectDir="$HOME/work/projects/ReinfectionProbability";
 
 my $Condor_job_identifier="Rscript";
 
@@ -17,7 +18,7 @@ my $analysis= "large";
 #------------------------------------------------------------------------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------------------------------------------------------------------------#
 
-my $scriptDir="$HOME/R";
+my $scriptDir="$projectDir/R";
 my $Rscript= "dev.r";
 
 # my @node_list= ("01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20");
