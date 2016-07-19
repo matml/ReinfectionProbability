@@ -254,7 +254,7 @@ test <- function() {
 	partial_protection <- 0.95
 
 	# p1 <- p_reinfection_SIRS(n_reinfection, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0)
-	# p2 <- p_reinfection_AoN(n_reinfection, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0)
+	system.time(p2 <- p_reinfection_AoN(n_reinfection, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0))
 	# p3 <- p_reinfection_PPI(n_reinfection, R0, D_infection, partial_protection, n_pop, S_0, I_0, R_0)
 
 	data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)
@@ -338,7 +338,7 @@ main_cluster <- function() {
 
 	}
 
-	saveRDS(file.path(jobDir, sprintf("ans_%s_job_%s_of_%s.rds", analysis, i_job, n_job)))
+	saveRDS(ans, file.path(jobDir, sprintf("ans_%s_job_%s_of_%s.rds", analysis, i_job, n_job)))
 
 }
 
