@@ -296,27 +296,27 @@ def p_reinfection_SIR(gam,gamA,bet,betAc,betcA,alpI,alpIA,alpR,alpRA,sig,sigA,N,
 	return pS[0][s0+i0-1][i0-1,0]
 	
 
-gam=0.5/7.0
-gamA=1.5/7.0
-bet=10.0/(7.0*285)
-betcA=15.0/(7.0*285)
-betAc=5.0/(7.0*285)
-alpI=0.2
-alpIA=0.1
-alpR=0.2
-alpRA=0.1
-sig=0.3
-sigA=0.4
+# gam=0.5/7.0
+# gamA=1.5/7.0
+# bet=10.0/(7.0*285)
+# betcA=15.0/(7.0*285)
+# betAc=5.0/(7.0*285)
+# alpI=0.2
+# alpIA=0.1
+# alpR=0.2
+# alpRA=0.1
+# sig=0.3
+# sigA=0.4
 
-N=285
-M=3
+# N=285
+# M=3
 
-i0=1
-s0=N-1
-r0=N-i0-s0
-start_time = time.time()
-probability=p_reinfection_SIR(gam,gamA,bet,betAc,betcA,alpI,alpIA,alpR,alpRA,sig,sigA,N,M,i0,s0,r0)
-elapsed_time = time.time() - start_time
+# i0=1
+# s0=N-1
+# r0=N-i0-s0
+# start_time = time.time()
+# probability=p_reinfection_SIR(gam,gamA,bet,betAc,betcA,alpI,alpIA,alpR,alpRA,sig,sigA,N,M,i0,s0,r0)
+# elapsed_time = time.time() - start_time
 
-print(probability)
-print(elapsed_time)
+# print(probability)
+# print(elapsed_time)
