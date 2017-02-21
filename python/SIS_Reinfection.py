@@ -83,18 +83,18 @@ def p_reinfection_SIS(gam,gamA,bet,betAc,betcA,N,M,i0,s0):
 		
 	return (N-1)/N*pS[s0,0]+1/N*pI[s0,0]
 
-gam=1.0
-bet=0.02
-betAc=0.02
-betcA=0.02
-gamA=1.0
+#gam=1.0
+#bet=0.02
+#betAc=0.02
+#betcA=0.02
+#gamA=1.0
 
 
-N=100
-M=2
+#N=100
+#M=2
 
-s0=N-1
-i0=1
+#s0=N-1
+#i0=1
 
-probability=p_reinfection_SIS(gam,gamA,bet,betAc,betcA,N,M,i0,s0)
-print(probability)
+#probability=p_reinfection_SIS(gam,gamA,bet,betAc,betcA,N,M,i0,s0)
+#print(probability)
