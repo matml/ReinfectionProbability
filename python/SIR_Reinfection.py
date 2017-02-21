@@ -293,7 +293,7 @@ def p_reinfection_SIR(gam,gamA,bet,betAc,betcA,alpI,alpIA,alpR,alpRA,sig,sigA,N,
 		AlgorithmIj(j+1,invHI,PI,bI,pS,pR,pI,AkkI,AkkMinus1I,AkkPlus1I,gam,gamA,bet,betAc,betcA,alpI,alpIA,alpR,alpRA,sig,sigA,N,M)
 		AlgorithmSj(j,invHS,PS,bS,pI,pS,AkkS,AkkMinus1S,AkkPlus1S,gam,gamA,bet,betAc,betcA,alpI,alpIA,alpR,alpRA,sig,sigA,N,M)
 
-	return (N-1)/N*pS[0][s0+i0-1][i0-1,0]+1/N*pI[0][s0+i0-1][i0-1,0]
+	return (N-1.0)/N*pS[0][s0+i0-1][i0-1,0]+1.0/N*pI[0][s0+i0-1][i0-1,0]
 	
 
 # gam=0.5/7.0

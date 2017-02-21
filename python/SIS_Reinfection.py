@@ -81,7 +81,7 @@ def p_reinfection_SIS(gam,gamA,bet,betAc,betcA,N,M,i0,s0):
 		Ij(gam,gamA,bet,betAc,betcA,j+1,hI,fI,pS,pI)
 		Sj(gam,gamA,bet,betAc,betcA,j,hS,fS,pI,pS)
 		
-	return (N-1)/N*pS[s0,0]+1/N*pI[s0,0]
+	return (N-1.0)/N*pS[s0,0]+1.0/N*pI[s0,0]
 
 #gam=1.0
 #bet=0.02
