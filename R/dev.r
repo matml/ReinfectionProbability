@@ -1,14 +1,44 @@
+init_packrat <- function(dir_project, force = FALSE) {
+
+	library(packrat)
+
+	setwd(dir = dir_project)
+
+	if(file.exists("packrat") & !force){
+
+		packrat::on()
+
+	} else {
+
+		packrat::init(options = list(vcs.ignore.src = TRUE, ignored.packages = c("Matrix", "cluster")))
+
+	}
+}
+
+my_library <- function(x) {
+
+	if(!require(x, character.only = TRUE)){
+		install.packages(x)
+	}
+
+	library(x, character.only = TRUE)
+
+}
+
 start_me <- function() {
 
-	library(rPython)
-	# library(plyr)
-	library(dplyr)
-	library(tidyr)
-	# library(multidplyr)
 
 	dir_project <<- path.expand("~/work/projects/ReinfectionProbability")
-	dir_python <<- dir_project %>% file.path("python")
-	dir_R <<- dir_project %>% file.path("R")
+	dir_python <<- file.path(dir_project, "python")
+	dir_R <<- file.path(dir_project, "R")
+
+	init_packrat(dir_R)
+
+	my_library("rPython")
+	# my_library("plyr")
+	my_library("dplyr")
+	my_library("tidyr")
+	# my_library("multidplyr")
 
 	python.load(file.path(dir_python, "Algorithm2_new_M_improved.py"))
 
@@ -259,7 +289,7 @@ test <- function() {
 
 	data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)
 	# logLike_0123(data, p_reinfection_SIRS, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0, echo = TRUE)
-	# logLike_0123(data, p_reinfection_AoN, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0, echo = TRUE)
+	system.time(ll <- logLike_0123(data, p_reinfection_AoN, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0, echo = TRUE))
 	# logLike_0123(data, p_reinfection_PPI, R0, D_infection, partial_protection, n_pop, S_0, I_0, R_0, echo = TRUE)
 
 	# df_PPI_grid <- expand.grid(R0 = 1:20, partial_protection = seq(0,1,0.1))
@@ -352,7 +382,7 @@ main <- function() {
 }
 
 
-# main()
-main_cluster()
+main()
+# main_cluster()
 
 
