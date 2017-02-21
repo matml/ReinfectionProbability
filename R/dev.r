@@ -38,9 +38,11 @@ start_me <- function() {
 	# my_library("plyr")
 	my_library("dplyr")
 	my_library("tidyr")
+	my_library("readr")
 	# my_library("multidplyr")
 
-	python.load(file.path(dir_python, "Algorithm2_new_M_improved.py"))
+	python.load(file.path(dir_python, "SIR_Reinfection.py"))
+	python.load(file.path(dir_python, "SIS_Reinfection.py"))
 
 }
 
@@ -81,7 +83,7 @@ p_reinfection_PPI <- function(n_reinfection, R0, D_infection, partial_protection
 }
 
 logLike_0123 <- function(data = c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0), p_reinfection, ..., echo = FALSE) {
-
+	
 	# prob n_reinfection >=1, >= 2, >=3
 	p_1_or_more <- p_reinfection(n_reinfection = 1, ...)
 	p_2_or_more <- p_reinfection(n_reinfection = 2, ...)
@@ -274,14 +276,33 @@ test <- function() {
 	
 	R0 <- 10
 	D_infection <- 3
-	n_pop <- 285
-	S_0 <- n_pop - 2
+	n_pop <- 284
+	S_0 <- n_pop - 1
 	I_0 <- 1
 	R_0 <- 0
 
 	D_immunity <- 60
 	prop_immunity <- 0.45
 	partial_protection <- 0.95
+
+	data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)
+
+	ans_SIR <- logLike_SIRS(x = c(R0, D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
+	ans_AoN <- logLike_AoN(x = c(R0, prop_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
+	and_PPI <- logLike_PPI(x = c(R0, partial_protection), data, D_infection, n_pop, S_0, I_0, R_0)
+
+
+	data_frame(
+		model = c("SIRS", "AoN", "PPI"), 
+		R0 = R0, 
+		D_infection = D_infection, 
+		D_immunity = c(D_immunity, NA, NA), 
+		prop_immunity = c(NA, prop_immunity, NA), 
+		partial_protection = c(NA, NA, partial_protection)
+		) %>% bind_cols(bind_rows(ans_SIR, ans_AoN, and_PPI)) %>% 
+	write_csv("../doc/check.csv")
+
+
 
 	# p1 <- p_reinfection_SIRS(n_reinfection, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0)
 	system.time(p2 <- p_reinfection_AoN(n_reinfection, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0))
