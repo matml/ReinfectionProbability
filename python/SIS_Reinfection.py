@@ -15,7 +15,7 @@ from numpy import linalg
 #def sbar(m,N):
 #	return ((float)((N-m-1)))/((float)((N-m)))
 
-def Sj(j,hS,fS,pI,pS):
+def Sj(gam,gamA,bet,betAc,betcA,j,hS,fS,pI,pS):
 	gSj=np.asmatrix(np.zeros((N,1)))
 	m=N-1
 	thetam=bet*(m-1)*(N-m)+betcA*(N-m)+gam*(N-m)
@@ -25,7 +25,7 @@ def Sj(j,hS,fS,pI,pS):
 		prod=pI[m-1,j+1]
 	gSj[m,0]=betcA*(N-m)*prod/thetam
 	for m in reversed(range(1,N-1)):
-		thetam=bet*m*(N-m)+gam*(N-m)
+		thetam=bet*(m-1)*(N-m)+betcA*(N-m)+gam*(N-m)
 		if j==M-1:
 			prod=1
 		else:
@@ -36,7 +36,7 @@ def Sj(j,hS,fS,pI,pS):
 	for m in range(2,N):
 		pS[m,j]=(fS[m,0]*pS[m-1,j]+gSj[m,0])/hS[m,0]
 
-def Ij(j,hI,fI,pS,pI):
+def Ij(gam,gamA,bet,betAc,betcA,j,hI,fI,pS,pI):
 	gIj=np.asmatrix(np.zeros((N,1)))
 	m=N-1
 	thetam=bet*m*(N-m-1)+betAc*m+gam*(N-m-1)+gamA
@@ -76,12 +76,12 @@ def p_reinfection_SIS(gam,gamA,bet,betAc,betcA,N,M,i0,s0):
 	pS=np.asmatrix(np.zeros((N,M)))
 	pI=np.asmatrix(np.zeros((N,M)))
 	j=M-1
-	Sj(j,hS,fS,np.asmatrix(np.ones((N,1))),pS)
+	Sj(gam,gamA,bet,betAc,betcA,j,hS,fS,np.asmatrix(np.ones((N,1))),pS)
 	for j in reversed(range(M-1)):
-		Ij(j+1,hI,fI,pS,pI)
-		Sj(j,hS,fS,pI,pS)
+		Ij(gam,gamA,bet,betAc,betcA,j+1,hI,fI,pS,pI)
+		Sj(gam,gamA,bet,betAc,betcA,j,hS,fS,pI,pS)
 		
-	return pS[s0,0]
+	return (N-1)/N*pS[s0,0]+1/N*pI[s0,0]
 
 gam=1.0
 bet=0.02
