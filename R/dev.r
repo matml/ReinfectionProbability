@@ -95,7 +95,12 @@ logLike_0123 <- function(data = c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0
 	p_2 <- p_2_or_more - p_3_or_more
 
 	# multinomial likelihood observation
-	logLike <- dmultinom(x = data, prob = c(p_0, p_1, p_2, p_3_or_more), log = TRUE)
+	prob <- c(p_0, p_1, p_2, p_3_or_more)
+	if(all(is.finite(prob)) & !all(prob == 0) & !any(prob < 0)){
+		logLike <- dmultinom(x = data, prob = prob, log = TRUE)		
+	} else {
+		logLike <- as.numeric(NA)
+	}
 
 	if(echo){
 		E <- round(c(p_0, p_1, p_2, p_3_or_more)*sum(data))
@@ -108,35 +113,47 @@ logLike_0123 <- function(data = c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0
 
 }
 
-logLike_SIRS <- function(x, data, D_infection, n_pop, S_0, I_0, R_0) {
+logLike_SIRS <- function(i = 1, x, data, D_infection, n_pop, S_0, I_0, R_0) {
 
 	# x contains R0 and D_immunity
 	R0 <- x[1]
 	D_immunity <- x[2]
 
-	logLike_0123(data, p_reinfection_SIRS, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0)
+	x <- system.time(ans <- logLike_0123(data, p_reinfection_SIRS, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0))
+
+	print(paste("Iteration:", i, "time:", as.numeric(x[["elapsed"]])))
+
+	return(ans)
 
 }
 
 
-logLike_AoN <- function(x, data, D_infection, n_pop, S_0, I_0, R_0) {
+logLike_AoN <- function(i = 1, x, data, D_infection, n_pop, S_0, I_0, R_0) {
 
 	# x contains R0 and prop_immunity
 	R0 <- x[1]
 	prop_immunity <- x[2]
 
-	logLike_0123(data, p_reinfection_AoN, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0)
+	x <- system.time(ans <- logLike_0123(data, p_reinfection_AoN, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0))
+
+	print(paste("Iteration:", i, "time:", as.numeric(x[["elapsed"]])))
+
+	return(ans)
 
 }
 
 
-logLike_PPI <- function(x, data, D_infection, n_pop, S_0, I_0, R_0) {
+logLike_PPI <- function(i = 1, x, data, D_infection, n_pop, S_0, I_0, R_0) {
 
 	# x contains R0 and partial_protection
 	R0 <- x[1]
 	partial_protection <- x[2]
 
-	logLike_0123(data, p_reinfection_PPI, R0, D_infection, partial_protection, n_pop, S_0, I_0, R_0)
+	x <- system.time(ans <- logLike_0123(data, p_reinfection_PPI, R0, D_infection, partial_protection, n_pop, S_0, I_0, R_0))
+
+	print(paste("Iteration:", i, "time:", as.numeric(x[["elapsed"]])))
+
+	return(ans)
 
 }
 
@@ -145,7 +162,7 @@ grid_logLike_SIRS <- function(R0, D_immunity, ...) {
 
 	expand.grid(R0 = R0, D_immunity = D_immunity) %>% 
 	group_by(R0, D_immunity) %>% 
-	do(logLike_SIRS(x = c(.$R0, .$D_immunity), ...)) %>% 
+	do(logLike_SIRS(i = 1, x = c(.$R0, .$D_immunity), ...)) %>% 
 	ungroup
 
 }
@@ -154,7 +171,7 @@ grid_logLike_AoN <- function(R0, prop_immunity, ...) {
 
 	expand.grid(R0 = R0, prop_immunity = prop_immunity) %>% 
 	group_by(R0, prop_immunity) %>% 
-	do(logLike_AoN(x = c(.$R0, .$prop_immunity), ...)) %>% 
+	do(logLike_AoN(i = 1, x = c(.$R0, .$prop_immunity), ...)) %>% 
 	ungroup
 
 }
@@ -163,7 +180,7 @@ grid_logLike_PPI <- function(R0, partial_protection, ...) {
 
 	expand.grid(R0 = R0, partial_protection = partial_protection) %>% 
 	group_by(R0, partial_protection) %>% 
-	do(logLike_PPI(x = c(.$R0, .$partial_protection), ...)) %>% 
+	do(logLike_PPI(i = 1, x = c(.$R0, .$partial_protection), ...)) %>% 
 	ungroup
 
 }
@@ -174,7 +191,7 @@ grid_logLike_SIRS_parallel <- function(R0, D_immunity, i_job, n_job, ...) {
 	mutate(i = 1:n()) %>% 
 	filter(i%in%seq(i_job, n(), n_job)) %>% 
 	group_by(R0, D_immunity) %>% 
-	do(logLike_SIRS(x = c(.$R0, .$D_immunity), ...)) %>% 
+	do(logLike_SIRS(i = .$i, x = c(.$R0, .$D_immunity), ...)) %>% 
 	ungroup
 
 }
@@ -185,7 +202,7 @@ grid_logLike_AoN_parallel <- function(R0, prop_immunity, i_job, n_job, ...) {
 	mutate(i = 1:n()) %>% 
 	filter(i%in%seq(i_job, n(), n_job)) %>% 
 	group_by(R0, prop_immunity) %>% 
-	do(logLike_AoN(x = c(.$R0, .$prop_immunity), ...)) %>% 
+	do(logLike_AoN(i = .$i, x = c(.$R0, .$prop_immunity), ...)) %>% 
 	ungroup
 
 }
@@ -197,7 +214,7 @@ grid_logLike_PPI_parallel <- function(R0, partial_protection, i_job, n_job, ...)
 	mutate(i = 1:n()) %>% 
 	filter(i%in%seq(i_job, n(), n_job)) %>% 
 	group_by(R0, partial_protection) %>% 
-	do(logLike_PPI(x = c(.$R0, .$partial_protection), ...)) %>% 
+	do(logLike_PPI(i = .$i, x = c(.$R0, .$partial_protection), ...)) %>% 
 	ungroup
 
 }
@@ -287,30 +304,34 @@ test <- function() {
 
 	data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)
 
-	ans_SIR <- logLike_SIRS(x = c(R0, D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
-	ans_AoN <- logLike_AoN(x = c(R0, prop_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
-	and_PPI <- logLike_PPI(x = c(R0, partial_protection), data, D_infection, n_pop, S_0, I_0, R_0)
+	ans_SIR <- logLike_SIRS(i = 1, x = c(R0, D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
+	print(ans_SIR)
+	ans_AoN <- logLike_AoN(i = 1, x = c(R0, prop_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
+	print(ans_AoN)
+	ans_PPI <- logLike_PPI(i = 1, x = c(R0, partial_protection), data, D_infection, n_pop, S_0, I_0, R_0)
+	print(ans_PPI)
 
 
-	data_frame(
-		model = c("SIRS", "AoN", "PPI"), 
-		R0 = R0, 
-		D_infection = D_infection, 
-		D_immunity = c(D_immunity, NA, NA), 
-		prop_immunity = c(NA, prop_immunity, NA), 
-		partial_protection = c(NA, NA, partial_protection)
-		) %>% bind_cols(bind_rows(ans_SIR, ans_AoN, and_PPI)) %>% 
-	write_csv("../doc/check.csv")
+
+	# data_frame(
+	# 	model = c("SIRS", "AoN", "PPI"), 
+	# 	R0 = R0, 
+	# 	D_infection = D_infection, 
+	# 	D_immunity = c(D_immunity, NA, NA), 
+	# 	prop_immunity = c(NA, prop_immunity, NA), 
+	# 	partial_protection = c(NA, NA, partial_protection)
+	# 	) %>% bind_cols(bind_rows(ans_SIR, ans_AoN, and_PPI)) %>% 
+	# write_csv("../doc/check.csv")
 
 
 
 	# p1 <- p_reinfection_SIRS(n_reinfection, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0)
-	system.time(p2 <- p_reinfection_AoN(n_reinfection, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0))
+	# system.time(p2 <- p_reinfection_AoN(n_reinfection, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0))
 	# p3 <- p_reinfection_PPI(n_reinfection, R0, D_infection, partial_protection, n_pop, S_0, I_0, R_0)
 
-	data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)
+	# data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)
 	# logLike_0123(data, p_reinfection_SIRS, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0, echo = TRUE)
-	system.time(ll <- logLike_0123(data, p_reinfection_AoN, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0, echo = TRUE))
+	# system.time(ll <- logLike_0123(data, p_reinfection_AoN, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0, echo = TRUE))
 	# logLike_0123(data, p_reinfection_PPI, R0, D_infection, partial_protection, n_pop, S_0, I_0, R_0, echo = TRUE)
 
 	# df_PPI_grid <- expand.grid(R0 = 1:20, partial_protection = seq(0,1,0.1))
@@ -365,10 +386,10 @@ main_cluster <- function() {
 	I_0 <- 1
 	R_0 <- 0
 
-	# R0 <- seq(1, 50, 0.5)
-	R0 <- seq(9, 10, 1)
-	# prop_immunity <- seq(0.01,1, 0.01)
-	prop_immunity <- seq(0.8, 0.9, 0.1)
+	R0 <- seq(0.5, 50, 0.5)
+	# R0 <- seq(9, 10, 1)
+	prop_immunity <- seq(0.01,1, 0.01)
+	# prop_immunity <- seq(0.8, 0.9, 0.1)
 	partial_protection <- prop_immunity
 	D_immunity <- prop_immunity*100
 
@@ -398,12 +419,12 @@ main <- function() {
 
 	start_me()
 
-	# test()
+	test()
 
 }
 
 
-# main()
-main_cluster()
+main()
+# main_cluster()
 
 
