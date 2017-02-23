@@ -1,0 +1,1124 @@
+dim(df_adm2_cum)
+as.data.frame(df_adm2_cum)
+df_adm2_cum <- df_guinea %>% filter(date <= "2014-10-23") %>% group_by(geo) %>% summarize(incidence_cum = sum(value), incidence_last_3_weeks = sum(value[date >= "2014-10-02"]))
+df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)
+head(df_adm2_inc)
+head(df_sp_data)
+df_sp_guinea_adm2 <- fortify(sp_guinea_adm2)
+head(df_sp_guinea_adm2)
+sp_guinea_adm2 <- unionSpatialPolygons(SpP = sp_guinea_adm2, IDs = df_sp_data$geo)
+df_sp_guinea_adm2 <- fortify(sp_guinea_adm2)
+library(maptools)
+install.packages("maptools")
+library(maptools)
+install.packages("rgeos")
+library(rgeos)
+library(maptools)
+sp_guinea_adm2 <- unionSpatialPolygons(SpP = sp_guinea_adm2, IDs = df_sp_data$geo)
+unload(maptools)
+unload("maptools")
+unload()
+source("/Users/Tonton/work/projects/ebola/analysis/fit_with_ETU.R")
+library(rgdal)#
+    library(rgeos)#
+    library(maptools)
+dir_rds <- file.path(dir_data, "WHO_website", "rds")#
+#
+    df_database_weekly <- readRDS(file.path(dir_rds, "df_database_weekly.rds")) %>% filter(date_publication == max(date_publication))#
+#
+    # C + P#
+    df_CP_WHO <- df_database_weekly %>% filter(type == "new", report == "cases", !is.na(value)) %>% #
+    group_by(country, geo, source, date, date_publication) %>% summarize(value = sum(value, na.rm=TRUE)) %>% ungroup#
+#
+    # plot for John on 2017/02/09#
+    df_guinea <- df_CP_WHO %>% filter(source == "patient_database", country == "guinea")#
+#
+    df_guinea_plot <- df_guinea %>% filter(date <= "2015-11-01", geo != "guinea", geo %in%c("conakry", "coyah", "dubreka", "forecariah", "gueckedou", "kerouane", "kissidougou", "macenta", "nzerekore")) %>% #
+    mutate(geo = geo %>% str_to_title)#
+#
+    p <- ggplot(df_guinea_plot, aes(x= date, y = value)) + facet_wrap(~geo, scales = "fixed")#
+    p <- p + geom_line()#
+    p <- p + annotate(geom = "rect", xmin = min(df_guinea$date), xmax = as.Date("2014-10-23"), ymin = 0, ymax = Inf, alpha = 0.3)#
+    p <- p + theme_minimal()#
+    p <- p + ylab("weekly new cases (confirmed + probable)")#
+    print(p)#
+#
+    df_adm2_cum <- df_guinea %>% filter(date <= "2014-10-23") %>% group_by(geo) %>% summarize(incidence_cum = sum(value), incidence_last_3_weeks = sum(value[date >= "2014-10-02"]))
+dir_shapefile <- "/Users/Tonton/work/projects/shapefiles"#
+    sp_guinea_adm2 <- readOGR(dsn = file.path(dir_shapefile, "guinea/GADM_20160909"), layer = "GIN_adm2")#
+#
+    df_sp_data <- sp_guinea_adm2@data %>% mutate(id_tmp = 1:n(), geo = NAME_2) %>% format_geo#
+#
+    df_demo <- readRDS(file.path(dir_project, "data", "2014WestAfrica", "county_geo_demo.rds")) %>% filter(country == "Guinea") %>% format_geo#
+    df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)#
+#
+    sp_guinea_adm2 <- unionSpatialPolygons(SpP = sp_guinea_adm2, IDs = df_sp_data$geo)
+df_sp_guinea_adm2 <- fortify(sp_guinea_adm2)
+head(df_sp_guinea_adm2)
+df_sp_guinea_adm2 <- fortify(sp_guinea_adm2) %>% left_join(df_adm2_inc, c("id" = "geo"))
+head(df_sp_guinea_adm2)
+df_sp_guinea_adm2 <- fortify(sp_guinea_adm2) %>% left_join(df_adm2_inc %>% select(-lon, -lat), c("id" = "geo"))
+head(df_sp_guinea_adm2)
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + coord_equal() + blank() + legend_top#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 2, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+install.packages("ggsn")
+library(ggsn)
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + coord_equal() + blank() + legend_top#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 2, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + coord_equal() + blank()#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 2, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+summary(df_sp_guinea_adm2)
+dim(df_sp_data)
+as.data.frame(df_sp_data)
+dir_shapefile <- "/Users/Tonton/work/projects/shapefiles"#
+    sp_guinea_adm2 <- readOGR(dsn = file.path(dir_shapefile, "guinea/GADM_20160909"), layer = "GIN_adm2")#
+#
+    df_sp_data <- sp_guinea_adm2@data %>% mutate(id_tmp = 1:n(), geo = NAME_2) %>% format_geo %>% mutate(geo = geo %>% recode(conarky = "conakry"))#
+#
+    df_demo <- readRDS(file.path(dir_project, "data", "2014WestAfrica", "county_geo_demo.rds")) %>% filter(country == "Guinea") %>% format_geo#
+    df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)#
+#
+    sp_guinea_adm2 <- unionSpatialPolygons(SpP = sp_guinea_adm2, IDs = df_sp_data$geo)#
+    df_sp_guinea_adm2 <- fortify(sp_guinea_adm2) %>% left_join(df_adm2_inc %>% select(-lon, -lat), c("id" = "geo"))#
+#
+    p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + coord_equal() + blank()#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 2, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = incidence_cum, group = group))#
+    p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + coord_equal() + blank()#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 2, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+df_sp_guinea_adm2$attack_rate[df_sp_guinea_adm2$attack_rate == 0] <- NA
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + coord_equal() + blank()#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 2, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + coord_equal() + blank()#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 500, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + coord_equal() + blank()#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+df_adm2_cum <- df_guinea %>% group_by(geo) %>% summarize(incidence_cum = sum(value), incidence_last_3_weeks = sum(value[date >= "2014-10-02"]))
+dir_shapefile <- "/Users/Tonton/work/projects/shapefiles"#
+    sp_guinea_adm2 <- readOGR(dsn = file.path(dir_shapefile, "guinea/GADM_20160909"), layer = "GIN_adm2")#
+#
+    df_sp_data <- sp_guinea_adm2@data %>% mutate(id_tmp = 1:n(), geo = NAME_2) %>% format_geo %>% mutate(geo = geo %>% recode(conarky = "conakry"))#
+#
+    df_demo <- readRDS(file.path(dir_project, "data", "2014WestAfrica", "county_geo_demo.rds")) %>% filter(country == "Guinea") %>% format_geo#
+    df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)#
+#
+    sp_guinea_adm2 <- unionSpatialPolygons(SpP = sp_guinea_adm2, IDs = df_sp_data$geo)#
+    df_sp_guinea_adm2 <- fortify(sp_guinea_adm2) %>% left_join(df_adm2_inc %>% select(-lon, -lat), c("id" = "geo"))#
+#
+    df_sp_guinea_adm2$attack_rate[df_sp_guinea_adm2$attack_rate == 0] <- NA #
+#
+    p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + coord_equal() + blank()#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + coord_equal() + blank()#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+head(df_adm2_inc)
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_point(data = df_adm2_inc, aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + coord_equal() + blank()#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+head(df_adm2_inc)
+dim(df_adm2_inc)
+as.data.frame(df_adm2_inc)
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_point(data = df_adm2_inc %>% filter(geo != "guinea"), aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + coord_equal() + blank()#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_point(data = df_adm2_inc %>% filter(geo != "guinea"), aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("Incidence over the past 3 weeks")#
+    p <- p + coord_equal() + blank()#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_point(data = df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0), aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("Incidence over the past 3 weeks")#
+    p <- p + coord_equal() + blank()#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+df_adm2_cum <- df_guinea %>% filter(date <= "2014-10-23") %>% group_by(geo) %>% summarize(incidence_cum = sum(value), incidence_last_3_weeks = sum(value[date >= "2014-10-02"]))
+dir_shapefile <- "/Users/Tonton/work/projects/shapefiles"#
+    sp_guinea_adm2 <- readOGR(dsn = file.path(dir_shapefile, "guinea/GADM_20160909"), layer = "GIN_adm2")#
+#
+    df_sp_data <- sp_guinea_adm2@data %>% mutate(id_tmp = 1:n(), geo = NAME_2) %>% format_geo %>% mutate(geo = geo %>% recode(conarky = "conakry"))#
+#
+    df_demo <- readRDS(file.path(dir_project, "data", "2014WestAfrica", "county_geo_demo.rds")) %>% filter(country == "Guinea") %>% format_geo#
+    df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)#
+#
+    sp_guinea_adm2 <- unionSpatialPolygons(SpP = sp_guinea_adm2, IDs = df_sp_data$geo)#
+    df_sp_guinea_adm2 <- fortify(sp_guinea_adm2) %>% left_join(df_adm2_inc %>% select(-lon, -lat), c("id" = "geo"))#
+#
+    df_sp_guinea_adm2$attack_rate[df_sp_guinea_adm2$attack_rate == 0] <- NA #
+#
+    p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_point(data = df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0), aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("Incidence over the past 3 weeks")#
+    p <- p + coord_equal() + blank()#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_point(data = df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0), aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("Incidence over the past 3 weeks")#
+    p <- p + coord_equal() + blank() + theme(legend.position = "top")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+help(ggtitle)
+head(df_adm2_inc)
+df_adm2_cum <- df_guinea %>% filter(date <= "2014-10-23")
+summary(df_adm2_cum)
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_point(data = df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0), aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases over past 3 weeks")#
+    p <- p + coord_equal() + blank() + theme(legend.position = "top")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2017")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_point(data = df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0), aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases over past 3 weeks")#
+    p <- p + coord_equal() + blank() + theme(legend.position = "bottom")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2017")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_point(data = df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0), aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases over past 3 weeks")#
+    p <- p + coord_equal() + blank() + theme(legend.position = "bottom")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "bottomleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2017")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_point(data = df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0), aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases over past 3 weeks")#
+    p <- p + coord_equal() + blank() + theme(legend.position = "bottom")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2017")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+help(theme)
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_point(data = df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0), aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack rate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases over past 3 weeks")#
+    p <- p + coord_equal() + blank() + theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2017")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group))#
+    p <- p + geom_point(data = df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0), aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "black")#
+    p <- p + geom_point(data = df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0), aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0), aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = label), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+df_label <- df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0)
+df_label <- df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0)#
+#
+    p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(x = lon, y = lat, label = geo), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+df_centroid_guinea_adm2 <- gCentroid(sp_guinea_adm2, byid = TRUE) %>% as_data_frame
+head(df_centroid_guinea_adm2)
+df_centroid_guinea_adm2 <- df_centroid_guinea_adm2 %>% rename(long = x, lat = y) %>% bind_cols(sp_guinea_adm2@data %>% dplyr::select(geo))
+df_centroid_guinea_adm2 <- df_centroid_guinea_adm2 %>% rename(long = x, lat = y) %>% bind_cols(df_sp_data %>% dplyr::select(geo))
+head(df_centroid_guinea_adm2)
+head(df_adm2_cum)
+head(df_demo)
+df_demo <- readRDS(file.path(dir_project, "data", "2014WestAfrica", "county_geo_demo.rds")) %>% filter(country == "Guinea") %>% format_geo %>% select(-lon, -lat)
+df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)
+dir_shapefile <- "/Users/Tonton/work/projects/shapefiles"#
+    sp_guinea_adm2 <- readOGR(dsn = file.path(dir_shapefile, "guinea/GADM_20160909"), layer = "GIN_adm2")#
+#
+    df_sp_data <- sp_guinea_adm2@data %>% mutate(id_tmp = 1:n(), geo = NAME_2) %>% format_geo %>% mutate(geo = geo %>% recode(conarky = "conakry"))
+sp_guinea_adm2 <- unionSpatialPolygons(SpP = sp_guinea_adm2, IDs = df_sp_data$geo)
+df_centroid_guinea_adm2 <- gCentroid(sp_guinea_adm2, byid = TRUE) %>% as_data_frame
+df_centroid_guinea_adm2 <- df_centroid_guinea_adm2 %>% rename(long = x, lat = y) %>% bind_cols(df_sp_data %>% dplyr::select(geo))
+head(df_centroid_guinea_adm2)
+df_sp_guinea_adm2 <- fortify(sp_guinea_adm2) %>% left_join(df_adm2_inc, c("id" = "geo"))
+df_sp_guinea_adm2$attack_rate[df_sp_guinea_adm2$attack_rate == 0] <- NA
+head(df_adm2_inc)
+df_label <- df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0)
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(x = lon, y = lat, size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(x = lon, y = lat, label = geo), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+head(df_label)
+head(df_sp_guinea_adm2)
+df_sp_guinea_adm2 <- fortify(sp_guinea_adm2)
+head(df_sp_guinea_adm2)
+head(df_adm2_inc)
+head(df_adm2_cum)
+head(df_demo)
+df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)
+df_sp_guinea_adm2 <- fortify(sp_guinea_adm2) %>% left_join(df_adm2_inc, c("id" = "geo"))
+head(df_sp_guinea_adm2)
+df_adm2_cum <- df_guinea %>% filter(date <= "2014-10-23") %>% group_by(geo) %>% summarize(incidence_cum = sum(value), incidence_last_3_weeks = sum(value[date >= "2014-10-02"]))
+dir_shapefile <- "/Users/Tonton/work/projects/shapefiles"#
+    sp_guinea_adm2 <- readOGR(dsn = file.path(dir_shapefile, "guinea/GADM_20160909"), layer = "GIN_adm2")#
+#
+    df_sp_data <- sp_guinea_adm2@data %>% mutate(id_tmp = 1:n(), geo = NAME_2) %>% format_geo %>% mutate(geo = geo %>% recode(conarky = "conakry"))#
+#
+    df_demo <- readRDS(file.path(dir_project, "data", "2014WestAfrica", "county_geo_demo.rds")) %>% filter(country == "Guinea") %>% format_geo %>% select(-lon, -lat)#
+    df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)#
+#
+    sp_guinea_adm2 <- unionSpatialPolygons(SpP = sp_guinea_adm2, IDs = df_sp_data$geo)#
+    df_centroid_guinea_adm2 <- gCentroid(sp_guinea_adm2, byid = TRUE) %>% as_data_frame#
+    df_centroid_guinea_adm2 <- df_centroid_guinea_adm2 %>% rename(long = x, lat = y) %>% bind_cols(df_sp_data %>% dplyr::select(geo))#
+    df_sp_guinea_adm2 <- fortify(sp_guinea_adm2) %>% left_join(df_adm2_inc, c("id" = "geo"))#
+#
+    df_sp_guinea_adm2$attack_rate[df_sp_guinea_adm2$attack_rate == 0] <- NA #
+#
+    df_label <- df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0)
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = lon, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+head(df_sp_guinea_adm2)
+head(df_label)
+head(df_adm2_inc)
+head(df_centroid_guinea_adm2)
+df_label <- df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0) %>% left_join(df_centroid_guinea_adm2, "geo")
+head(df_label)
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+dir_shapefile <- "/Users/Tonton/work/projects/shapefiles"#
+    sp_guinea_adm2 <- readOGR(dsn = file.path(dir_shapefile, "guinea/GADM_20160909"), layer = "GIN_adm2")#
+#
+    df_sp_data <- sp_guinea_adm2@data %>% mutate(id_tmp = 1:n(), geo = NAME_2) %>% format_geo %>% mutate(geo = geo %>% recode(conarky = "conakry"))
+dim(df_sp_data)
+as.data.frame(df_sp_data)
+df_demo <- readRDS(file.path(dir_project, "data", "2014WestAfrica", "county_geo_demo.rds")) %>% filter(country == "Guinea") %>% format_geo %>% select(-lon, -lat)#
+    df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)
+sp_guinea_adm2 <- unionSpatialPolygons(SpP = sp_guinea_adm2, IDs = df_sp_data$geo)
+dir_shapefile <- "/Users/Tonton/work/projects/shapefiles"#
+    sp_guinea_adm2 <- readOGR(dsn = file.path(dir_shapefile, "guinea/GADM_20160909"), layer = "GIN_adm2")#
+#
+    df_sp_data <- sp_guinea_adm2@data %>% mutate(id_tmp = 1:n(), geo = NAME_2) %>% format_geo %>% mutate(geo = geo %>% recode(conarky = "conakry"))#
+#
+    df_demo <- readRDS(file.path(dir_project, "data", "2014WestAfrica", "county_geo_demo.rds")) %>% filter(country == "Guinea") %>% format_geo %>% select(-lon, -lat)#
+    df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)#
+#
+    sp_guinea_adm2 <- unionSpatialPolygons(SpP = sp_guinea_adm2, IDs = df_sp_data$geo)#
+    df_centroid_guinea_adm2 <- gCentroid(sp_guinea_adm2, byid = TRUE) %>% as_data_frame#
+    df_centroid_guinea_adm2 <- df_centroid_guinea_adm2 %>% rename(long = x, lat = y) %>% bind_cols(df_sp_data$geo)#
+    df_sp_guinea_adm2 <- fortify(sp_guinea_adm2) %>% left_join(df_adm2_inc, c("id" = "geo"))#
+#
+    df_sp_guinea_adm2$attack_rate[df_sp_guinea_adm2$attack_rate == 0] <- NA #
+#
+    df_label <- df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0) %>% left_join(df_centroid_guinea_adm2, "geo")#
+#
+    p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+head(df_centroid_guinea_adm2)
+df_centroid_guinea_adm2 <- df_centroid_guinea_adm2 %>% rename(long = x, lat = y) %>% bind_cols(df_sp_data$geo)
+df_centroid_guinea_adm2 <- gCentroid(sp_guinea_adm2, byid = TRUE) %>% as_data_frame
+df_centroid_guinea_adm2 <- df_centroid_guinea_adm2 %>% rename(long = x, lat = y) %>% bind_cols(df_sp_data %>% select(geo))
+head(df_centroid_guinea_adm2)
+df_sp_guinea_adm2 <- fortify(sp_guinea_adm2) %>% left_join(df_adm2_inc, c("id" = "geo"))
+df_sp_guinea_adm2$attack_rate[df_sp_guinea_adm2$attack_rate == 0] <- NA
+df_label <- df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0) %>% left_join(df_centroid_guinea_adm2, "geo")#
+#
+    p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = lat, y = long))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+dir_shapefile <- "/Users/Tonton/work/projects/shapefiles"#
+    sp_guinea_adm2 <- readOGR(dsn = file.path(dir_shapefile, "guinea/GADM_20160909"), layer = "GIN_adm2")#
+#
+    df_sp_data <- sp_guinea_adm2@data %>% mutate(id_tmp = 1:n(), geo = NAME_2) %>% format_geo %>% mutate(geo = geo %>% recode(conarky = "conakry"))#
+#
+    df_demo <- readRDS(file.path(dir_project, "data", "2014WestAfrica", "county_geo_demo.rds")) %>% filter(country == "Guinea") %>% format_geo %>% select(-lon, -lat)#
+    df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)
+df_sp_data$geo
+dim(df_sp_data)
+as.data.frame(df_sp_data)
+names(sp_guinea_adm2)
+sp_guinea_adm2@data
+df_sp_data <- sp_guinea_adm2@data %>% mutate(id_tmp = 1:n(), geo = NAME_2) %>% format_geo %>% mutate(geo = geo %>% recode(conarky = "conakry"))
+head(df_sp_data)
+df_demo <- readRDS(file.path(dir_project, "data", "2014WestAfrica", "county_geo_demo.rds")) %>% filter(country == "Guinea") %>% format_geo %>% select(-lon, -lat)#
+    df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)#
+#
+    sp_guinea_adm2 <- unionSpatialPolygons(SpP = sp_guinea_adm2, IDs = df_sp_data$geo)
+df_centroid_guinea_adm2 <- gCentroid(sp_guinea_adm2, byid = TRUE) %>% as_data_frame
+head(df_centroid_guinea_adm2)
+head(df_sp_guinea_adm2)
+df_centroid_guinea_adm2 <- df_centroid_guinea_adm2 %>% rename(long = x, lat = y) %>% bind_cols(df_sp_data %>% select(geo))
+head(df_centroid_guinea_adm2)
+df_sp_guinea_adm2 <- fortify(sp_guinea_adm2)
+head(df_sp_guinea_adm2)
+head(df_adm2_inc)
+df_sp_guinea_adm2 <- fortify(sp_guinea_adm2) %>% left_join(df_adm2_inc, c("id" = "geo"))
+df_sp_guinea_adm2$attack_rate[df_sp_guinea_adm2$attack_rate == 0] <- NA
+head(df_centroid_guinea_adm2)
+df_label <- df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0)
+head(df_label)
+df_label <- df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0) %>% left_join(df_centroid_guinea_adm2, "geo")
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+head(df_label)
+head(sp_guinea_adm2)
+dir_shapefile <- "/Users/Tonton/work/projects/shapefiles"#
+    sp_guinea_adm2 <- readOGR(dsn = file.path(dir_shapefile, "guinea/GADM_20160909"), layer = "GIN_adm2")#
+#
+    df_sp_data <- sp_guinea_adm2@data %>% mutate(id_tmp = 1:n(), geo = NAME_2) %>% format_geo %>% mutate(geo = geo %>% recode(conarky = "conakry"))#
+#
+    df_demo <- readRDS(file.path(dir_project, "data", "2014WestAfrica", "county_geo_demo.rds")) %>% filter(country == "Guinea") %>% format_geo %>% select(-lon, -lat)#
+    df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)#
+#
+    sp_guinea_adm2 <- unionSpatialPolygons(SpP = sp_guinea_adm2, IDs = df_sp_data$geo)#
+    df_centroid_guinea_adm2 <- gCentroid(sp_guinea_adm2, byid = TRUE) %>% as_data_frame#
+    df_centroid_guinea_adm2 <- df_centroid_guinea_adm2 %>% rename(long = x, lat = y) %>% bind_cols(df_sp_data %>% select(geo) %>% arrange(geo))#
+    df_sp_guinea_adm2 <- fortify(sp_guinea_adm2) %>% left_join(df_adm2_inc, c("id" = "geo"))#
+#
+    df_sp_guinea_adm2$attack_rate[df_sp_guinea_adm2$attack_rate == 0] <- NA #
+#
+    df_label <- df_adm2_inc %>% filter(geo != "guinea", incidence_last_3_weeks>0) %>% left_join(df_centroid_guinea_adm2, "geo")#
+#
+    p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    # p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.5, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 1, vjust = 0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 1.5, vjust = 1)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 1.1, vjust = 0.7)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.8, vjust = 1)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.8, vjust = 1.1)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.8, vjust = 0)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo), hjust = 0.8, vjust = -0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo %>% str_to_title), hjust = 0.8, vjust = -0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo %>% str_to_title), hjust = 1, vjust = -0.5)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo %>% str_to_title), hjust = 1.1, vjust = -0.4)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1)#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+help(scale_fill_distiller)
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo %>% str_to_title), hjust = 1.1, vjust = -0.4)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1, na.value = "grey80")#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo %>% str_to_title), hjust = 1.05, vjust = -0.4)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1, na.value = "grey80")#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo %>% str_to_title), hjust = 1.1, vjust = -0.4)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1, na.value = "grey80")#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo %>% str_to_title), hjust = 1, vjust = -0.4)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1, na.value = "grey80")#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo %>% str_to_title), hjust = 1.01, vjust = -0.4)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1, na.value = "grey80")#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo %>% str_to_title), hjust = 1.05, vjust = -0.4)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1, na.value = "grey80")#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p
+ggsave(file.path(dir_project, "misc", "figures", "guinea", "map_guinea_cum_incidence_23oct2014.pdf"), width = 10, height = 10)
+ggsave(file.path(dir_project, "misc", "figures", "guinea", "map_guinea_cum_incidence_23oct2014.pdf"), width = 10, height = 7)
+p <- ggplot(df_guinea_plot, aes(x= date, y = value)) + facet_wrap(~geo, scales = "fixed")#
+    p <- p + geom_line()#
+    p <- p + annotate(geom = "rect", xmin = min(df_guinea$date), xmax = as.Date("2014-10-23"), ymin = 0, ymax = Inf, alpha = 0.3)#
+    p <- p + theme_minimal()#
+    p <- p + ylab("weekly new cases (confirmed + probable)")#
+    print(p)
+ggsave(file.path(dir_project, "misc", "figures", "guinea", "chart_guinea_incidence.pdf"), width = 10, height = 7)
+head(df_guinea)
+df_guinea %>% filter(geo != "guinea") %>% summarize(total_cases = sum(value), total_cases_conakry = sum(value[geo == "conakry"]))
+df_guinea %>% filter(geo != "guinea") %>% summarize(total_cases = sum(value), total_cases_conakry = sum(value[geo == "conakry"])) %>% mutate(fraction = total_cases_conakry/total_cases*100)
+p <- ggplot(df_guinea_plot, aes(x= date, y = value)) + facet_wrap(~geo, scales = "fixed")#
+    p <- p + geom_line()#
+    p <- p + annotate(geom = "rect", xmin = min(df_guinea$date), xmax = as.Date("2014-10-23"), ymin = 0, ymax = Inf, alpha = 0.3)#
+    p <- p + theme_minimal()#
+    p <- p + ylab("weekly new cases (confirmed + probable)")#
+    p <- p + ggtitle("Ebola epidemic in Guinea", "Grey area up to 23 October 2014")#
+    print(p)#
+#
+    ggsave(file.path(dir_project, "misc", "figures", "guinea", "chart_guinea_incidence.pdf"), width = 10, height = 7)
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo %>% str_to_title), hjust = 1.1, vjust = -0.4)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1, na.value = "grey80")#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea as of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    p#
+#
+    ggsave(file.path(dir_project, "misc", "figures", "guinea", "map_guinea_cum_incidence_23oct2014.pdf"), width = 10, height = 7)
+p <- ggplot(df_sp_guinea_adm2, aes(x = long, y = lat))#
+    p <- p + geom_polygon(aes(fill = attack_rate, group = group), colour = "white")#
+    p <- p + geom_point(data = df_label, aes(size = incidence_last_3_weeks), shape = 1)#
+    # p <- p + geom_path(data = df_sp_guinea_adm2, aes(group = group))#
+    p <- p + geom_text(data = df_label, aes(label = geo %>% str_to_title), hjust = 1.1, vjust = -0.4)#
+    p <- p + scale_fill_distiller("Attack\nrate (%)", palette = "Reds", direction = 1, na.value = "grey80")#
+    p <- p + scale_size_area("New cases\nover past\n3 weeks")#
+    p <- p + coord_equal() + blank() #+ theme(legend.position = "bottom", legend.box = "vertical")#
+    # p <- p + ggtitle("Attack rate by zone", "ELWA data") #
+    p <- p + north(df_sp_guinea_adm2, location = "topleft")#
+    p <- p + ggtitle("Ebola epidemic in Guinea", "As of 23 October 2014")#
+    p <- p + scalebar(df_sp_guinea_adm2, dist = 100, dd2km = TRUE, model = 'WGS84', location = "bottomleft", st.bottom = FALSE)#
+    # p#
+#
+    ggsave(file.path(dir_project, "misc", "figures", "guinea", "map_guinea_cum_incidence_23oct2014.pdf"), width = 10, height = 7)
+source("/Users/Tonton/work/projects/ebola/analysis/fit_with_ETU.R")
+dir_csv <- file.path(dir_data, "WHO_website", "csv")#
+    dir_rds <- file.path(dir_data, "WHO_website", "rds")#
+#
+    dir_figures <- file.path(dir_data, "WHO_website", "figures")#
+#
+    dir.create(dir_figures)#
+#
+    df_database_weekly <- readRDS(file.path(dir_rds, "df_database_weekly.rds"))#
+#
+    # create western_area by aggregating urban and rural#
+    df_WA <- df_database_weekly %>% filter(geo %in% c("western_area_urban","western_area_rural"), !is.na(value)) %>% group_by(files, country, report, status, source, week, type, date_publication, data_as_of, frequency, date) %>% #
+    summarize(geo = "western_area", value = sum(value, na.rm = TRUE)) %>% ungroup
+head(df_WA)
+df_WA %>% filter(report == "cases")
+df_WA %>% filter(report == "cases", source == "patient_database")
+df_WA %>% filter(report == "cases", source == "patient_database", date_publication == max(date_publication))
+df_WA %>% filter(report == "cases", source == "patient_database", date_publication == max(date_publication), date >= "2014-10-24", date <= "2015-03-30")
+df_plot <- df_WA %>% filter(report == "cases", source == "patient_database", date_publication == max(date_publication), date >= "2014-10-24", date <= "2015-03-30")
+p <- ggplot(df_plot, aes(x = date, y = value, fill = status))#
+        p <- p + geom_area()#
+        p <- p + theme_minimal()#
+        p
+p <- ggplot(df_plot, aes(x = date, y = value, fill = status))#
+        p <- p + geom_area()#
+        p <- p + theme_minimal() + xlab("Time") + ylab("Weekly incidence")#
+        p
+p <- ggplot(df_plot, aes(x = date, y = value, fill = status))#
+        p <- p + geom_area(position = "identity", alpha = 0.5)#
+        p <- p + theme_minimal() + xlab("Time") + ylab("Weekly incidence")#
+        p
+df_plot %>% group_by(status) %>% summarize(total = sum(value))
+200/2904
+200/(2904+663)
+source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
+start_me()
+source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
+n_reinfection <- 2#
+    R0 <- 10#
+    D_infection <- 3#
+    n_pop <- 285#
+    S_0 <- n_pop - 2#
+    I_0 <- 1#
+    R_0 <- 0#
+#
+    D_immunity <- 60#
+    prop_immunity <- 0.45#
+    partial_protection <- 0.95
+system.time(p2 <- p_reinfection_AoN(n_reinfection, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0))
+data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)
+system.time(ll <- logLike_0123(data, p_reinfection_AoN, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0, echo = TRUE))
+source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
+source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
+n_reinfection <- 2#
+    R0 <- 10#
+    D_infection <- 3#
+    n_pop <- 285#
+    S_0 <- n_pop - 2#
+    I_0 <- 1#
+    R_0 <- 0#
+#
+    D_immunity <- 60#
+    prop_immunity <- 0.45#
+    partial_protection <- 0.95#
+#
+    data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)#
+#
+    logLike_SIRS(x = c(R0, D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
+R0 <- 10#
+    D_infection <- 3#
+    n_pop <- 284#
+    S_0 <- n_pop - 1#
+    I_0 <- 1#
+    R_0 <- 0#
+#
+    D_immunity <- 60#
+    prop_immunity <- 0.45#
+    partial_protection <- 0.95#
+#
+    data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)#
+#
+    logLike_SIRS(x = c(R0, D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
+logLike_AoN(x = c(R0, prop_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
+logLike_SIRS(x = c(R0 = R0, D_immunity = D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
+logLike_SIRS(x = c(R0, D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
+logLike_PPI(x = c(R0, partial_protection), data, D_infection, n_pop, S_0, I_0, R_0)
+source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
+sink()
+p_1_or_more <- p_reinfection(n_reinfection = 1, ...)
+print(p_1_or_more)
+source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
+Q
+source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
+sink()
+gamma <- 1/D_infection
+beta <- R0/D_infection/n_pop
+alpha_R <- 1/D_immunity
+print(gamma)
+print(beta)
+print(alpha_R)
+p_reinfection_SIR(n_reinfection = n_reinfection, gamma = gamma, beta = beta, alpha_R = alpha_R, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0)
+print(n_reinfection)
+gamma <- 1/D_infection#
+    beta <- R0/D_infection #/n_pop#
+    alpha_R <- 1/D_immunity#
+#
+    p_reinfection_SIR(n_reinfection = n_reinfection, gamma = gamma, beta = beta, alpha_R = alpha_R, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0)
+print(beta)
+117-6-29
+Q
+source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
+n_reinfection <- 2#
+    R0 <- 10#
+    D_infection <- 3#
+    n_pop <- 284#
+    S_0 <- n_pop - 1#
+    I_0 <- 1#
+    R_0 <- 0#
+#
+    D_immunity <- 60#
+    prop_immunity <- 0.45#
+    partial_protection <- 0.95#
+#
+    data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)#
+#
+    logLike_SIRS(x = c(R0, D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
+logLike_AoN(x = c(R0, prop_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
+logLike_PPI(x = c(R0, partial_protection), data, D_infection, n_pop, S_0, I_0, R_0)
+ans_SIR <- logLike_SIRS(x = c(R0, D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
+ans_AoN <- logLike_AoN(x = c(R0, prop_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
+and_PPI <- logLike_PPI(x = c(R0, partial_protection), data, D_infection, n_pop, S_0, I_0, R_0)
+bind_rows(ans_SIR, ans_AoN, and_PPI) %>% mutate(model = c("SIRS", "AoN", "PPI"))
+data_frame(model = c("SIRS", "AoN", "PPI"), R0 = R0, D_infection = D_infection) %>% bind_cols(bind_rows(ans_SIR, ans_AoN, and_PPI))
+data_frame(model = c("SIRS", "AoN", "PPI"), R0 = R0, D_infection = D_infection, D_immunity = c(D_immunity, NA, NA), prop_immunity = c(NA, prop_immunity, NA), partial_protection = c(NA, NA, partial_protection)) %>% bind_cols(bind_rows(ans_SIR, ans_AoN, and_PPI))
+data_frame(#
+        model = c("SIRS", "AoN", "PPI"), #
+        R0 = R0, #
+        D_infection = D_infection, #
+        D_immunity = c(D_immunity, NA, NA), #
+        prop_immunity = c(NA, prop_immunity, NA), #
+        partial_protection = c(NA, NA, partial_protection)#
+        ) %>% bind_cols(bind_rows(ans_SIR, ans_AoN, and_PPI))
+data_frame(#
+        model = c("SIRS", "AoN", "PPI"), #
+        R0 = R0, #
+        D_infection = D_infection, #
+        D_immunity = c(D_immunity, NA, NA), #
+        prop_immunity = c(NA, prop_immunity, NA), #
+        partial_protection = c(NA, NA, partial_protection)#
+        ) %>% bind_cols(bind_rows(ans_SIR, ans_AoN, and_PPI)) %>% #
+    write_csv("../doc/check.csv")
+library(readr)
+install.packages(readr)
+my_library("readr")
+data_frame(#
+        model = c("SIRS", "AoN", "PPI"), #
+        R0 = R0, #
+        D_infection = D_infection, #
+        D_immunity = c(D_immunity, NA, NA), #
+        prop_immunity = c(NA, prop_immunity, NA), #
+        partial_protection = c(NA, NA, partial_protection)#
+        ) %>% bind_cols(bind_rows(ans_SIR, ans_AoN, and_PPI)) %>% #
+    write_csv("../doc/check.csv")

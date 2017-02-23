@@ -21,12 +21,12 @@ my $scriptDir="$projectDir/R";
 my $Rscript= "dev.r";
 
 # my @node_list= ("01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20");
-my @node_list= ("16","19","20");
+my @node_list= ("20");
 
 my $exe= "$HOME/bin/R";
 my $uni= "vanilla";
 my $mem= "1000";
-my $replicate= "10";
+my $replicate= "1";
 
 #request reserved machines
 my $my_requirements="";
