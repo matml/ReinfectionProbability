@@ -119,9 +119,10 @@ logLike_SIRS <- function(i = 1, x, data, D_infection, n_pop, S_0, I_0, R_0) {
 	R0 <- x[1]
 	D_immunity <- x[2]
 
-	x <- system.time(ans <- logLike_0123(data, p_reinfection_SIRS, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0))
+	# x <- system.time(ans <- logLike_0123(data, p_reinfection_SIRS, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0))
+	ans <- logLike_0123(data, p_reinfection_SIRS, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0)
 
-	print(paste("Iteration:", i, "time:", as.numeric(x[["elapsed"]])))
+	# print(paste("Iteration:", i, "time:", as.numeric(x[["elapsed"]])))
 
 	return(ans)
 
