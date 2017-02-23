@@ -368,7 +368,7 @@ main_cluster <- function() {
 	# R0 <- seq(1, 50, 0.5)
 	R0 <- seq(9, 10, 1)
 	# prop_immunity <- seq(0.01,1, 0.01)
-	prop_immunity <- seq(0.8, 1, 0.1)
+	prop_immunity <- seq(0.8, 0.9, 0.1)
 	partial_protection <- prop_immunity
 	D_immunity <- prop_immunity*100
 
@@ -398,12 +398,12 @@ main <- function() {
 
 	start_me()
 
-	test()
+	# test()
 
 }
 
 
 # main()
-main_cluster()
+# main_cluster()
 
 
