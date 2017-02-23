@@ -1,11 +1,11 @@
 #import matplotlib.pyplot as plt
 import random, math
 import numpy as np
-# from numpy import linalg
-# from numpy.linalg import inv
-import scipy
-from scipy import linalg
-from scipy.linalg import inv
+from numpy import linalg
+from numpy.linalg import inv
+# import scipy
+# from scipy import linalg
+# from scipy.linalg import inv
 import time
 
 			
