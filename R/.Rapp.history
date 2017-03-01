@@ -1,6 +1,3 @@
-dim(df_adm2_cum)
-as.data.frame(df_adm2_cum)
-df_adm2_cum <- df_guinea %>% filter(date <= "2014-10-23") %>% group_by(geo) %>% summarize(incidence_cum = sum(value), incidence_last_3_weeks = sum(value[date >= "2014-10-02"]))
 df_adm2_inc <- df_adm2_cum %>% left_join(df_demo, "geo") %>% mutate(attack_rate = incidence_cum/population_size*100)
 head(df_adm2_inc)
 head(df_sp_data)
@@ -993,132 +990,59 @@ p <- ggplot(df_plot, aes(x = date, y = value, fill = status))#
 df_plot %>% group_by(status) %>% summarize(total = sum(value))
 200/2904
 200/(2904+663)
+R0 <- seq(9, 10, 1)#
+    # prop_immunity <- seq(0.01,1, 0.01)#
+    prop_immunity <- seq(0.8, 1, 0.1)
+print(R0)
+print(prop_immunity)
+prop_immunity <- seq(0.8, 0.9, 0.1)
+R0 <- seq(1, 50, 0.5)
+prop_immunity <- seq(0.01,1, 0.01)
+length(R0)
+length(prop_immunity)
+100/4
+100/4/2
+help(system.time)
+x <- system.time(ans <- rnorm(1e4))
+x
+ans
+x
+i <- 1
+print("Iteration:", i, "time:", x)
+cat("Iteration:", i, "time:", x)
+x
+print(x)
+print(cat("Iteration:", i, "time:", x))
+print(cat("Iteration:", i, "time:", paste(names(x), x))
+)
+print(cat("Iteration:", i, "time:", paste(names(x), x, collapse =", "))
+)
+print(cat("Iteration:", i, "time:", paste(names(x), x, collapse =", ")))
+print(cat("Iteration:", i, "time:", x[["elaspsed"]]))
+print(cat("Iteration:", i, "time:", x[["elaspsed"]]))
+print(cat("Iteration:", i, "time:", x[["elapsed"]]))
+print("Iteration:", i, "time:", x[["elapsed"]])
+print(paste("Iteration:", i, "time:", x[["elapsed"]]))
+print(paste("Iteration:", i, "time:", x))
+print(paste("Iteration:", i, "time:", as.numric(x[["elapsed"]])))
+print(paste("Iteration:", i, "time:", as.numeric(x[["elapsed"]])))
 source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
-start_me()
-source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
-n_reinfection <- 2#
-    R0 <- 10#
-    D_infection <- 3#
-    n_pop <- 285#
-    S_0 <- n_pop - 2#
-    I_0 <- 1#
-    R_0 <- 0#
-#
-    D_immunity <- 60#
-    prop_immunity <- 0.45#
-    partial_protection <- 0.95
-system.time(p2 <- p_reinfection_AoN(n_reinfection, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0))
-data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)
-system.time(ll <- logLike_0123(data, p_reinfection_AoN, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0, echo = TRUE))
 source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
 source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
-n_reinfection <- 2#
-    R0 <- 10#
-    D_infection <- 3#
-    n_pop <- 285#
-    S_0 <- n_pop - 2#
-    I_0 <- 1#
-    R_0 <- 0#
-#
-    D_immunity <- 60#
-    prop_immunity <- 0.45#
-    partial_protection <- 0.95#
-#
-    data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)#
-#
-    logLike_SIRS(x = c(R0, D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
-R0 <- 10#
-    D_infection <- 3#
-    n_pop <- 284#
-    S_0 <- n_pop - 1#
-    I_0 <- 1#
-    R_0 <- 0#
-#
-    D_immunity <- 60#
-    prop_immunity <- 0.45#
-    partial_protection <- 0.95#
-#
-    data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)#
-#
-    logLike_SIRS(x = c(R0, D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
-logLike_AoN(x = c(R0, prop_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
-logLike_SIRS(x = c(R0 = R0, D_immunity = D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
-logLike_SIRS(x = c(R0, D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
-logLike_PPI(x = c(R0, partial_protection), data, D_infection, n_pop, S_0, I_0, R_0)
 source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
-sink()
-p_1_or_more <- p_reinfection(n_reinfection = 1, ...)
-print(p_1_or_more)
+100*7/60
+R0 <- seq(1, 50, 0.5)
+prop_immunity <- seq(0.01,1, 0.01)
+length(R0)
+length(prop_immunity)
+99*100
+99*100/10
+99*100/10/4*1.5
+99*100/10/4*1.5/24
+99*100*8/3600/24
 source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
-Q
 source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
-sink()
-gamma <- 1/D_infection
-beta <- R0/D_infection/n_pop
-alpha_R <- 1/D_immunity
-print(gamma)
-print(beta)
-print(alpha_R)
-p_reinfection_SIR(n_reinfection = n_reinfection, gamma = gamma, beta = beta, alpha_R = alpha_R, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0)
-print(n_reinfection)
-gamma <- 1/D_infection#
-    beta <- R0/D_infection #/n_pop#
-    alpha_R <- 1/D_immunity#
-#
-    p_reinfection_SIR(n_reinfection = n_reinfection, gamma = gamma, beta = beta, alpha_R = alpha_R, n_pop = n_pop, S_0 = S_0, I_0 = I_0, R_0 = R_0)
-print(beta)
-117-6-29
-Q
-source("/Users/Tonton/work/projects/ReinfectionProbability/R/dev.r")
-n_reinfection <- 2#
-    R0 <- 10#
-    D_infection <- 3#
-    n_pop <- 284#
-    S_0 <- n_pop - 1#
-    I_0 <- 1#
-    R_0 <- 0#
-#
-    D_immunity <- 60#
-    prop_immunity <- 0.45#
-    partial_protection <- 0.95#
-#
-    data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)#
-#
-    logLike_SIRS(x = c(R0, D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
-logLike_AoN(x = c(R0, prop_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
-logLike_PPI(x = c(R0, partial_protection), data, D_infection, n_pop, S_0, I_0, R_0)
-ans_SIR <- logLike_SIRS(x = c(R0, D_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
-ans_AoN <- logLike_AoN(x = c(R0, prop_immunity), data, D_infection, n_pop, S_0, I_0, R_0)
-and_PPI <- logLike_PPI(x = c(R0, partial_protection), data, D_infection, n_pop, S_0, I_0, R_0)
-bind_rows(ans_SIR, ans_AoN, and_PPI) %>% mutate(model = c("SIRS", "AoN", "PPI"))
-data_frame(model = c("SIRS", "AoN", "PPI"), R0 = R0, D_infection = D_infection) %>% bind_cols(bind_rows(ans_SIR, ans_AoN, and_PPI))
-data_frame(model = c("SIRS", "AoN", "PPI"), R0 = R0, D_infection = D_infection, D_immunity = c(D_immunity, NA, NA), prop_immunity = c(NA, prop_immunity, NA), partial_protection = c(NA, NA, partial_protection)) %>% bind_cols(bind_rows(ans_SIR, ans_AoN, and_PPI))
-data_frame(#
-        model = c("SIRS", "AoN", "PPI"), #
-        R0 = R0, #
-        D_infection = D_infection, #
-        D_immunity = c(D_immunity, NA, NA), #
-        prop_immunity = c(NA, prop_immunity, NA), #
-        partial_protection = c(NA, NA, partial_protection)#
-        ) %>% bind_cols(bind_rows(ans_SIR, ans_AoN, and_PPI))
-data_frame(#
-        model = c("SIRS", "AoN", "PPI"), #
-        R0 = R0, #
-        D_infection = D_infection, #
-        D_immunity = c(D_immunity, NA, NA), #
-        prop_immunity = c(NA, prop_immunity, NA), #
-        partial_protection = c(NA, NA, partial_protection)#
-        ) %>% bind_cols(bind_rows(ans_SIR, ans_AoN, and_PPI)) %>% #
-    write_csv("../doc/check.csv")
-library(readr)
-install.packages(readr)
-my_library("readr")
-data_frame(#
-        model = c("SIRS", "AoN", "PPI"), #
-        R0 = R0, #
-        D_infection = D_infection, #
-        D_immunity = c(D_immunity, NA, NA), #
-        prop_immunity = c(NA, prop_immunity, NA), #
-        partial_protection = c(NA, NA, partial_protection)#
-        ) %>% bind_cols(bind_rows(ans_SIR, ans_AoN, and_PPI)) %>% #
-    write_csv("../doc/check.csv")
+R0 <- seq(9, 10, 1)
+prop_immunity <- seq(0.5, 0.6, 0.1)
+print(R0)
+print(prop_immunity)
