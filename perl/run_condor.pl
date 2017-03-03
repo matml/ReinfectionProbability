@@ -23,7 +23,7 @@ my $Rscript= "dev.r";
 
 # my @node_list= ("01","02","03","04","05","06","07","08"); 
 #,"09","10","11","12","13","14","15","16","17","18","19","20");
-my @node_list= ("01");
+my @node_list= ("01", "02", "03");
 
 my $exe= "$HOME/lib64/R-3.3.2/bin/R";
 my $uni= "vanilla";
@@ -61,7 +61,7 @@ foreach $model (@model_list)
   print Condor_SCRIPT "executable = $exe\n";
   print Condor_SCRIPT "universe = $uni\n";
   print Condor_SCRIPT "request_memory = $mem\n";
-  print Condor_SCRIPT "+RequiresWholeMachine = False\n";
+  print Condor_SCRIPT "+RequiresWholeMachine = True\n";
     # print Condor_SCRIPT "+RequiresWholeMachine = True\n";
     print Condor_SCRIPT "Requirements = $my_requirements\n";
     #print Condor_SCRIPT "Requirements = machine == \"ecoevo13.ecoevo.biologie.ens.fr\"\n";
