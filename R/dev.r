@@ -10,7 +10,7 @@ init_packrat <- function(dir_project, force = FALSE) {
 
 	} else {
 
-		packrat::init(options = list(vcs.ignore.src = TRUE, ignored.packages = c("Matrix", "cluster")))
+		packrat::init(options = list(vcs.ignore.src = TRUE))
 
 	}
 }
