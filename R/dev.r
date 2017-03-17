@@ -378,7 +378,7 @@ main_cluster <- function() {
 	model <- Sys.getenv("model")
 	analysis <- Sys.getenv("analysis")
 	jobDir <- Sys.getenv("jobDir")
-	i_job <- as.numeric(Sys.getenv("process")) + 1
+	i_job <- as.numeric(Sys.getenv("process")) + 1 + 3
 	n_job <- as.numeric(Sys.getenv("replicate"))
 
 	message("Model:",sQuote(model), "\nanalysis:", analysis, "\ni_job:", i_job, "\nn_job:", n_job)
