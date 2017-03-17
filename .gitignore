@@ -55,7 +55,6 @@ Temporary Items
 *.pyc
 Manuscript/ReinfectionProbability.aux
 *.log
-Manuscript/ReinfectionProbability.pdf
 *.synctex
 Manuscript/ReinfectionProbability.synctex
 
