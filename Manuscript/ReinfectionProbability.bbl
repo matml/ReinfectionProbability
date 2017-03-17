@@ -1,0 +1,123 @@
+\begin{thebibliography}{10}
+
+\bibitem{allen2000comparison}
+LJS Allen and AM~Burgin.
+\newblock Comparison of deterministic and stochastic {SIS} and {SIR} models in
+  discrete time.
+\newblock {\em Mathematical Biosciences}, 163(1):1--33, 2000.
+
+\bibitem{artalejo2010number}
+JR~Artalejo, A~Economou, and MJ~Lopez-Herrero.
+\newblock On the number of recovered individuals in the {SIS} and {SIR}
+  stochastic epidemic models.
+\newblock {\em Mathematical Biosciences}, 228(1):45--55, 2010.
+
+\bibitem{artalejo2011sis}
+JR~Artalejo and MJ~L\'opez-Herrero.
+\newblock The {SIS} and {SIR} stochastic epidemic models: a maximum entropy
+  approach.
+\newblock {\em Theoretical Population Biology}, 80(4):256--264, 2011.
+
+\bibitem{ball2016reproduction}
+F~Ball, L~Pellis, and P~Trapman.
+\newblock Reproduction numbers for epidemic models with households and other
+  social structures {II}: comparisons and implications for vaccination.
+\newblock {\em Mathematical Biosciences}, 274:108--139, 2016.
+
+\bibitem{ballard2016probability}
+PG~Ballard, NG~Bean, and JV~Ross.
+\newblock The probability of epidemic fade-out is non-monotonic in transmission
+  rate for the markovian {SIR} model with demography.
+\newblock {\em Journal of Theoretical Biology}, 393:170--178, 2016.
+
+\bibitem{breban2005reinfection}
+R~Breban and S~Blower.
+\newblock The reinfection threshold does not exist.
+\newblock {\em Journal of Theoretical Biology}, 235(2):151--152, 2005.
+
+\bibitem{camacho2011explaining}
+A~Camacho, S~Ballesteros, AL~Graham, F~Carrat, O~Ratmann, and B~Cazelles.
+\newblock Explaining rapid reinfections in multiple-wave influenza outbreaks:
+  {T}ristan da {C}unha 1971 epidemic as a case study.
+\newblock In {\em Proc. R. Soc. B}, volume 278, pages 3635--3643. The Royal
+  Society, 2011.
+
+\bibitem{economou2015stochastic}
+A~Economou, A~G{\'o}mez-Corral, and M~L{\'o}pez-Garc{\'\i}a.
+\newblock A stochastic {SIS} epidemic model with heterogeneous contacts.
+\newblock {\em Physica A: Statistical Mechanics and its Applications},
+  421:78--97, 2015.
+
+\bibitem{gomes2004infection}
+MGM Gomes, LJ~White, and GF~Medley.
+\newblock Infection, reinfection, and vaccination under suboptimal immune
+  protection: epidemiological perspectives.
+\newblock {\em Journal of Theoretical Biology}, 228(4):539--549, 2004.
+
+\bibitem{gomes2005reinfection}
+MGM Gomes, LJ~White, and GF~Medley.
+\newblock The reinfection threshold.
+\newblock {\em Journal of Theoretical Biology}, 236(1):111--113, 2005.
+
+\bibitem{graw2012agent}
+F~Graw, T~Leitner, and RM~Ribeiro.
+\newblock Agent-based and phylogenetic analyses reveal how {HIV}-1 moves
+  between risk groups: injecting drug users sustain the heterosexual epidemic
+  in {L}atvia.
+\newblock {\em Epidemics}, 4(2):104--116, 2012.
+
+\bibitem{grenfell2001travelling}
+BT~Grenfell, ON~Bj{\o}rnstad, and J~Kappey.
+\newblock Travelling waves and spatial hierarchies in measles epidemics.
+\newblock {\em Nature}, 414(6865):716--723, 2001.
+
+\bibitem{hotta2010bayesian}
+LK~Hotta.
+\newblock Bayesian melding estimation of a stochastic {SEIR} model.
+\newblock {\em Mathematical Population Studies}, 17(2):101--111, 2010.
+
+\bibitem{li2012susceptible}
+C~Li, R~van~de Bovenkamp, and P~Van~Mieghem.
+\newblock Susceptible-infected-susceptible model: A comparison of
+  {N}-intertwined and heterogeneous mean-field approximations.
+\newblock {\em Physical Review E}, 86(2):026116, 2012.
+
+\bibitem{lopez2016stochastic}
+M~L{\'o}pez-Garc{\'\i}a.
+\newblock Stochastic descriptors in an {SIR} epidemic model for heterogeneous
+  individuals in small networks.
+\newblock {\em Mathematical Biosciences}, 271:42--61, 2016.
+
+\bibitem{meerson2009wkb}
+B~Meerson and PV~Sasorov.
+\newblock {WKB} theory of epidemic fade-out in stochastic populations.
+\newblock {\em Physical Review E}, 80(4):041130, 2009.
+
+\bibitem{pastor2001epidemic}
+R~Pastor-Satorras and A~Vespignani.
+\newblock Epidemic spreading in scale-free networks.
+\newblock {\em Physical Review Letters}, 86(14):3200, 2001.
+
+\bibitem{pellis2012reproduction}
+L~Pellis, F~Ball, and P~Trapman.
+\newblock Reproduction numbers for epidemic models with households and other
+  social structures {I}: definition and calculation of {$R_0$}.
+\newblock {\em Mathematical Biosciences}, 235(1):85--97, 2012.
+
+\bibitem{stone2008stochastic}
+P~Stone, H~Wilkinson-Herbots, and V~Isham.
+\newblock A stochastic model for head lice infections.
+\newblock {\em Journal of Mathematical Biology}, 56(6):743--763, 2008.
+
+\bibitem{van1997stochastic}
+OA~van Herwaarden.
+\newblock Stochastic epidemics: the probability of extinction of an infectious
+  disease at the end of a major outbreak.
+\newblock {\em Journal of Mathematical Biology}, 35(7):793--813, 1997.
+
+\bibitem{youssef2011individual}
+M~Youssef and C~Scoglio.
+\newblock An individual-based approach to {SIR} epidemics in contact networks.
+\newblock {\em Journal of Theoretical Biology}, 283(1):136--144, 2011.
+
+\end{thebibliography}

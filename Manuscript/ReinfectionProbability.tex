@@ -1,318 +1,405 @@
-\documentclass[10pt,A4paper]{article}
+%%
+%% Copyright 2007, 2008, 2009 Elsevier Ltd
+%%
+%% This file is part of the 'Elsarticle Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%%
 
-\usepackage{graphicx}
-\usepackage[all]{xypic}
-\usepackage[utf8]{inputenc}
-%\usepackage[spanish]{babel}
-\usepackage{anysize}
-\marginsize{1cm}{1cm}{1.5cm}{2.5cm}
+%% Template article for Elsevier's document class `elsarticle'
+%% with numbered style bibliographic references
+%% SP 2008/03/01
+
+\documentclass[preprint,12pt]{elsarticle}
+
 \usepackage{amssymb, amsmath}
+\usepackage[utf8]{inputenc}
 \usepackage{tabularx}
 \usepackage{enumerate}
 \usepackage{dsfont}
-%\usepackage[spanish,activeacute]{babel}
-%\usepackage[latin1]{inputenc}
-\usepackage{amssymb, amsmath}
 \usepackage{graphicx}
-\usepackage[all]{xypic}
-\usepackage{bm}
+\usepackage{color}
 \usepackage{multicol}
-%\pagenumbering{roman}
+
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers.
+%% \usepackage{lineno}
+
+\journal{Journal of Theoretical Biology}
 
 \begin{document}
-%\thispagestyle{plain}
 
-\begin{center}
-{\bf \LARGE Title New}
-\end{center}
-\begin{center}
-M. L\'opez-Garc\'ia$^*$, A. Camacho$^+$\\
+\renewcommand{\thefootnote}{$*$}
 
-\par $^*${\it Department of Applied Mathematics, School of Mathematics, University of Leeds, LS2 9JT Leeds, UK}\\
-\par $^+${\it London School of Hygiene and Tropical Medicine, London, UK}\\
+\begin{frontmatter}
 
-\end{center}
+%% Title, authors and addresses
 
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for theassociated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for theassociated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for theassociated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
 
-\abstract{In this paper, our interest is in analysing and comparing, from an individual perspective, a number of epidemic models where re-infection of individuals
-can occur. In particular, we consider the {\it non-dimensional SIS model}, the {\it temporary immunity SIR model}, the {\it partial immunity SIR model} and
-the {\it temporary-partial immunity SIR model} from Ref. \cite{Gomes04}, that consider the spread of an epidemic among a closed homogeneous population of
-$N$ individuals. For these models, our interest is in the probability of a given individual marked at time $t=0$ suffering multiple infections, where this individual
-is considered to potentially have different behaviour against the disease than the rest of individuals within the population. This individual characteristic of the
-processes under study will allow us to compare between the re-infection dynamics within these different models.}
+\title{On the reinfection of individuals in stochastic epidemic models}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{}
+%% \address[label1]{}
+%% \address[label2]{}
+
+\author{M. L\'opez-Garc\'ia$^{a,}\footnote{Corresponding author: m.lopezgarcia@leeds.ac.uk}$, A. Camacho$^{b,c}$}
+
+\address{$^a${\it Department of Applied Mathematics, School of Mathematics, University of Leeds, LS2 9JT Leeds, UK}\\
+$^b${\it London School of Hygiene and Tropical Medicine,  WC1E 7HT London, UK}\\
+$^c${\it Epicentre, Medecins Sans Frontieres, 55 Rue Crozatier 75012 Paris, France}}
+
+\begin{abstract}
+Our interest in this paper is on a number of epidemic models that allow for reinfection of individuals among a closed well-mixed finite population.
+For stochastic versions of a number of SIS- and SIR-type epidemic models, that account for partial, temporary or no immunity, allowing then for reinfection of individuals, we analytically quantify a main summary statistic: the probability that a given individual suffers exactly $M$ infections during the epidemic, for any value $M\geq0$. Our analysis has the particular feature that
+allows to study specific individuals that might behave differently against the disease than the rest of individuals in the population ({\it i.e.}, to consider that the individual under study has different infectivity, susceptibility or ability to recover). We illustrate our analysis by means of... and explain how this summary statistic relates to another important concept in mathematical epidemiology, {\it epidemic fade-out}.
+\end{abstract}
+
+\begin{keyword}
+continuous-time Markov chain; SIS; SIRS; reinfection; epidemic fade-out;
+\end{keyword}
+
+\end{frontmatter}
 
 \section{Introduction}
+\label{Sect1}
 
-\section{Probability of re-infection}
+\par Mathematical epidemiological models have been extensively studied and used in the literature for analysing disease spread dynamics. Depending on the disease under study and the population of
+individuals among which this disease spreads, different models have been proposed: the $SIS$ epidemic model where individuals are infected and become susceptible immediately after recovery; the $SIR$ model in which after individuals recover they gain immunity against the disease, which lasts forever (this {\it recovery} might also mean {\it removal}, representing that individuals die or leave the system not playing a role any more in the disease spread dynamics); the $SEIR$ epidemic model where a latent infection period is considered in which individuals are infected but not infectious; or the $SIRS$ epidemic model where immune individuals recover susceptibility after a period of time.
 
-\subsection{Non-dimensional SIS model (ND-SIS)}
+\par A wide range of variants to these models have been proposed in order to account for specific characteristics of the disease under study or the population being affected. Stochastic models
+have usually been considered specially when analysing small populations ({\it e.g.,} hospital wards \cite{artalejo2011sis,lopez2016stochastic}, prisons \cite{hotta2010bayesian}, schools \cite{artalejo2010number,stone2008stochastic} or families \cite{economou2015stochastic}), while deterministic counterparts have been developed for large populations \cite{allen2000comparison}. Compartmental models assume that individuals within the population under study are homogeneous in terms of their behaviour against the disease ({\it i.e.,} equal infectivity, susceptibility and ability to recover), an assumption that simplifies the mathematical analysis and the estimation of parameters in the model. Heterogeneous populations can be considered instead by means of increasing the number of compartments in the model ({\it e.g.,} analysing populations structured in households \cite{ball2016reproduction,pellis2012reproduction}) or, as the extreme case, by developing agent-based models where the epidemic dynamics of each specific individual in the population are tracked \cite{graw2012agent}. The analysis of agent-based models from a stochastic perspective usually leads to the analysis of continuous-time Markov chains on networks \cite{economou2015stochastic,lopez2016stochastic} (where each individual represents a node on the network), leading to analytically untractable models that can only be dealt with in an exact way for very small values of the population size $N$ \cite{economou2015stochastic,lopez2016stochastic} or by means of approximative methods otherwise \cite{li2012susceptible,pastor2001epidemic,youssef2011individual}.
 
-\par We focus here on the {\it non-dimensional SIS model} given by \cite[Figure 1(b)]{Gomes04}, ND-SIS Model here, which is described in
-Figure \ref{fig:1} and where susceptible individuals are infected, due to infectious contacts occurring with infective individuals, while infective individuals
-recover without gaining any immunity. Thus, individuals within the population can be re-infected several times until the epidemic dies out, which occurs
-with probability $1$ in finite time since we consider a closed finite population of $N$ individuals. We define the stochastic Markovian process ${\cal X}=\{S(t):\ t\geq0\}$, with
+\par Among all the epidemic models in the literature, there are a number of them that have a particular feature in common: the possibility of individuals suffering reinfections \cite{gomes2004infection}. These models are adequate for situations where the disease does not confer immunity to the individuals infected, or when the immunity conferred is only partial or temporary. In Ref. \cite{gomes2004infection}, a number of models accounting for this characteristic are presented and comprehensively analysed, also by accounting for vaccination strategies in these situations. In particular, authors in Ref. \cite{gomes2004infection} carry out a deterministic analysis of these models in terms of their dynamics and equilibrium properties, and identify what they call the {\it reinfection threshold} in transmission when partial immunity is included \cite{breban2005reinfection,gomes2004infection,gomes2005reinfection}.
+%: below the reinfection threshold primary infections dominate, levels of infection are low and and vaccination strategies are effective, while above the reinfection threshold reinfection dominates, high infection levels are observed and vaccination strategies are not so effective. The existence of this reinfection threshold under different situations has been a topic of intensive discussion during the last years \cite{breban2005reinfection,gomes2005reinfection}, and...
+
+\par Reinfection of individuals also relates to another important concept in mathematical epidemiology, {\it epidemic fade-out}. According to Ref. \cite{ballard2016probability}, and for epidemics characterised by the occurrence of several {\it infection waves} \cite{camacho2011explaining,grenfell2001travelling}, epidemic fade-out is defined as the probability that the epidemic dies out in the trough between the first and second waves of the outbreak. There exists a number of works in the literature dealing with how to mathematically define this concept and how to approximate this probability for different epidemic models \cite{ballard2016probability,meerson2009wkb,van1997stochastic}. In those situations where the different infection waves are caused by reinfection of individuals, the individual probability of reinfection and the epidemic fade-out probability are clearly related.
+
+\par Despite all the available literature related to models accounting for reinfection of individuals, a comprehensive analytical study for computing the exact number of reinfections suffered by a given individual in the population in different epidemic situations has not been carried out yet. When considering stochastic models, the reinfection dynamics could be analysed by means of computing the probability of a randomly chosen individual in the population suffering exactly $M$ infections, for different possible values of $M\geq0$. In this paper, we address this question for stochastic versions of SIS- and SIR-type models, such as the ones in Ref. \cite{gomes2004infection}, when considering a closed well-mixed homogeneous population of $N$ individuals. Our method allows us to compute this probability in an exact way when analysing an individual in the population that might have a specific behaviour against the disease different than the rest of individuals in the population ({\it e.g.,} when the individual is a {\it super-spreader}, a specially susceptible individual, or an individual who recovers faster or more slowly than the rest of individuals in the population).
+
+\par Main findings.
+
+\par This paper is structured as follows,...
+
+\section{Reinfection probability for a given individual}
+\label{Sect2}
+
+\par In this section, and for an SIS stochastic model, as well as for SIR-type models that account for partial and/or temporary immunity, our aim is to compute the probability of reinfection of a given individual in the population. In SubSection \ref{SubSect21}, we compute the probability of reinfection (that is, the probability that a given individual suffers
+at least $2$ infections) in an SIS stochastic model. In SubSection \ref{SubSect22}, the probability of reinfection of an individual
+is computed for a more general model that accounts for temporary and/or partial immunity gained by individuals after suffering the infection. In
+SubSection \ref{SubSect23}, we relate these probabilities to the average number of individuals suffering reinfection if the population is
+considered completely homogeneous. Finally, we explain in the Appendix how to generalise our arguments for computing the probability of a marked individual
+suffering at least $M$ infections, for any value $M\geq2$ (so that arguments in this Section correspond to value $M=2$).
+
+\subsection{SIS Model}
+\label{SubSect21}
+
+\par We consider a closed finite well-mixed population of $N$ individuals, and focus here on a SIS model which is described in Figure \ref{fig:1}. Susceptible individuals are infected, due to infectious contacts occurring with infective individuals, while
+infective individuals recover without gaining any immunity, allowing then for reinfection. In this SIS model, the epidemic dies out at some random time $T$, and $p(T<\infty)=1$ since
+we consider a closed finite population of $N$ individuals. During $[0,T]$, individuals within the population might be re-infected several times, and our
+interest is to quantify the probability that a given individual suffers (at least) one of these reinfections, as a central summary statistic in these
+epidemic models.
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{Figure1.jpg}
+\caption{Dynamics of the SIS Model. Each susceptible individual is infected with rate $\beta I$, and each infective individual recovers with rate $\gamma$.}
+\label{fig:1}
+\end{figure}
+
+\par We define the stochastic Markovian process ${\cal X}=\{S(t):\ t\geq0\}$, with
 \begin{eqnarray*}
  S(t) &=& \hbox{\it ``number of susceptible individuals at time $t$''},\\
  I(t) &=& \hbox{\it ``number of infective individuals at time $t$''} \ = \ N-S(t),
 \end{eqnarray*}
+\par\noindent for $t\geq0$, which according to dynamics in Figure \ref{fig:1} is a birth-and-death process with absorbing state $S(t)=N$; see Figure \ref{fig:2}.
+We consider an initially marked individual $A$ within the population, and our aim is to quantify the probability of individual $A$ suffering
+at least one reinfection during the process. In order to compute this probability, we consider the extended process
+${\cal X}^{ext}=\{{\bf X}^{ext}(t)=(S(t),A(t)):\ t\geq0\}$, where $A(t)$ represents the state of individual $A$ at time $t\geq0$, taking values
+$S$, $S_I$ and $I$. These values represent that individual $A$, at time $t$, is susceptible and never suffered the disease before ($S$), is susceptible
+but suffered the infection before ($S_I$) or is infective ($I$).
 
-\par\noindent for $t\geq0$. This yields the birth-and-death process with absorbing state $S(t)=N$ given in Figure \ref{fig:2}.
-\begin{figure}[h!]
+\par Moreover, we consider that individual $A$ might have an specific behaviour against the disease ({\it e.g.,} that individual $A$ recovers faster or
+more slowly than the rest of the individuals, or that he/she has a different susceptibility and/or infectivity). Thus, we can define $\gamma(A)$ the recovery
+rate of individual $A$, while individual $A$ infects any other individual in the population with rate $\beta_{A\rightarrow\bullet}$ and any other
+individual infects $A$ with rate $\beta_{\bullet\rightarrow A}$. This introduces some heterogeneity in the population, allowing to compute the reinfection
+probability of an individual when this individual is, for example, a super-spreader or a particularly susceptible individual within the population. We
+note however that a completely homogeneous population can be studied just by setting $\gamma(A)=\gamma$ and $\beta_{\bullet\rightarrow A}=\beta_{A\rightarrow\bullet}=\beta$
+in our analysis.
+\begin{figure}
 \centering
- \includegraphics[width=0.4\textwidth]{Figure1.jpg}
-\caption{ND-SIS Model}
-\label{fig:1}
-\end{figure}
-\begin{figure}[h!]
-\centering
- \includegraphics[width=0.8\textwidth]{Figure2.jpg}
+ \includegraphics[width=\textwidth]{Figure2.jpg}
 \caption{Birth-and-death process ${\cal X}$.}
 \label{fig:2}
 \end{figure}
 
-\par We consider an initially marked individual $A$ within the population, and our aim is to quantify the probability of individual $A$ suffering
-(at least one) re-infection during the process. In order to compute this probability, it is necessary to keep track of the state of individual $A$
-throughout time. To this aim, we consider the extended process ${\cal X}^{ext}=\{{\bf X}^{ext}(t)=(S(t),A(t)):\ t\geq0\}$, where $A(t)$ represents the state of individual
-$A$ at time $t\geq0$, taking values $S$, $S_I$ and $I$. These values represent that individual $A$, at time $t$, is susceptible and never suffered the
-disease before ($S$), is susceptible but suffered the infection before ($S_I$) or is infective ($I$). From now on, we consider here the {\it most
-general case} and assume that individual $A$ may have an specific behaviour against the disease (that is, that individual $A$ recovers faster or slower than
-the rest of the individuals, or that he/she has a different susceptibility and/or infectivity). Thus, we may define
-$\gamma_A$ the recovery rate of individual $A$, while individual $A$ infects the rest of individuals in the population with rate $\beta_{A\rightarrow\cdot}$ and these individuals infect
-individual $A$ with rate $\beta_{\cdot\rightarrow A}$. Note that under completely homogeneous conditions (that is, if individual $A$ has the same behaviour against the disease than the rest of
-individuals within the population), we have $\gamma_A=\gamma$ and $\beta_{\cdot\rightarrow A}=\beta_{A\rightarrow\cdot}=\beta$.
-
-\par The state space of our extended process ${\cal X}^{ext}$ is given by
+\par We point out that extended process ${\cal X}^{ext}$ allows to: (i) consider an individual $A$ with individual associated rates $\beta_{A\rightarrow\bullet}$,
+$\beta_{\bullet\rightarrow A}$ and $\gamma(A)$; (ii) keep track of the state of individual $A$ at any given time, which is necessary when computing the
+reinfection probability of this individual. The state space of our extended process ${\cal X}^{ext}$ is given by
 \begin{eqnarray*}
  {\cal S}^{ext} &=& \left(\{1,\dots,N-1\}\times\{S,S_I,I\}\right)\cup\{(0,I)\}\cup\left(\{N\}\times\{S,S_I\}\right)\cup\{\Delta\},
 \end{eqnarray*}
 
-\par\noindent where $\Delta$ is an {\it artificial} absorbing state representing the re-infection of individual $A$ for the first time, and $(N,S)$
-and $(N,S_I)$ are absorbing states representing that the epidemic died out without having re-infection of individual $A$. Possible
-transitions between states are given in Table \ref{tab:1}, which together with the space of states ${\cal S}^{ext}$ yield the transitions
-diagram given in Figure \ref{fig:3}.
-\begin{table}[h]
+\par\noindent where $\Delta$ is an {\it artificial} absorbing state representing the reinfection of individual $A$ for the first time, and $(N,S)$
+and $(N,S_I)$ are absorbing states representing that the epidemic died out without individual $A$ suffering reinfection. Possible transitions between
+states in ${\cal S}^{ext}$ are given in Table \ref{tab:1}, leading to the transitions diagram in Figure \ref{fig:3}.
+
+\begin{table}
 \centering
 \begin{tabular}{|l|l|l|l|}
 \hline
-Type of event & Original state ($0\leq m\leq N-1$, $n\geq1$) & Destination state & Rate\\
+Type of event & Original state & Destination state & Rate\\
 \hline
-Recovery of an infective individual & $(m,S)$, $m\geq1$ & $(m+1,S)$ & $\gamma(N-m)$\\
- & $(m,S_I)$, $m\geq1$ & $(m+1,S_I)$ & $\gamma(N-m)$\\
- & $(m,I)$ & $(m+1,S_I)$ & $\gamma_A$\\
+Recovery of an & $(m,S)$, $m\geq1$ & $(m+1,S)$ & $\gamma(N-m)$\\
+infective individual & $(m,S_I)$, $m\geq1$ & $(m+1,S_I)$ & $\gamma(N-m)$\\
+ & $(m,I)$ & $(m+1,S_I)$ & $\gamma(A)$\\
  & $(m,I)$, $m\leq N-2$ & $(m+1,I)$ & $\gamma(N-m-1)$\\
 \hline
-Infection of a susceptible individual & $(m,S)$, $m\geq1$ & $(m-1,I)$ & $\beta_{\cdot\rightarrow A}(N-m)$\\
- & $(m,S)$, $m\geq1$ & $(m-1,S)$ & $\beta(m-1)(N-m)$\\
- & $(m,S_I)$, $m\geq1$ & $\Delta$ & $\beta_{\cdot\rightarrow A}(N-m)$\\
+Infection of a & $(m,S)$, $m\geq1$ & $(m-1,I)$ & $\beta_{\bullet\rightarrow A}(N-m)$\\
+susceptible individual & $(m,S)$, $m\geq1$ & $(m-1,S)$ & $\beta(m-1)(N-m)$\\
+ & $(m,S_I)$, $m\geq1$ & $\Delta$ & $\beta_{\bullet\rightarrow A}(N-m)$\\
  & $(m,S_I)$, $m\geq1$ & $(m-1,S_I)$ & $\beta(m-1)(N-m)$\\
- & $(m,I)$ & $(m-1,I)$ & $\beta m(N-m-1)+\beta_{A\rightarrow\cdot}m$\\
+ & $(m,I)$ & $(m-1,I)$ & $\beta m(N-m-1)+\beta_{A\rightarrow\bullet}m$\\
 \hline
 \end{tabular}
-\caption{Transitions among states in ${\cal S}^{ext}$.}
+\caption{Transitions and transition rates among states $(m,a)\in{\cal S}^{ext}$, for $0\leq m\leq N-1$, $n\geq1$.}
 \label{tab:1}
 \end{table}
 
-\begin{figure}[h!]
-\centering
- \includegraphics[width=0.8\textwidth]{Figure3.jpg}
-\caption{Transitions diagram of ${\cal X}^{ext}$.}
+\begin{figure}
+\includegraphics[width=\textwidth]{Figure3.jpg}
+\caption{Transitions diagram for process ${\cal X}^{ext}$.}
 \label{fig:3}
 \end{figure}
 
-\par We define
+\par Our interest is in computing
 \begin{eqnarray*}
- p_{(m,a)} &=& \hbox{\it ``probability of individual $A$ suffering (at least one) re-infection given the current state of the process $(m,a)\in{\cal S}^{ext}$''},
+ p_{(m,a)} &=& \hbox{\it ``probability of individual $A$ suffering at least one reinfection}\\
+&& \hbox{\it given the initial state of the process $(m,a)\in{\cal S}^{ext}$''},
 \end{eqnarray*}
-\par\noindent with trivial values $p_{\Delta}=1$, $p_{(N,S)}=p_{(N,S_I)}=0$. These probabilities verify, by a first-step argument, equations
+\par\noindent with trivial values $p_{\Delta}=1$, $p_{(N,S)}=p_{(N,S_I)}=0$. If the marked individual is the one starting the outbreak, we will focus on
+the initial state $(m,a)=(N-1,I)$, while if the outbreak is initiated by a different individual the initial state to consider is $(m,a)=(N-1,S)$. Probabilities
+$p_{(m,a)}$ for $(m,a)\in{\cal S}^{ext}$ satisfy the following equations, which can be obtained by implementing a first-step argument:
 \begin{eqnarray}
- \theta_{(m,S)}p_{(m,S)} &=& \beta(m-1)(N-m)p_{(m-1,S)}+\beta_{\cdot\rightarrow A}(N-m)p_{(m-1,I)}+\gamma(N-m)p_{(m+1,S)},\quad 1\leq m\leq N-1,\label{eqn:1}\\
- \theta_{(m,I)}p_{(m,I)} &=& \left(\beta m(N-m-1)+\beta_{A\rightarrow\cdot}m\right)p_{(m-1,I)}+\gamma (N-m-1)p_{(m+1,I)}+\gamma_Ap_{(m+1,S_I)},\quad 0\leq m\leq N-1,\label{eqn:2}\\
- \theta_{(m,S_I)}p_{(m,S_I)} &=& \beta(m-1)(N-m)p_{(m-1,S_I)}+\beta_{\cdot\rightarrow A}(N-m)p_{\Delta}+\gamma(N-m)p_{(m+1,S_I)},\quad 1\leq m\leq N-1,\label{eqn:3}
+ \theta_{(m,S)}p_{(m,S)} &=& \beta(m-1)(N-m)p_{(m-1,S)}+\beta_{\bullet\rightarrow A}(N-m)p_{(m-1,I)}\nonumber\\
+&&+\gamma(N-m)p_{(m+1,S)},\quad 1\leq m\leq N-1,\label{eqn:1}\\
+ \theta_{(m,I)}p_{(m,I)} &=& \left(\beta m(N-m-1)+\beta_{A\rightarrow\bullet}m\right)p_{(m-1,I)}+\gamma (N-m-1)p_{(m+1,I)}\nonumber\\
+&&+\gamma(A)p_{(m+1,S_I)},\quad 0\leq m\leq N-1,\label{eqn:2}\\
+ \theta_{(m,S)}p_{(m,S_I)} &=& \beta(m-1)(N-m)p_{(m-1,S_I)}+\beta_{\bullet\rightarrow A}(N-m)p_{\Delta}\nonumber\\
+&&+\gamma(N-m)p_{(m+1,S_I)},\quad 1\leq m\leq N-1,\label{eqn:3}
 \end{eqnarray}
-\par\noindent with $\theta_{(m,S)}=\theta_{(m,S_I)}=\beta(m-1)(N-m)+\beta_{\cdot\rightarrow A}(N-m)+\gamma(N-m)$ and $\theta_{(m,I)}=\beta m(N-m-1)+\beta_{A\rightarrow\cdot}m+\gamma(N-m-1)+\gamma_A$. A preliminary analysis of Eqs. \eqref{eqn:1}-\eqref{eqn:3} allows us to find a recursive scheme for
-computing these probabilities. In particular, Eq. \eqref{eqn:3} allows us to compute probabilities of the form $p_{(m,S_I)}$ which,
-once in hand, allow one the computation of probabilities of the form $p_{(m,I)}$ by Eq. \eqref{eqn:2}. Finally, Eq. \eqref{eqn:1} yields probabilities
-of the form $p_{(m,S)}$.
+\par\noindent with $\theta_{(m,S)}=\beta(m-1)(N-m)+\beta_{\bullet\rightarrow A}(N-m)+\gamma(N-m)$ and $\theta_{(m,I)}=\beta m(N-m-1)+\beta_{A\rightarrow\bullet}m+\gamma(N-m-1)+\gamma(A)$.
+A preliminary analysis of Eqs. \eqref{eqn:1}-\eqref{eqn:3} allows us to find a recursive scheme for computing these probabilities. In particular,
+Eq. \eqref{eqn:3} allows us to compute probabilities of the form $p_{(m,S_I)}$ which, once in hand, allow one for the computation of probabilities of
+the form $p_{(m,I)}$ by Eq. \eqref{eqn:2}. Finally, once probabilities $p_{(m,I)}$ are in hand, Eq. \eqref{eqn:1} can be used to compute
+probabilities of the form $p_{(m,S)}$; see {\bf Algorithm 1}.\\
 
-\par When solving Eq. \eqref{eqn:3}, it is possible (by using boundary conditions $p_{\Delta}=1$, $p_{(N,S_I)}=0$) to obtain the iterative
-scheme
-\begin{eqnarray*}
- p_{(N-1,S_I)} &=& h_{(N-1,S_I)}^{-1}\left(f_{(N-1,S_I)}p_{(N-2,S_I)}+g_{(N-1,S_I)}\right),\ \hbox{\it with } h_{(N-1,S_I)}=1,\ f_{(N-1,S_I)} ~=~ \frac{\beta(N-2)}{\theta_{(N-1,S_I)}},\ g_{(N-1,S_I)}=\frac{\beta_{\cdot\rightarrow A}}{\theta_{(N-1,S_I)}},\\
- p_{(m,S_I)} &=& h_{(m,S_I)}^{-1}\left(f_{(m,S_I)}p_{(m-1,S_I)}+g_{(m,S_I)}\right),\ \hbox{\it with } h_{(m,S_I)}=1-\frac{\gamma(N-m)}{\theta_{(m,S_I)}}h_{(m+1,S_I)}^{-1}f_{(m+1,S_I)},\ f_{(m,S_I)} ~=~ \frac{\beta(m-1)(N-m)}{\theta_{(m,S_I)}},\\
-&& g_{(m,S_I)}=\frac{\beta_{\cdot\rightarrow A}(N-m)}{\theta_{{(m,S_I)}}}+\frac{\gamma(N-m)}{\theta_{{(m,S_I)}}}h_{(m+1,S_I)}^{-1}g_{(m+1,S_I)}, \quad \hbox{\it for } m=N-2,\dots,2,\\
- p_{(1,S_I)} &=& h_{(1,S_I)}^{-1}g_{(1,S_I)},\ \hbox{\it with } h_{(1,S_I)}=1-\frac{\gamma(N-1)}{\theta_{(1,S_I)}}h_{(2,S_I)}^{-1}f_{(2,S_I)},\ g_{(1,S_I)}=\frac{\beta_{\cdot\rightarrow A} (N-1)}{\theta_{(1,S_I)}}+\frac{\gamma(N-1)}{\theta_{(1,S_I)}}h_{(2,S_I)}^{-1}g_{(2,S_I)},
-\end{eqnarray*}
+%\par When solving Eq. \eqref{eqn:3}, it is possible (by using boundary conditions $p_{\Delta}=1$, $p_{(N,S_I)}=0$) to obtain the iterative
+%scheme
+%\begin{eqnarray*}
+% p_{(N-1,S_I)} &=& h_{(N-1,S_I)}^{-1}\left(f_{(N-1,S_I)}p_{(N-2,S_I)}+g_{(N-1,S_I)}\right),\\
+%&& \hbox{\it with } h_{(N-1,S_I)}=1,\ f_{(N-1,S_I)} ~=~ \frac{\beta(N-2)}{\theta_{(N-1,S_I)}},\ g_{(N-1,S_I)}=\frac{\beta_{\bullet\rightarrow A}}{\theta_{(N-1,S_I)}},\\
+% p_{(m,S_I)} &=& h_{(m,S_I)}^{-1}\left(f_{(m,S_I)}p_{(m-1,S_I)}+g_{(m,S_I)}\right),\\
+%&& \hbox{\it with } h_{(m,S_I)}=1-\frac{\gamma(N-m)}{\theta_{(m,S_I)}}h_{(m+1,S_I)}^{-1}f_{(m+1,S_I)},\ f_{(m,S_I)} ~=~ \frac{\beta(m-1)(N-m)}{\theta_{(m,S_I)}},\\
+%&& g_{(m,S_I)}=\frac{\beta_{\bullet\rightarrow A}(N-m)}{\theta_{{(m,S_I)}}}+\frac{\gamma(N-m)}{\theta_{{(m,S_I)}}}h_{(m+1,S_I)}^{-1}g_{(m+1,S_I)}, \quad \hbox{\it for } m=N-2,\dots,2,\\
+% p_{(1,S_I)} &=& h_{(1,S_I)}^{-1}g_{(1,S_I)},\\
+%&& \hbox{\it with } h_{(1,S_I)}=1-\frac{\gamma(N-1)}{\theta_{(1,S_I)}}h_{(2,S_I)}^{-1}f_{(2,S_I)},\ g_{(1,S_I)}=\frac{\beta_{\bullet\rightarrow A} (N-1)}{\theta_{(1,S_I)}}+\frac{\gamma(N-1)}{\theta_{(1,S_I)}}h_{(2,S_I)}^{-1}g_{(2,S_I)},
+%\end{eqnarray*}
 
-\par\noindent which yields an algorithmic procedure for computing these probabilities. Once these are in hand, Eq. \eqref{eqn:2} allows us to write
-\begin{eqnarray*}
- p_{(N-1,I)} &=& h_{(N-1,I)}^{-1}\left(f_{(N-1,I)}p_{(N-2,I)}+g_{(N-1,I)}\right),\ \hbox{\it with } h_{(N-1,I)}=1,\ f_{(N-1,I)}=\frac{\beta_{A\rightarrow\cdot}(N-1)}{\theta_{(N-1,I)}},\ g_{(N-1,I)}=\frac{\gamma_A}{\theta_{(N-1,I)}}p_{(N,S_I)},\\
- p_{(m,I)} &=& h_{(m,I)}^{-1}\left(f_{(m,I)}p_{(m-1,I)}+g_{(m,I)}\right),\ \hbox{\it with } h_{(m,I)}=1-\frac{\gamma(N-m-1)}{\theta_{(m,I)}}h_{(m+1,I)}^{-1}f_{(m+1,I)},\ f_{(m,I)} ~=~ \frac{\beta m(N-m-1)+\beta_{A\rightarrow\cdot}m}{\theta_{(m,I)}},\\
-&& g_{(m,I)}=\frac{\gamma (N-m-1)}{\theta_{(m,I)}}h_{(m+1,I)}^{-1}g_{(m+1,I)}+\frac{\gamma_A}{\theta_{(m,I)}}p_{(m+1,S_I)},\quad \hbox{\it for } m=N-2,\dots,1,\\
- p_{(0,I)} &=& h_{(0,I)}^{-1}g_{(0,I)},\ \hbox{\it with } h_{(0,I)}=1-\frac{\gamma(N-1)}{\theta_{(0,I)}}h_{(1,I)}^{-1}f_{(1,I)},\ g_{(0,I)}=\frac{\gamma(N-1)}{\theta_{(0,I)}}h_{(1,I)}^{-1}g_{(1,I)}+\frac{\gamma_A}{\theta_{(0,I)}}p_{(1,S_I)}.
-\end{eqnarray*}
+%\par\noindent which yields an algorithmic procedure for computing these probabilities. Once these are in hand, Eq. \eqref{eqn:2} allows us to write
+%\begin{eqnarray*}
+% p_{(N-1,I)} &=& h_{(N-1,I)}^{-1}\left(f_{(N-1,I)}p_{(N-2,I)}+g_{(N-1,I)}\right),\\
+%&& \hbox{\it with } h_{(N-1,I)}=1,\ f_{(N-1,I)}=\frac{\beta_{A\rightarrow\bullet}(N-1)}{\theta_{(N-1,I)}},\ g_{(N-1,I)}=\frac{\gamma(A)}{\theta_{(N-1,I)}}p_{(N,S_I)},\\
+% p_{(m,I)} &=& h_{(m,I)}^{-1}\left(f_{(m,I)}p_{(m-1,I)}+g_{(m,I)}\right),\\
+%&& \hbox{\it with } h_{(m,I)}=1-\frac{\gamma(N-m-1)}{\theta_{(m,I)}}h_{(m+1,I)}^{-1}f_{(m+1,I)},\ f_{(m,I)} ~=~ \frac{\beta m(N-m-1)+\beta_{A\rightarrow\bullet}m}{\theta_{(m,I)}},\\
+%&& g_{(m,I)}=\frac{\gamma (N-m-1)}{\theta_{(m,I)}}h_{(m+1,I)}^{-1}g_{(m+1,I)}+\frac{\gamma(A)}{\theta_{(m,I)}}p_{(m+1,S_I)},\quad \hbox{\it for } m=N-2,\dots,1,\\
+% p_{(0,I)} &=& h_{(0,I)}^{-1}g_{(0,I)},\\
+%&& \hbox{\it with } h_{(0,I)}=1-\frac{\gamma(N-1)}{\theta_{(0,I)}}h_{(1,I)}^{-1}f_{(1,I)},\ g_{(0,I)}=\frac{\gamma(N-1)}{\theta_{(0,I)}}h_{(1,I)}^{-1}g_{(1,I)}+\frac{\gamma(A)}{\theta_{(0,I)}}p_{(1,S_I)}.
+%\end{eqnarray*}
 
-\par\noindent Finally, probabilities of the form $p_{(m,S)}$ are obtained from Eq. \eqref{eqn:1} as
-\begin{eqnarray*}
- p_{(N-1,S)} &=& h_{(N-1,S)}^{-1}\left(f_{(N-1,S)}p_{(N-2,S)}+g_{(N-1,S)}\right),\ \hbox{\it with } h_{(N-1,S)}=1,\ f_{(N-1,S)} ~=~ \frac{\beta(N-2)}{\theta_{(N-1,S)}},\ g_{(N-1,S)}=\frac{\beta_{\cdot\rightarrow A}}{\theta_{(N-1,S)}}p_{(N-2,I)},\\
- p_{(m,S)} &=& h_{(m,S)}^{-1}\left(f_{(m,S)}p_{(m-1,S)}+g_{(m,S)}\right),\ \hbox{\it with } h_{(m,S)}=1-\frac{\gamma(N-m)}{\theta_{(m,S)}}h_{(m+1,S)}^{-1}f_{(m+1,S)},\ f_{(m,S)} ~=~ \frac{\beta (m-1)(N-m)}{\theta_{(m,S)}},\\
-&& g_{(m,S)}=\frac{\beta_{\cdot\rightarrow A}(N-m)}{\theta_{(m,S)}}p_{(m-1,I)}+\frac{\gamma(N-m)}{\theta_{(m,S)}}h_{(m+1,S)}^{-1}g_{(m+1,S)},\quad \hbox{\it for } m=N-2,\dots,2,\\
- p_{(1,S)} &=& h_{(1,S)}^{-1}g_{(1,S)},\ \hbox{\it with } h_{(1,S)}=1-\frac{\gamma(N-1)}{\theta_{(1,S)}}h_{(2,S)}^{-1}f_{(2,S)},\ g_{(1,S)}=\frac{\beta_{\cdot\rightarrow A} (N-1)}{\theta_{(1,S)}}p_{(0,I)}+\frac{\gamma(N-1)}{\theta_{(1,S)}}h_{(2,S)}^{-1}g_{(2,S)}.
-\end{eqnarray*}
+%\par\noindent Finally, probabilities of the form $p_{(m,S)}$ are obtained from Eq. \eqref{eqn:1} as
+%\begin{eqnarray*}
+% p_{(N-1,S)} &=& h_{(N-1,S)}^{-1}\left(f_{(N-1,S)}p_{(N-2,S)}+g_{(N-1,S)}\right),\ \hbox{\it with } h_{(N-1,S)}=1,\ f_{(N-1,S)} ~=~ \frac{\beta(N-2)}{\theta_{(N-1,S)}},\ g_{(N-1,S)}=\frac{\beta_{\bullet\rightarrow A}}{\theta_{(N-1,S)}}p_{(N-2,I)},\\
+% p_{(m,S)} &=& h_{(m,S)}^{-1}\left(f_{(m,S)}p_{(m-1,S)}+g_{(m,S)}\right),\ \hbox{\it with } h_{(m,S)}=1-\frac{\gamma(N-m)}{\theta_{(m,S)}}h_{(m+1,S)}^{-1}f_{(m+1,S)},\ f_{(m,S)} ~=~ \frac{\beta (m-1)(N-m)}{\theta_{(m,S)}},\\
+%&& g_{(m,S)}=\frac{\beta_{\bullet\rightarrow A}(N-m)}{\theta_{(m,S)}}p_{(m-1,I)}+\frac{\gamma(N-m)}{\theta_{(m,S)}}h_{(m+1,S)}^{-1}g_{(m+1,S)},\quad \hbox{\it for } m=N-2,\dots,2,\\
+% p_{(1,S)} &=& h_{(1,S)}^{-1}g_{(1,S)},\ \hbox{\it with } h_{(1,S)}=1-\frac{\gamma(N-1)}{\theta_{(1,S)}}h_{(2,S)}^{-1}f_{(2,S)},\ g_{(1,S)}=\frac{\beta_{\bullet\rightarrow A} (N-1)}{\theta_{(1,S)}}p_{(0,I)}+\frac{\gamma(N-1)}{\theta_{(1,S)}}h_{(2,S)}^{-1}g_{(2,S)}.
+%\end{eqnarray*}
 
-\par\noindent From previous recursions, {\bf Algorithm 1} is obtained for computing probabilities in Eqs. \eqref{eqn:1}-\eqref{eqn:3}.\\
+%\par\noindent From previous recursions, {\bf Algorithm 1} is obtained for computing probabilities in Eqs. \eqref{eqn:1}-\eqref{eqn:3}.\\
 
-\par\noindent{\bf Algorithm 1}\\
-\begin{minipage}{9cm}
+\par\noindent{\bf Algorithm 1}
+%\begin{minipage}{9cm}
 \begin{description}
-  \item $h_{(N-1,S_I)} ~=~ 1$;
-  \item $f_{(N-1,S_I)} ~=~ \frac{\beta(N-2)}{\theta_{(N-1,S_I)}}$;
-  \item $g_{(N-1,S_I)} ~=~ \frac{\beta_{\cdot\rightarrow A}}{\theta_{(N-1,S_I)}}$;
+  \item \textit{\textbf{Recursive scheme for computing probabilities $p_{(m,S_I)}$ from Eq. \eqref{eqn:3}:}}
+  \item $h_{(N-1,S)} ~=~ 1$;
+  \item $f_{(N-1,S)} ~=~ \frac{\beta(N-2)}{\theta_{(N-1,S)}}$;
+  \item $g_{(N-1,S_I)} ~=~ \frac{\beta_{\bullet\rightarrow A}}{\theta_{(N-1,S)}}$;
   \item \it For $m=N-2,\dots,1$:
-  \item $~$\hspace{0.5cm} $h_{(m,S_I)} ~=~ 1-\frac{\gamma(N-m)}{\theta_{(m,S_I)}}h_{(m+1,S_I)}^{-1}f_{(m+1,S_I)}$;
-  \item $~$\hspace{0.5cm} $f_{(m,S_I)} ~=~ \frac{\beta(m-1)(N-m)}{\theta_{(m,S_I)}}$;
-  \item $~$\hspace{0.5cm} $g_{(m,S_I)} ~=~ \frac{\beta_{\cdot\rightarrow A}(N-m)}{\theta_{{(m,S_I)}}}+\frac{\gamma(N-m)}{\theta_{{(m,S_I)}}}h_{(m+1,S_I)}^{-1}g_{(m+1,S_I)}$;
-\end{description}
-\end{minipage}\begin{minipage}{9cm}
-\begin{description}
+  \item $~$\hspace{0.5cm} $h_{(m,S)} ~=~ 1-\frac{\gamma(N-m)}{\theta_{(m,S)}}h_{(m+1,S)}^{-1}f_{(m+1,S)}$;
+  \item $~$\hspace{0.5cm} $f_{(m,S)} ~=~ \frac{\beta(m-1)(N-m)}{\theta_{(m,S)}}$;
+  \item $~$\hspace{0.5cm} $g_{(m,S_I)} ~=~ \frac{\beta_{\bullet\rightarrow A}(N-m)}{\theta_{{(m,S)}}}+\frac{\gamma(N-m)}{\theta_{{(m,S)}}}h_{(m+1,S)}^{-1}g_{(m+1,S_I)}$;
+  \item $p_{(1,S_I)} ~=~ h_{(1,S)}^{-1}g_{(1,S_I)}$;
+  \item \it For $m=2,\dots,N-1$:
+  \item $~$\hspace{0.5cm} $p_{(m,S_I)} ~=~ h_{(m,S)}^{-1}\left(f_{(m,S)}p_{(m-1,S_I)}+g_{(m,S_I)}\right)$;
+  \item \textit{\textbf{Recursive scheme for computing probabilities $p_{(m,I)}$ from Eq. \eqref{eqn:2}:}}
+  \item $h_{(N-1,I)} ~=~ 1$;
+  \item $f_{(N-1,I)} ~=~ \frac{\beta_{A\rightarrow\bullet}(N-1)}{\theta_{(N-1,I)}}$;
+  \item $g_{(N-1,I)} ~=~ \frac{\gamma(A)}{\theta_{(N-1,I)}}p_{(N,S_I)}$;
+  \item \it For $m=N-2,\dots,0$:
+  \item $~$\hspace{0.5cm} $h_{(m,I)} ~=~ 1-\frac{\gamma(N-m-1)}{\theta_{(m,I)}}h_{(m+1,I)}^{-1}f_{(m+1,I)}$;
+  \item $~$\hspace{0.5cm} $f_{(m,I)} ~=~ \frac{\beta m(N-m-1)+\beta_{A\rightarrow\bullet}m}{\theta_{(m,I)}}$;
+  \item $~$\hspace{0.5cm} $g_{(m,I)} ~=~ \frac{\gamma (N-m-1)}{\theta_{(m,I)}}h_{(m+1,I)}^{-1}g_{(m+1,I)}+\frac{\gamma(A)}{\theta_{(m,I)}}p_{(m+1,S_I)}$;
   \item $p_{(0,I)} ~=~ h_{(0,I)}^{-1}g_{(0,I)}$;
   \item \it For $m=1,\dots,N-1$:
   \item $~$\hspace{0.5cm} $p_{(m,I)} ~=~ h_{(m,I)}^{-1}\left(f_{(m,I)}p_{(m-1,I)}+g_{(m,I)}\right)$;
-  \item $h_{(N-1,S)} ~=~ 1$;
-  \item $f_{(N-1,S)} ~=~ \frac{\beta(N-2)}{\theta_{(N-1,S)}}$;
-  \item $g_{(N-1,S)} ~=~ \frac{\beta_{\cdot\rightarrow A}}{\theta_{(N-1,S)}}p_{(N-2,I)}$;
-  \item $~$
-\end{description}
-\end{minipage}
-
-\begin{minipage}{9cm}
-\begin{description}
-  \item $p_{(1,S_I)} ~=~ h_{(1,S_I)}^{-1}g_{(1,S_I)}$;
-  \item \it For $m=2,\dots,N-1$:
-  \item $~$\hspace{0.5cm} $p_{(m,S_I)} ~=~ h_{(m,S_I)}^{-1}\left(f_{(m,S_I)}p_{(m-1,S_I)}+g_{(m,S_I)}\right)$;
-  \item $h_{(N-1,I)} ~=~ 1$;
-  \item $f_{(N-1,I)} ~=~ \frac{\beta_{A\rightarrow\cdot}(N-1)}{\theta_{(N-1,I)}}$;
-  \item $g_{(N-1,I)} ~=~ \frac{\gamma_A}{\theta_{(N-1,I)}}p_{(N,S_I)}$;
-  \item \it For $m=N-2,\dots,0$:
-  \item $~$\hspace{0.5cm} $h_{(m,I)} ~=~ 1-\frac{\gamma(N-m-1)}{\theta_{(m,I)}}h_{(m+1,I)}^{-1}f_{(m+1,I)}$;
-  \item $~$\hspace{0.5cm} $f_{(m,I)} ~=~ \frac{\beta m(N-m-1)+\beta_{A\rightarrow\cdot}m}{\theta_{(m,I)}}$;
-  \item $~$\hspace{0.5cm} $g_{(m,I)} ~=~ \frac{\gamma (N-m-1)}{\theta_{(m,I)}}h_{(m+1,I)}^{-1}g_{(m+1,I)}+\frac{\gamma_A}{\theta_{(m,I)}}p_{(m+1,S_I)}$;
-\end{description}
-\end{minipage}\begin{minipage}{9cm}
-\begin{description}
+  \item \textit{\textbf{Recursive scheme for computing probabilities $p_{(m,S)}$ from Eq. \eqref{eqn:1}:}}
+  \item $g_{(N-1,S)} ~=~ \frac{\beta_{\bullet\rightarrow A}}{\theta_{(N-1,S)}}p_{(N-2,I)}$;
   \item \it For $m=N-2,\dots,1$:
-  \item $~$\hspace{0.5cm} $h_{(m,S)} ~=~ 1-\frac{\gamma(N-m)}{\theta_{(m,S)}}h_{(m+1,S)}^{-1}f_{(m+1,S)}$;
-  \item $~$\hspace{0.5cm} $f_{(m,S)} ~=~ \frac{\beta (m-1)(N-m)}{\theta_{(m,S)}}$;
-  \item $~$\hspace{0.5cm} $g_{(m,S)} ~=~ \frac{\beta_{\cdot\rightarrow A}(N-m)}{\theta_{(m,S)}}p_{(m-1,I)}+\frac{\gamma(N-m)}{\theta_{(m,S)}}h_{(m+1,S)}^{-1}g_{(m+1,S)}$;
+  \item $~$\hspace{0.5cm} $g_{(m,S)} ~=~ \frac{\beta_{\bullet\rightarrow A}(N-m)}{\theta_{(m,S)}}p_{(m-1,I)}+\frac{\gamma(N-m)}{\theta_{(m,S)}}h_{(m+1,S)}^{-1}g_{(m+1,S)}$;
   \item $p_{(1,S)} ~=~ h_{(1,S)}^{-1}g_{(1,S)}$;
   \item \it For $m=2,\dots,N-1$:
   \item $~$\hspace{0.5cm} $p_{(m,S)} ~=~ h_{(m,S)}^{-1}\left(f_{(m,S)}p_{(m-1,S)}+g_{(m,S)}\right)$;
-  \item $~$
-  \item $~$
-  \item $~$
-  \item $~$
 \end{description}
-\end{minipage}
-
-\vspace{1cm}
-
-\par\noindent We note here that $h_{(m,S)}=h_{(m,S_I)}$ and $f_{(m,S)}=f_{(m,S_I)}$ for any $m$ in previous algorithms.
+%\end{minipage}
 
 \subsection{Temporary and/or partial immunity SIR models}
+\label{SubSect22}
 
-\par We focus now on epidemic models where some immunity is obtained by individuals suffering the infection. To this aim, we consider modifications
-over the standard $S\rightarrow I\rightarrow R$ epidemic model, where temporary and/or partial immunity processes occur:
+\par We focus now on epidemic models where some kind of immunity is obtained by individuals after suffering the infection. To this aim, we consider models inspired from models in
+Ref. \cite{gomes2004infection} where some temporary and/or partial immunity hypotheses are assumed:
 \begin{itemize}
- \item {\it Temporary immunity:} upon infection, individuals develop an immune response, that is lost after a certain random time (new events $I\rightarrow S$, $R\rightarrow S$).
-  \item {\it Partial immunity:} individuals are protected while infected, and regain some susceptibility upon recovery (new event $R\rightarrow I$).
+ \item {\it Temporary immunity:} upon infection, individuals develop an immune response leading to temporary immunity, which is lost after a certain
+time.
+  \item {\it Partial immunity:} individuals are protected while infected, and regain some susceptibility upon recovery.
 \end{itemize}
 
-That is, the {\it temporary-partial immunity model} given in \cite[Figure 1(e)]{Gomes04}, TPI-SIR Model here, is represented by diagram in Figure
-\ref{fig:4}. The {\it temporary immunity SIR model} (TI-SIR Model here) and {\it partial immunity SIR model} (PI-SIR Model here) described in \cite[Figure 1(c)-(d)]{Gomes04} are obtained,
-respectively, from the TPI-SIR Model with $\sigma=0$ and $\alpha_I=\alpha_R=0$.
-\begin{figure}[h!]
+\par\noindent As explained in \cite[Figure 1(e)]{gomes2004infection}, these hypotheses can be incorporated by considering a general model such as the one in Figure
+\ref{fig:4}. Considering only partial immunity, or only temporary immunity, can be done by setting some of the model parameters in Figure \ref{fig:4} equal to zero. We refer for now to the model in Figure \ref{fig:4} as the {\it temporary-partial immunity SIR model} (TPI-SIR), and we will consider different immunity hypotheses in Section \ref{Sect3} by setting some model parameters equal to zero.
+\begin{figure}
 \centering
- \includegraphics[width=0.5\textwidth]{Figure4.jpg}
-\caption{TPI-SIR Model.}
+ \includegraphics[width=\textwidth]{Figure4.jpg}
+\caption{The {\it temporary-partial immunity SIR model} (TPI-SIR).}
 \label{fig:4}
 \end{figure}
 
-\par We analyse in this section the probability of re-infection of a marked individual under the TPI-SIR Model, so that the analysis directly
-applies to the TI-SIR and PI-SIR Models as particular cases, with some parameters equal to zero. The TPI-SIR Model is represented by the Markovian
+\par We analyse in this section the probability of reinfection of a marked individual under the TPI-SIR Model. The TPI-SIR Model is represented by the Markovian
 process ${\cal \tilde X}=\{{\bf \tilde X}(t)=({\tilde S}(t),{\tilde I}(t)):\ t\geq0\}$, with ${\tilde R}(t)=N-{\tilde S}(t)-{\tilde I}(t)$ the total
-number of recovered individuals at time $t$, over the state space ${\cal \tilde S}=\{(m,n)\in\mathbb{N}^2_0: \ m+n\leq N\}$,
-and states of the form $(m,0)$ being absorbing states representing the extinction of the epidemic; that is, we consider that the process ends once the
-epidemic dies out, even thought there could still occur events involving susceptible and recovered individuals.
+number of recovered individuals at time $t$, defined over the state space ${\cal \tilde S}=\{(m,n)\in\mathbb{N}^2_0: \ m+n\leq N\}$.
+States of the form $(m,0)$ are considered as absorbing states representing the extinction of the epidemic; that is, we study the process only until
+the epidemic dies out ({\it i.e.,} until ${\tilde I}(t)=0$), even thought according to Figure \ref{fig:4} there might still occur some events after that, only involving susceptible and recovered individuals.
 
-\par We propose to track a marked individual $A$ by adding a third variable ${\tilde A}(t)$ to process ${\cal \tilde X}$ as in Subsection 2.1. In particular, we consider
-the extended process ${\cal \tilde X}^{ext}=\{{\bf \tilde X}^{ext}=({\tilde S}(t),{\tilde I}(t),{\tilde A}(t)):\ t\geq0\}$ where ${\tilde A}(t)$ takes values among $\{S,S_I,I,R\}$ and represents
-the state of individual $A$ at time $t$. The state space of ${\cal \tilde X}^{ext}$ is given by
+\par We propose to track a marked individual $A$ by adding a third variable ${\tilde A}(t)$ to process ${\cal \tilde X}$ as in Subsection 2.1. In
+particular, we consider the extended process ${\cal \tilde X}^{ext}=\{{\bf \tilde X}^{ext}(t)=({\tilde S}(t),{\tilde I}(t),{\tilde A}(t)):\ t\geq0\}$ where
+${\tilde A}(t)$ takes values among states $\{S,S_I,I,R\}$ and represents the state of individual $A$ at time $t$ (that is, individual at time $t$ can be
+susceptible having or not suffered the infection before, infected or recovered). The state space of
+${\cal \tilde X}^{ext}$ is
 \begin{eqnarray*}
  {\cal \tilde S}^{ext} &=& \left({\cal \tilde S}^{ext}(S)\times\{S,S_I\}\right)\cup\left({\cal \tilde S}^{ext}(I)\times\{I\}\right)\cup\left({\cal \tilde S}^{ext}(R)\times\{R\}\right)\cup\{\tilde \Delta\},
 \end{eqnarray*}
-\par\noindent where ${\tilde \Delta}$ is an absorbing state representing re-infection of individual $A$ for the first time,
+\par\noindent ${\tilde \Delta}$ is an absorbing state representing reinfection of individual $A$ for the first time, and
 \begin{eqnarray*}
 {\cal \tilde S}^{ext}(S) &=& \{(m,n)\in\mathbb{N}_0^2:\ m>0,\ m+n\leq N\},\\
 {\cal \tilde S}^{ext}(I) &=& \{(m,n)\in\mathbb{N}_0^2:\ n>0,\ m+n\leq N\},\\
 {\cal \tilde S}^{ext}(R) &=& \{(m,n)\in\mathbb{N}_0^2:\ m+n<N\},
 \end{eqnarray*}
-\par\noindent and where transitions among states within ${\cal \tilde S}^{ext}$ are given in Table \ref{tab:2}. Heterogeneities related to individual $A$ are given by special rates $\beta_{\cdot\rightarrow A}$, $\beta_{A\rightarrow\cdot}$, $\sigma_A$, $\alpha_R(A)$, $\alpha_I(A)$ and $\gamma_A$. Under homogeneous conditions, we have $\beta_{\cdot\rightarrow A}=\beta_{A\rightarrow\cdot}=\beta$, $\gamma_A=\gamma$, $\sigma_A=\sigma$, $\alpha_R(A)=\alpha_R$ and $\alpha_I(A)=\alpha_I$.
+\par\noindent relate to the possible numbers of susceptible and infective individuals in the population when individual A is susceptible, infective
+or recovered, respectively. Transitions among states within ${\cal \tilde S}^{ext}$ are given in Table \ref{tab:2}, and individual $A$ is again considered to potentially
+behave differently against the disease than the rest of individuals in the population, by considering individual rates $\beta_{\bullet\rightarrow A}$,
+$\beta_{A\rightarrow\bullet}$, $\sigma(A)$, $\alpha_R(A)$, $\alpha_I(A)$ and $\gamma(A)$. In order to implement our methodology for a completely homogeneous
+population, one would set $\beta_{\bullet\rightarrow A}=\beta_{A\rightarrow\bullet}=\beta$, $\gamma(A)=\gamma$, $\sigma(A)=\sigma$, $\alpha_R(A)=\alpha_R$ and $\alpha_I(A)=\alpha_I$.\\
 
-\begin{table}[h]
+\begin{table}
+{\small
 \centering
 \begin{tabular}{|l|l|l|l|}
 \hline
-Type of event & Original state ($n\geq1$, $m+n\leq N$, & Destination state & Rate\\
- & $0\leq m\leq N-1$) & & \\
+Event & Original state  & Destination state & Rate\\
+ & & & \\
 \hline
-Recovery of an infective individual & $(m,n,S)$, $m\geq1$ & $(m,n-1,S)$ & $\gamma n$\\
- & $(m,n,S_I)$, $m\geq1$ & $(m,n-1,S_I)$ & $\gamma n$\\
- & $(m,n,I)$, $n\geq2$ & $(m,n-1,I)$ & $\gamma(n-1)$\\
- & $(m,n,I)$ & $(m,n-1,R)$ & $\gamma_A$\\
+Recovery of & $(m,n,S)$, $m\geq1$ & $(m,n-1,S)$ & $\gamma n$\\
+an infective & $(m,n,S_I)$, $m\geq1$ & $(m,n-1,S_I)$ & $\gamma n$\\
+individual & $(m,n,I)$, $n\geq2$ & $(m,n-1,I)$ & $\gamma(n-1)$\\
+ & $(m,n,I)$ & $(m,n-1,R)$ & $\gamma(A)$\\
  & $(m,n,R)$, $m+n<N$ & $(m,n-1,R)$ & $\gamma n$\\
 \hline
-Infection of a susceptible individual & $(m,n,S)$, $m\geq1$ & $(m-1,n+1,I)$ & $\beta_{\cdot\rightarrow A}n$\\
- & $(m,n,S)$, $m\geq2$ & $(m-1,n+1,S)$ & $\beta(m-1)n$\\
- & $(m,n,S_I)$, $m\geq1$ & ${\tilde \Delta}$ & $\beta_{\cdot\rightarrow A}n$\\
+Infection of & $(m,n,S)$, $m\geq1$ & $(m-1,n+1,I)$ & $\beta_{\bullet\rightarrow A}n$\\
+a susceptible & $(m,n,S)$, $m\geq2$ & $(m-1,n+1,S)$ & $\beta(m-1)n$\\
+individual & $(m,n,S_I)$, $m\geq1$ & ${\tilde \Delta}$ & $\beta_{\bullet\rightarrow A}n$\\
  & $(m,n,S_I)$, $m\geq2$ & $(m-1,n+1,S_I)$ & $\beta(m-1)n$\\
- & $(m,n,I)$, $m\geq1$ & $(m-1,n+1,I)$ & $\beta_{A\rightarrow\cdot}m+\beta(n-1)m$\\
+ & $(m,n,I)$, $m\geq1$ & $(m-1,n+1,I)$ & $\beta_{A\rightarrow\bullet}m+\beta(n-1)m$\\
  & $(m,n,R)$, $m\geq1,\ m+n<N$ & $(m-1,n+1,R)$ & $\beta mn$\\
 \hline
-Infection of a recovered individual & $(m,n,S)$, $m\geq1,\ m+n<N$ & $(m,n+1,S)$ & $\sigma\beta n(N-m-n)$\\
- & $(m,n,S_I)$, $m\geq1$, $m+n<N$ & $(m,n+1,S_I)$ & $\sigma\beta n(N-m-n)$\\
- & $(m,n,I)$, $m+n<N$ & $(m,n+1,I)$ & $\sigma\beta(n-1)(N-m-n)+\sigma\beta_{A\rightarrow\cdot}(N-m-n)$\\
+Infection of & $(m,n,S)$, $m\geq1,\ m+n<N$ & $(m,n+1,S)$ & $\sigma\beta n(N-m-n)$\\
+a recovered & $(m,n,S_I)$, $m\geq1$, $m+n<N$ & $(m,n+1,S_I)$ & $\sigma\beta n(N-m-n)$\\
+individual & $(m,n,I)$, $m+n<N$ & $(m,n+1,I)$ & $\sigma\beta(n-1)(N-m-n)$\\
+ & & & $+\sigma\beta_{A\rightarrow\bullet}(N-m-n)$\\
  & $(m,n,R)$, $m+n<N-1$ & $(m,n+1,R)$ & $\sigma\beta n(N-m-n-1)$\\
- & $(m,n,R)$, $m+n<N$ & ${\tilde \Delta}$ & $\sigma_A\beta_{\cdot\rightarrow A} n$\\
+ & $(m,n,R)$, $m+n<N$ & ${\tilde \Delta}$ & $\sigma(A)\beta_{\bullet\rightarrow A} n$\\
 \hline
-Immunity loss of an infective individual & $(m,n,S)$, $m\geq1$ & $(m+1,n-1,S)$ & $\alpha_I n$\\
- & $(m,n,S_I)$, $m\geq1$ & $(m+1,n-1,S_I)$ & $\alpha_I n$\\
- & $(m,n,I)$, $n\geq2$ & $(m+1,n-1,I)$ & $\alpha_I(n-1)$\\
+Immunity loss & $(m,n,S)$, $m\geq1$ & $(m+1,n-1,S)$ & $\alpha_I n$\\
+of an infective & $(m,n,S_I)$, $m\geq1$ & $(m+1,n-1,S_I)$ & $\alpha_I n$\\
+individual & $(m,n,I)$, $n\geq2$ & $(m+1,n-1,I)$ & $\alpha_I(n-1)$\\
  & $(m,n,I)$ & $(m+1,n-1,S_I)$ & $\alpha_I(A)$\\
  & $(m,n,R)$, $m+n<N$ & $(m+1,n-1,R)$ & $\alpha_I n$\\
 \hline
-Immunity loss of a recovered individual & $(m,n,S)$, $m\geq1,\ m+n<N$ & $(m+1,n,S)$ & $\alpha_R (N-m-n)$\\
- & $(m,n,S_I)$, $m\geq1,\ m+n<N$ & $(m+1,n,S_I)$ & $\alpha_R (N-m-n)$\\
- & $(m,n,I)$, $m+n<N$ & $(m+1,n,I)$ & $\alpha_R (N-m-n)$\\
+Immunity loss & $(m,n,S)$, $m\geq1,\ m+n<N$ & $(m+1,n,S)$ & $\alpha_R (N-m-n)$\\
+of a recovered & $(m,n,S_I)$, $m\geq1,\ m+n<N$ & $(m+1,n,S_I)$ & $\alpha_R (N-m-n)$\\
+individual & $(m,n,I)$, $m+n<N$ & $(m+1,n,I)$ & $\alpha_R (N-m-n)$\\
  & $(m,n,R)$, $m+n<N-1$ & $(m+1,n,R)$ & $\alpha_R (N-m-n-1)$\\
  & $(m,n,R)$, $m+n<N$ & $(m+1,n,S_I)$ & $\alpha_R(A)$\\
 \hline
 \end{tabular}
-\caption{Transitions among states in ${\cal \tilde S}^{ext}$.}
-\label{tab:2}
+\caption{Transitions among states in ${\cal \tilde S}^{ext}$, for $n\geq1$, $m\geq0$, $m+n\leq N$.}
+\label{tab:2}}
 \end{table}
 
-\par We define $p_{(m,n,a)}$ as the probability of individual $A$ suffering (at least one) re-infection given the current state of the process $(m,n,a)\in{\cal \tilde S}^{ext}$.
-These probabilities verify, for $m\geq0$, $n\geq1$ and $m+n\leq N$, equations
+\par We define $p_{(m,n,a)}$ as the probability of individual $A$ suffering at least one reinfection given the initial state of the process
+$(m,n,a)\in{\cal \tilde S}^{ext}$. These probabilities satisfy, for $m\geq0$, $n\geq1$ and $m+n\leq N$, equations
 \begin{eqnarray}
- \theta_{(m,n,S)}p_{(m,n,S)} &=& \beta(m-1)np_{(m-1,n+1,S)}+\beta_{\cdot\rightarrow A}np_{(m-1,n+1,I)}+\gamma np_{(m,n-1,S)}+\alpha_I np_{(m+1,n-1,S)}+\alpha_R(N-m-n)\nonumber\\
-&& \times p_{(m+1,n,S)}+\sigma\beta n(N-m-n)p_{(m,n+1,S)},\quad m\geq1,\label{eqn:4}\\
- \theta_{(m,n,I)}p_{(m,n,I)} &=& \left(\beta m(n-1)+\beta_{A\rightarrow\cdot}m\right)p_{(m-1,n+1,I)}+\gamma (n-1)p_{(m,n-1,I)}+\gamma_Ap_{(m,n-1,R)}+\alpha_I(n-1)p_{(m+1,n-1,I)}\nonumber\\
-&& +\alpha_I(A)p_{(m+1,n-1,S_I)}+\left(\sigma\beta(n-1)(N-m-n)+\sigma\beta_{A\rightarrow\cdot}(N-m-n)\right)p_{(m,n+1,I)}+\alpha_R(N-m-n)p_{(m+1,n,I)},\quad \label{eqn:5}\\
- \theta_{(m,n,R)}p_{(m,n,R)} &=& \beta mnp_{(m-1,n+1,R)}+\gamma np_{(m,n-1,R)}+\alpha_I np_{(m+1,n-1,R)}+\alpha_R(N-m-n-1)p_{(m+1,n,R)}+\alpha_R(A)\nonumber\\
-&&\times p_{(m+1,n,S_I)}+\sigma\beta n(N-m-n-1)p_{(m,n+1,R)}+\sigma_A\beta_{\cdot\rightarrow A} np_{{\tilde \Delta}},\quad m+n< N,\label{eqn:6}\\
- \theta_{(m,n,S_I)}p_{(m,n,S_I)} &=& \beta(m-1)np_{(m-1,n+1,S_I)}+\beta_{\cdot\rightarrow A}np_{{\tilde \Delta}}+\gamma np_{(m,n-1,S_I)}+\alpha_I np_{(m+1,n-1,S_I)}+\alpha_R(N-m-n)\nonumber\\
-&& \times p_{(m+1,n,S_I)}+\sigma\beta n(N-m-n)p_{(m,n+1,S_I)},\quad m\geq1.\label{eqn:7}
+ \theta_{(m,n,S)}p_{(m,n,S)} &=& \beta(m-1)np_{(m-1,n+1,S)}+\beta_{\bullet\rightarrow A}np_{(m-1,n+1,I)}+\gamma np_{(m,n-1,S)}\nonumber\\
+&& +\alpha_I np_{(m+1,n-1,S)}+\alpha_R(N-m-n)p_{(m+1,n,S)}\nonumber\\
+&&+\sigma\beta n(N-m-n)p_{(m,n+1,S)},\quad m\geq1,\label{eqn:4}\\
+ \theta_{(m,n,I)}p_{(m,n,I)} &=& \left(\beta m(n-1)+\beta_{A\rightarrow\bullet}m\right)p_{(m-1,n+1,I)}+\gamma (n-1)p_{(m,n-1,I)}\nonumber\\
+&& +\gamma(A)p_{(m,n-1,R)}+\alpha_I(n-1)p_{(m+1,n-1,I)}+\alpha_I(A)p_{(m+1,n-1,S_I)}\nonumber\\
+&&+\left(\sigma\beta(n-1)(N-m-n)+\sigma\beta_{A\rightarrow\bullet}(N-m-n)\right)p_{(m,n+1,I)}\nonumber\\
+&&+\alpha_R(N-m-n)p_{(m+1,n,I)},\quad \label{eqn:5}\\
+ \theta_{(m,n,R)}p_{(m,n,R)} &=& \beta mnp_{(m-1,n+1,R)}+\gamma np_{(m,n-1,R)}+\alpha_I np_{(m+1,n-1,R)}\nonumber\\
+&&+\alpha_R(N-m-n-1)p_{(m+1,n,R)}+\alpha_R(A)p_{(m+1,n,S_I)}+\sigma\beta n\nonumber\\
+&&\times(N-m-n-1)p_{(m,n+1,R)}+\sigma(A)\beta_{\bullet\rightarrow A} np_{{\tilde \Delta}},\quad m+n< N,\label{eqn:6}\\
+ \theta_{(m,n,S)}p_{(m,n,S_I)} &=& \beta(m-1)np_{(m-1,n+1,S_I)}+\beta_{\bullet\rightarrow A}np_{{\tilde \Delta}}+\gamma np_{(m,n-1,S_I)}\nonumber\\
+&&+\alpha_I np_{(m+1,n-1,S_I)}+\alpha_R(N-m-n)p_{(m+1,n,S_I)}\nonumber\\
+&&+\sigma\beta n(N-m-n)p_{(m,n+1,S_I)},\quad m\geq1,\label{eqn:7}
 \end{eqnarray}
-\par\noindent with $\theta_{(m,n,S)}=\theta_{(m,n,S_I)}=\beta(m-1)n+\beta_{\cdot\rightarrow A}n+\gamma n+\alpha_I n+\alpha_R(N-m-n)+\sigma\beta n(N-m-n)$, $\theta_{(m,n,I)}=\beta m(n-1)+\beta_{A\rightarrow\cdot}m+\gamma (n-1)+\gamma_A+\alpha_I(n-1)+\alpha_I(A)+\sigma\beta(n-1)(N-m-n)+\sigma\beta_{A\rightarrow\cdot}(N-m-n)+\alpha_R(N-m-n)$, $\theta_{(m,n,R)}=\beta mn+\gamma n+\alpha_I n+\alpha_R(N-m-n-1)+\alpha_R(A)+\sigma\beta n(N-m-n-1)+\sigma_A\beta_{\cdot\rightarrow A}n$, and boundary conditions $p_{{\tilde \Delta}}=1$, $p_{(m,0,S)}=p_{(m,0,S_I)}=p_{(m,0,R)}=0$, for any value of $m$.
+\par\noindent with $\theta_{(m,n,S)}=\beta(m-1)n+\beta_{\bullet\rightarrow A}n+\gamma n+\alpha_I n+\alpha_R(N-m-n)+\sigma\beta n(N-m-n)$, $\theta_{(m,n,I)}=\beta m(n-1)+\beta_{A\rightarrow\bullet}m+\gamma (n-1)+\gamma(A)+\alpha_I(n-1)+\alpha_I(A)+\sigma\beta(n-1)(N-m-n)+\sigma\beta_{A\rightarrow\bullet}(N-m-n)+\alpha_R(N-m-n)$, $\theta_{(m,n,R)}=\beta mn+\gamma n+\alpha_I n+\alpha_R(N-m-n-1)+\alpha_R(A)+\sigma\beta n(N-m-n-1)+\sigma(A)\beta_{\bullet\rightarrow A}n$, and boundary conditions $p_{{\tilde \Delta}}=1$, $p_{(m,0,S)}=p_{(m,0,S_I)}=p_{(m,0,R)}=0$, for any value of $m$.
 
 \par Eqs. \eqref{eqn:4}-\eqref{eqn:7} can be solved algorithmically in a backwards fashion. In particular, Eq. \eqref{eqn:7} can be solved first by
 considering
@@ -324,7 +411,7 @@ considering
 
 \par\noindent With this states organisation, Eq. \eqref{eqn:7} can be written in matrix form as
 \begin{eqnarray}\label{eqn:8}
- {\bf p}(S_I) &=& {\bf A}(S_I){\bf p}(S_I)+{\bf b}(S_I),
+ {\bf p}(S_I) &=& {\bf A}(S){\bf p}(S_I)+{\bf b}(S_I),
 \end{eqnarray}
 \par\noindent with
 \begin{eqnarray*}
@@ -338,81 +425,81 @@ p_{(k-1,1,S_I)}\\
 p_{(k-2,2,S_I)}\\
 \vdots\\
 p_{(1,k-1,S_I)}
-\end{array}\right),\quad
-{\bf b}(S_I) \ = \ \left(\begin{array}{c}
+\end{array}\right),\\
+{\bf b}(S_I) &=& \left(\begin{array}{c}
                           {\bf b}_2(S_I)\\
 {\bf b}_3(S_I)\\
 \vdots\\
 {\bf b}_N(S_I)
                          \end{array}\right),\quad
 {\bf b}_k(S_I) \ = \ \left(\begin{array}{c}
-               \frac{\beta_{\cdot\rightarrow A}}{\theta_{(k-1,1,S_I)}}\\
-\frac{\beta_{\cdot\rightarrow A}2}{\theta_{(k-2,2,S_I)}}\\
+               \frac{\beta_{\bullet\rightarrow A}}{\theta_{(k-1,1,S)}}\\
+\frac{\beta_{\bullet\rightarrow A}2}{\theta_{(k-2,2,S)}}\\
 \vdots\\
-\frac{\beta_{\cdot\rightarrow A}(k-1)}{\theta_{(1,k-1,S_I)}}\\
+\frac{\beta_{\bullet\rightarrow A}(k-1)}{\theta_{(1,k-1,S)}}\\
                          \end{array}\right),
 \end{eqnarray*}
 
-\par\noindent and with matrix ${\bf A}(S_I)$ given by
+\par\noindent and with matrix ${\bf A}(S)$ given by
 \begin{equation*}
   \left(\begin{array}{cccccc}
-{\bf A}_{2,2}(S_I) & {\bf A}_{2,3}(S_I) & {\bf 0}_{J(S;2)\times J(S;4)} & \dots & {\bf 0}_{J(S;2)\times J(S;N-1)} & {\bf 0}_{J(S;2)\times J(S;N)}\\
-{\bf A}_{3,2}(S_I) & {\bf A}_{3,3}(S_I) & {\bf A}_{3,4}(S_I) & \dots & {\bf 0}_{J(S;3)\times J(S;N-1)} & {\bf 0}_{J(S;3)\times J(S;N)}\\
-{\bf 0}_{J(S;4)\times J(S;2)} & {\bf A}_{4,3}(S_I) & {\bf A}_{4,4}(S_I) & \dots & {\bf 0}_{J(S;4)\times J(S;N-1)} & {\bf 0}_{J(S;4)\times J(S;N)}\\
+{\bf A}_{2,2}(S) & {\bf A}_{2,3}(S) & {\bf 0}_{J(S;2)\times J(S;4)} & \dots & {\bf 0}_{J(S;2)\times J(S;N-1)} & {\bf 0}_{J(S;2)\times J(S;N)}\\
+{\bf A}_{3,2}(S) & {\bf A}_{3,3}(S) & {\bf A}_{3,4}(S) & \dots & {\bf 0}_{J(S;3)\times J(S;N-1)} & {\bf 0}_{J(S;3)\times J(S;N)}\\
+{\bf 0}_{J(S;4)\times J(S;2)} & {\bf A}_{4,3}(S) & {\bf A}_{4,4}(S) & \dots & {\bf 0}_{J(S;4)\times J(S;N-1)} & {\bf 0}_{J(S;4)\times J(S;N)}\\
 \vdots & \vdots & \vdots & \ddots & \vdots & \vdots\\
-{\bf 0}_{J(S;N-1)\times J(S;2)} & {\bf 0}_{J(S;N-1)\times J(S;3)} & {\bf 0}_{J(S;N-1)\times J(S;4)} & \dots & {\bf A}_{N-1,N-1}(S_I) & {\bf A}_{N-1,N}(S_I) \\
-{\bf 0}_{J(S;N)\times J(S;2)} & {\bf 0}_{J(S;N)\times J(S;3)} & {\bf 0}_{J(S;N)\times J(S;4)} & \dots & {\bf A}_{N,N-1}(S_I) & {\bf A}_{N,N}(S_I)
+{\bf 0}_{J(S;N-1)\times J(S;2)} & {\bf 0}_{J(S;N-1)\times J(S;3)} & {\bf 0}_{J(S;N-1)\times J(S;4)} & \dots & {\bf A}_{N-1,N-1}(S) & {\bf A}_{N-1,N}(S) \\
+{\bf 0}_{J(S;N)\times J(S;2)} & {\bf 0}_{J(S;N)\times J(S;3)} & {\bf 0}_{J(S;N)\times J(S;4)} & \dots & {\bf A}_{N,N-1}(S) & {\bf A}_{N,N}(S)
                         \end{array}\right),
 \end{equation*}
 \par\noindent and with sub-matrices
+{\scriptsize
 \begin{eqnarray*}
- {\bf A}_{k,k}(S_I) &=& \left(\begin{array}{cccccc}
-0 & \frac{\beta(k-2)}{\theta_{(k-1,1,S_I)}} & 0 & \dots & 0 & 0\\
-\frac{\alpha_I2}{\theta_{(k-2,2,S_I)}} & 0 & \frac{\beta2(k-3)}{\theta_{(k-2,2,S_I)}} & \dots & 0 & 0\\
-0 & \frac{\alpha_I3}{\theta_{(k-3,3,S_I)}} & 0 & \dots & 0 & 0\\
+ {\bf A}_{k,k}(S) &=& \left(\begin{array}{cccccc}
+0 & \frac{\beta(k-2)}{\theta_{(k-1,1,S)}} & 0 & \dots & 0 & 0\\
+\frac{\alpha_I2}{\theta_{(k-2,2,S)}} & 0 & \frac{\beta2(k-3)}{\theta_{(k-2,2,S)}} & \dots & 0 & 0\\
+0 & \frac{\alpha_I3}{\theta_{(k-3,3,S)}} & 0 & \dots & 0 & 0\\
 \vdots & \vdots & \vdots & \ddots & \vdots & \vdots\\
-0 & 0 & 0 & \dots & 0 & \frac{\beta(k-2)}{\theta_{(2,k-2,S_I)}}\\
-0 & 0 & 0 & \dots & \frac{\alpha_I(k-1)}{\theta_{(1,k-1,S_I)}} & 0
-                        \end{array}\right),\quad 2\leq k\leq N,
-\end{eqnarray*}
-\begin{eqnarray*}
- {\bf A}_{k,k-1}(S_I) &=& \left(\begin{array}{cccccc}
+0 & 0 & 0 & \dots & 0 & \frac{\beta(k-2)}{\theta_{(2,k-2,S)}}\\
+0 & 0 & 0 & \dots & \frac{\alpha_I(k-1)}{\theta_{(1,k-1,S)}} & 0
+                        \end{array}\right),\quad 2\leq k\leq N,\\
+ {\bf A}_{k,k-1}(S) &=& \left(\begin{array}{cccccc}
 0 & 0 & 0 & \dots & 0 & 0\\
-\frac{\gamma2}{\theta_{(k-2,2,S_I)}} & 0 & 0 & \dots & 0 & 0\\
-0 & \frac{\gamma3}{\theta_{(k-3,3,S_I)}} & 0 & \dots & 0 & 0\\
+\frac{\gamma2}{\theta_{(k-2,2,S)}} & 0 & 0 & \dots & 0 & 0\\
+0 & \frac{\gamma3}{\theta_{(k-3,3,S)}} & 0 & \dots & 0 & 0\\
 \vdots & \vdots & \vdots & \ddots & \vdots & \vdots\\
-0 & 0 & 0 & \dots & \frac{\gamma(k-2)}{\theta_{(2,k-2,S_I)}} & 0\\
-0 & 0 & 0 & \dots & 0 & \frac{\gamma(k-1)}{\theta_{(1,k-1,S_I)}}
-                        \end{array}\right),\quad 3\leq k\leq N,\\
- {\bf A}_{k,k+1}(S_I) &=& \left(\begin{array}{cccccc}
-\frac{\alpha_R(N-k)}{\theta_{(k-1,1,S_I)}} & \frac{\sigma\beta(N-k)}{\theta_{(k-1,1,S_I)}} & 0 & \dots & 0 & 0\\
-0 & \frac{\alpha_R(N-k)}{\theta_{(k-2,2,S_I)}} & \frac{\sigma\beta(N-k)2}{\theta_{(k-2,2,S_I)}} & \dots & 0 & 0\\
-0 & 0 & \frac{\alpha_R(N-k)}{\theta_{(k-3,3,S_I)}} & \dots & 0 & 0\\
-\vdots & \vdots & \vdots & \ddots & \vdots & \vdots\\
-0 & 0 & 0 & \dots & \frac{\sigma\beta(N-k)(k-2)}{\theta_{(2,k-2,S_I)}} & 0\\
-0 & 0 & 0 & \dots & \frac{\alpha_R(N-k)}{\theta_{(1,k-1,S_I)}} & \frac{\sigma\beta(N-k)(k-1)}{\theta_{(1,k-1,S_I)}}
-                        \end{array}\right),\quad 2\leq k\leq N-1,
+0 & 0 & 0 & \dots & \frac{\gamma(k-2)}{\theta_{(2,k-2,S)}} & 0\\
+0 & 0 & 0 & \dots & 0 & \frac{\gamma(k-1)}{\theta_{(1,k-1,S)}}
+                        \end{array}\right),\quad 3\leq k\leq N,
 \end{eqnarray*}
+\begin{eqnarray*}
+ {\bf A}_{k,k+1}(S) &=& \left(\begin{array}{cccccc}
+\frac{\alpha_R(N-k)}{\theta_{(k-1,1,S)}} & \frac{\sigma\beta(N-k)}{\theta_{(k-1,1,S)}} & 0 & \dots & 0 & 0\\
+0 & \frac{\alpha_R(N-k)}{\theta_{(k-2,2,S)}} & \frac{\sigma\beta(N-k)2}{\theta_{(k-2,2,S)}} & \dots & 0 & 0\\
+0 & 0 & \frac{\alpha_R(N-k)}{\theta_{(k-3,3,S)}} & \dots & 0 & 0\\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots\\
+0 & 0 & 0 & \dots & \frac{\sigma\beta(N-k)(k-2)}{\theta_{(2,k-2,S)}} & 0\\
+0 & 0 & 0 & \dots & \frac{\alpha_R(N-k)}{\theta_{(1,k-1,S)}} & \frac{\sigma\beta(N-k)(k-1)}{\theta_{(1,k-1,S)}}
+                        \end{array}\right),\quad 2\leq k\leq N-1,
+\end{eqnarray*}}
 
-\par\noindent where $J(S;k)=\# L(S;k)=k-1$, and $\#B$ represents the cardinality of set $B$. According to the structure of matrix ${\bf A}(S_I)$,
-system in Eq. \eqref{eqn:8} can be algorithmically solved so that {\bf Algorithm 2} is obtained.
+\par\noindent where $J(S;k)=\# L(S;k)=k-1$, and $\#B$ represents the cardinality of set $B$. According to the structure of matrix ${\bf A}(S)$,
+system in Eq. \eqref{eqn:8} can be algorithmically solved in a specialised block-Gaussian elimination fashion; see {\bf Algorithm 2}.
 
 \vspace{0.5cm}
 \par \noindent{\bf Algorithm 2}
 \begin{description}
-  \item ${\bf H}_2(S_I) ~=~ {\bf I}_{J(S;2)}-{\bf A}_{2,2}(S_I)$;
-  \item ${\bf P}_2(S_I) ~=~ {\bf b}_2(S_I)$;
+  \item ${\bf H}_2(S) ~=~ {\bf I}_{J(S;2)}-{\bf A}_{2,2}(S)$;
+  \item ${\bf J}_2(S_I) ~=~ {\bf b}_2(S_I)$;
   \item \it For $k=3,\dots,N$:
-  \item $~$\hspace{0.5cm} ${\bf H}_k(S_I) ~=~ {\bf I}_{J(S;k)}-{\bf A}_{k,k}(S_I)-{\bf A}_{k,k-1}(S_I){\bf H}_{k-1}^{-1}(S_I){\bf A}_{k-1,k}(S_I)$;
-  \item $~$\hspace{0.5cm} ${\bf P}_k(S_I) ~=~ {\bf A}_{k,k-1}(S_I){\bf H}_{k-1}^{-1}(S_I){\bf P}_{k-1}(S_I)+{\bf b}_k(S_I)$;
-  \item ${\bf p}_N(S_I) ~=~ {\bf H}_N^{-1}(S_I){\bf P}_N(S_I)$;
+  \item $~$\hspace{0.5cm} ${\bf H}_k(S) ~=~ {\bf I}_{J(S;k)}-{\bf A}_{k,k}(S)-{\bf A}_{k,k-1}(S){\bf H}_{k-1}^{-1}(S){\bf A}_{k-1,k}(S)$;
+  \item $~$\hspace{0.5cm} ${\bf J}_k(S_I) ~=~ {\bf A}_{k,k-1}(S){\bf H}_{k-1}^{-1}(S){\bf J}_{k-1}(S_I)+{\bf b}_k(S_I)$;
+  \item ${\bf p}_N(S_I) ~=~ {\bf H}_N^{-1}(S){\bf J}_N(S_I)$;
   \item \it For $k=N-1,\dots,2$:
-  \item $~$\hspace{0.5cm} ${\bf p}_k(S_I) ~=~ {\bf H}_k^{-1}(S_I)\left({\bf A}_{k,k+1}(S_I){\bf p}_{k+1}(S_I)+{\bf P}_k(S_I)\right)$;
+  \item $~$\hspace{0.5cm} ${\bf p}_k(S_I) ~=~ {\bf H}_k^{-1}(S)\left({\bf A}_{k,k+1}(S){\bf p}_{k+1}(S_I)+{\bf J}_k(S_I)\right)$;
 \end{description}
 \vspace{0.5cm}
 
-
-\par Once probabilities of the form $p_{(m,n,S_I)}$ are in hand, one proceeds to obtain probabilities $p_{(m,n,R)}$ from Eq. \eqref{eqn:6}, which can be
+\par Once probabilities of the form $p_{(m,n,S_I)}$ are in hand, one proceeds similarly to obtain probabilities $p_{(m,n,R)}$ from Eq. \eqref{eqn:6}, which can be
 re-written in matrix form by organising
 \begin{eqnarray*}
  {\cal \tilde S}^{ext}(R) &=& \{(m,n)\in\mathbb{N}_0^2:\ m+n< N\} \ = \ \left(\{(m,0):\ 0\leq m\leq N-1\}\right)\cup{\cal C}^{ext}(R),\\
@@ -420,7 +507,7 @@ re-written in matrix form by organising
  L(R;k) &=& \{(m,n)\in\mathbb{N}_0^2:\ n\geq1,\ m+n=k\},\quad 1\leq k\leq N-1.
 \end{eqnarray*}
 
-\par\noindent We obtain
+\par\noindent In particular, we obtain
 \begin{eqnarray}\label{eqn:9}
  {\bf p}(R) &=& {\bf A}(R){\bf p}(R)+{\bf b}(R),
 \end{eqnarray}
@@ -448,10 +535,10 @@ p_{(0,k,R)}
 {\bf b}_{N-1}(R)
                          \end{array}\right),\quad
 {\bf b}_k(R) \ = \ \left(\begin{array}{c}
-               \frac{\alpha_R(A)p_{(k,1,S_I)}+\sigma_A\beta_{\cdot\rightarrow A}}{\theta_{(k-1,1,R)}}\\
-\frac{\alpha_R(A)p_{(k-1,2,S_I)}+\sigma_A\beta_{\cdot\rightarrow A}2}{\theta_{(k-2,2,R)}}\\
+               \frac{\alpha_R(A)p_{(k,1,S_I)}+\sigma(A)\beta_{\bullet\rightarrow A}}{\theta_{(k-1,1,R)}}\\
+\frac{\alpha_R(A)p_{(k-1,2,S_I)}+\sigma(A)\beta_{\bullet\rightarrow A}2}{\theta_{(k-2,2,R)}}\\
 \vdots\\
-\frac{\alpha_R(A)p_{(1,k,S_I)}+\sigma_A\beta_{\cdot\rightarrow A}k}{\theta_{(0,k,R)}}
+\frac{\alpha_R(A)p_{(1,k,S_I)}+\sigma(A)\beta_{\bullet\rightarrow A}k}{\theta_{(0,k,R)}}
                          \end{array}\right),
 \end{eqnarray*}
 
@@ -466,7 +553,8 @@ p_{(0,k,R)}
 {\bf 0}_{J(R;N-1)\times J(R;1)} & {\bf 0}_{J(R;N-1)\times J(R;2)} & {\bf 0}_{J(R;N-1)\times J(R;3)} & \dots & {\bf A}_{N-1,N-2}(R) & {\bf A}_{N-1,N-1}(R)
                         \end{array}\right),
 \end{equation*}
-\par\noindent and with sub-matrices
+\par\noindent with $J(R;k)=\#L(R;k)=k$. Finally, we have sub-matrices
+{\scriptsize
 \begin{eqnarray*}
  {\bf A}_{k,k}(R) &=& \left(\begin{array}{cccccc}
 0 & \frac{\beta(k-1)}{\theta_{(k-1,1,R)}} & 0 & \dots & 0 & 0\\
@@ -483,46 +571,42 @@ p_{(0,k,R)}
 \vdots & \vdots & \vdots & \ddots & \vdots & \vdots\\
 0 & 0 & 0 & \dots & \frac{\gamma(k-1)}{\theta_{(1,k-1,R)}} & 0\\
 0 & 0 & 0 & \dots & 0 & \frac{\gamma k}{\theta_{(0,k,R)}}
-                        \end{array}\right),\quad 2\leq k\leq N-1,
-\end{eqnarray*}
-\begin{eqnarray*}
- {\bf A}_{k,k+1}(R) &=& \left(\begin{array}{cccccc}
+                        \end{array}\right),\quad 2\leq k\leq N-1,\\
+{\bf A}_{k,k+1}(R) &=& \left(\begin{array}{cccccc}
 \frac{\alpha_R(N-k-1)}{\theta_{(k-1,1,R)}} & \frac{\sigma\beta(N-k-1)}{\theta_{(k-1,1,R)}} & 0 & \dots & 0 & 0\\
 0 & \frac{\alpha_R(N-k-1)}{\theta_{(k-2,2,R)}} & \frac{\sigma\beta(N-k-1)2}{\theta_{(k-2,2,R)}} & \dots & 0 & 0\\
 0 & 0 & \frac{\alpha_R(N-k-1)}{\theta_{(k-3,3,R)}} & \dots & 0 & 0\\
 \vdots & \vdots & \vdots & \ddots & \vdots & \vdots\\
 0 & 0 & 0 & \dots & \frac{\sigma\beta(N-k-1)(k-1)}{\theta_{(1,k-1,R)}} & 0\\
 0 & 0 & 0 & \dots & \frac{\alpha_R(N-k-1)}{\theta_{(0,k,R)}} & \frac{\sigma\beta(N-k-1)k}{\theta_{(0,k,R)}}
-                        \end{array}\right),\quad 1\leq k\leq N-2,
-\end{eqnarray*}
-\par\noindent with $J(R;k)=\#L(R;k)=k$.
+                        \end{array}\right),\quad 1\leq k\leq N-2.
+\end{eqnarray*}}
 
-\par From Eq. \eqref{eqn:9} and the structure of matrix ${\bf A}(R)$, we obtain {\bf Algorithm 2 (continuation I)}.
+\par\noindent For solving Eq. \eqref{eqn:9} and the structure of matrix ${\bf A}(R)$, we construct {\bf Algorithm 2 (continuation I)}.
 
 \vspace{0.5cm}
 \par \noindent{\bf Algorithm 2 (continuation I)}
 \begin{description}
   \item ${\bf H}_1(R) ~=~ {\bf I}_{J(R;1)}-{\bf A}_{1,1}(R)$;
-  \item ${\bf P}_1(R) ~=~ {\bf b}_1(R)$;
+  \item ${\bf J}_1(R) ~=~ {\bf b}_1(R)$;
   \item \it For $k=2,\dots,N-1$:
   \item $~$\hspace{0.5cm} ${\bf H}_k(R) ~=~ {\bf I}_{J(R;k)}-{\bf A}_{k,k}(R)-{\bf A}_{k,k-1}(R){\bf H}_{k-1}^{-1}(R){\bf A}_{k-1,k}(R)$;
-  \item $~$\hspace{0.5cm} ${\bf P}_k(R) ~=~ {\bf A}_{k,k-1}(R){\bf H}_{k-1}^{-1}(R){\bf P}_{k-1}(R)+{\bf b}_k(R)$;
-  \item ${\bf p}_{N-1}(R) ~=~ {\bf H}_{N-1}^{-1}(R){\bf P}_{N-1}(R)$;
+  \item $~$\hspace{0.5cm} ${\bf J}_k(R) ~=~ {\bf A}_{k,k-1}(R){\bf H}_{k-1}^{-1}(R){\bf J}_{k-1}(R)+{\bf b}_k(R)$;
+  \item ${\bf p}_{N-1}(R) ~=~ {\bf H}_{N-1}^{-1}(R){\bf J}_{N-1}(R)$;
   \item \it For $k=N-2,\dots,1$:
-  \item $~$\hspace{0.5cm} ${\bf p}_k(R) ~=~ {\bf H}_k^{-1}(R)\left({\bf A}_{k,k+1}(R){\bf p}_{k+1}(R)+{\bf P}_k(R)\right)$;
+  \item $~$\hspace{0.5cm} ${\bf p}_k(R) ~=~ {\bf H}_k^{-1}(R)\left({\bf A}_{k,k+1}(R){\bf p}_{k+1}(R)+{\bf J}_k(R)\right)$;
 \end{description}
 \vspace{0.5cm}
 
-
-\par In a similar way, probabilities of the form $p_{(m,n,I)}$ can be obtained from Eq. \eqref{eqn:5} once probabilities $p_{(m,n,R)}$ are in hand.
-In particular, by organising
+\par In a similar way, probabilities of the form $p_{(m,n,I)}$ can be obtained from Eq. \eqref{eqn:5} once both probabilities of the form
+$p_{(m,n,S_I)}$ and $p_{(m,n,R)}$ are in hand. In particular, by organising
 \begin{eqnarray*}
  {\cal \tilde S}^{ext}(I) &=& \{(m,n)\in\mathbb{N}_0^2:\ n\geq1,\ m+n\leq N\} \ = \ {\cal C}^{ext}(I),\\
  {\cal C}^{ext}(I) &=& \bigcup\limits_{k=1}^{N} L(I;k),\\
- L(I;k) &=& \{(m,n)\in\mathbb{N}_0^2:\ n\geq1,\ m+n=k\},\quad 1\leq k\leq N.
+ L(I;k) &=& \{(m,n)\in\mathbb{N}_0^2:\ n\geq1,\ m+n=k\},\quad 1\leq k\leq N,
 \end{eqnarray*}
 
-\par\noindent We obtain
+\par\noindent we obtain
 \begin{eqnarray}\label{eqn:10}
  {\bf p}(I) &=& {\bf A}(I){\bf p}(I)+{\bf b}(I),
 \end{eqnarray}
@@ -551,9 +635,9 @@ p_{(0,k,I)}
                          \end{array}\right),\quad
 {\bf b}_k(I) \ = \ \left(\begin{array}{c}
                0\\
-\frac{\gamma_A p_{(k-2,1,R)}+\alpha_I(A) p_{(k-1,1,S_I)}}{\theta_{(k-2,2,I)}}\\
+\frac{\gamma(A) p_{(k-2,1,R)}+\alpha_I(A) p_{(k-1,1,S_I)}}{\theta_{(k-2,2,I)}}\\
 \vdots\\
-\frac{\gamma_Ap_{(0,k-1,R)}+\alpha_I(A)p_{(1,k-1,S_I)}}{\theta_{(0,k,I)}}
+\frac{\gamma(A)p_{(0,k-1,R)}+\alpha_I(A)p_{(1,k-1,S_I)}}{\theta_{(0,k,I)}}
                          \end{array}\right),
 \end{eqnarray*}
 
@@ -568,14 +652,15 @@ p_{(0,k,I)}
 {\bf 0}_{J(I;N)\times J(I;1)} & {\bf 0}_{J(I;N)\times J(I;2)} & {\bf 0}_{J(I;N)\times J(I;3)} & \dots & {\bf A}_{N,N-1}(I) & {\bf A}_{N,N}(I)
                         \end{array}\right),
 \end{equation*}
-\par\noindent and with sub-matrices
+\par\noindent with $J(I;k)=\#L(I;k)=k$. Finally, sub-matrices are given as
+{\scriptsize
 \begin{eqnarray*}
  {\bf A}_{k,k}(I) &=& \left(\begin{array}{cccccc}
-0 & \frac{\beta(k-1)}{\theta_{(k-1,1,I)}} & 0 & \dots & 0 & 0\\
-\frac{\alpha_I}{\theta_{(k-2,2,I)}} & 0 & \frac{\beta2(k-2)}{\theta_{(k-2,2,I)}} & \dots & 0 & 0\\
+0 & \frac{\beta_{A\rightarrow\bullet}(k-1)}{\theta_{(k-1,1,I)}} & 0 & \dots & 0 & 0\\
+\frac{\alpha_I}{\theta_{(k-2,2,I)}} & 0 & \frac{(\beta_{A\rightarrow\bullet}+\beta)(k-2)}{\theta_{(k-2,2,I)}} & \dots & 0 & 0\\
 0 & \frac{\alpha_I2}{\theta_{(k-3,3,I)}} & 0 & \dots & 0 & 0\\
 \vdots & \vdots & \vdots & \ddots & \vdots & \vdots\\
-0 & 0 & 0 & \dots & 0 & \frac{\beta(k-1)}{\theta_{(1,k-1,I)}}\\
+0 & 0 & 0 & \dots & 0 & \frac{\beta_{A\rightarrow\bullet}+\beta(k-2)}{\theta_{(1,k-1,I)}}\\
 0 & 0 & 0 & \dots & \frac{\alpha_I (k-1)}{\theta_{(0,k,I)}} & 0
                         \end{array}\right),\quad 1\leq k\leq N,\\
  {\bf A}_{k,k-1}(I) &=& \left(\begin{array}{cccccc}
@@ -587,45 +672,57 @@ p_{(0,k,I)}
 0 & 0 & 0 & \dots & 0 & \frac{\gamma (k-1)}{\theta_{(0,k,I)}}
                         \end{array}\right),\quad 2\leq k\leq N,\\
  {\bf A}_{k,k+1}(I) &=& \left(\begin{array}{cccccc}
-\frac{\alpha_R(N-k)}{\theta_{(k-1,1,I)}} & \frac{\sigma(N-k)(\beta(n-1)+\beta_{A\rightarrow\cdot})}{\theta_{(k-1,1,I)}} & 0 & \dots & 0 & 0\\
-0 & \frac{\alpha_R(N-k)}{\theta_{(k-2,2,I)}} & \frac{\sigma(N-k)(\beta(n-1)+\beta_{A\rightarrow\cdot})}{\theta_{(k-2,2,I)}} & \dots & 0 & 0\\
+\frac{\alpha_R(N-k)}{\theta_{(k-1,1,I)}} & \frac{\sigma(N-k)\beta_{A\rightarrow\bullet}}{\theta_{(k-1,1,I)}} & 0 & \dots & 0 & 0\\
+0 & \frac{\alpha_R(N-k)}{\theta_{(k-2,2,I)}} & \frac{\sigma(N-k)(\beta+\beta_{A\rightarrow\bullet})}{\theta_{(k-2,2,I)}} & \dots & 0 & 0\\
 0 & 0 & \frac{\alpha_R(N-k)}{\theta_{(k-3,3,I)}} & \dots & 0 & 0\\
 \vdots & \vdots & \vdots & \ddots & \vdots & \vdots\\
-0 & 0 & 0 & \dots & \frac{\sigma(N-k)(\beta(n-1)+\beta_{A\rightarrow\cdot})}{\theta_{(1,k-1,I)}} & 0\\
-0 & 0 & 0 & \dots & \frac{\alpha_R(N-k)}{\theta_{(0,k,I)}} & \frac{\sigma(N-k)(\beta(n-1)+\beta_{A\rightarrow\cdot})}{\theta_{(0,k,I)}}
+0 & 0 & 0 & \dots & \frac{\sigma(N-k)(\beta(k-2)+\beta_{A\rightarrow\bullet})}{\theta_{(1,k-1,I)}} & 0\\
+0 & 0 & 0 & \dots & \frac{\alpha_R(N-k)}{\theta_{(0,k,I)}} & \frac{\sigma(N-k)(\beta(k-1)+\beta_{A\rightarrow\bullet})}{\theta_{(0,k,I)}}
                         \end{array}\right),\\
-                        && \quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad 1\leq k\leq N-1,
-\end{eqnarray*}
-\par\noindent with $J(I;k)=\#L(I;k)=k$.\\
+                        && \quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad 1\leq k\leq N-1.
+\end{eqnarray*}}
 
-\par From Eq. \eqref{eqn:10}, we obtain {\bf Algorithm 2 (continuation II)}.\\
+\par\noindent From Eq. \eqref{eqn:10}, we construct {\bf Algorithm 2 (continuation II)}.\\
 
 \vspace{0.5cm}
 \par \noindent{\bf Algorithm 2 (continuation II)}
 \begin{description}
   \item ${\bf H}_1(I) ~=~ {\bf I}_{J(I;1)}-{\bf A}_{1,1}(I)$;
-  \item ${\bf P}_1(I) ~=~ {\bf b}_1(I)$;
+  \item ${\bf J}_1(I) ~=~ {\bf b}_1(I)$;
   \item \it For $k=2,\dots,N$:
   \item $~$\hspace{0.5cm} ${\bf H}_k(I) ~=~ {\bf I}_{J(I;k)}-{\bf A}_{k,k}(I)-{\bf A}_{k,k-1}(I){\bf H}_{k-1}^{-1}(I){\bf A}_{k-1,k}(I)$;
-  \item $~$\hspace{0.5cm} ${\bf P}_k(I) ~=~ {\bf A}_{k,k-1}(I){\bf H}_{k-1}^{-1}(I){\bf P}_{k-1}(I)+{\bf b}_k(I)$;
-  \item ${\bf p}_{N}(I) ~=~ {\bf H}_{N}^{-1}(I){\bf P}_{N}(I)$;
+  \item $~$\hspace{0.5cm} ${\bf J}_k(I) ~=~ {\bf A}_{k,k-1}(I){\bf H}_{k-1}^{-1}(I){\bf J}_{k-1}(I)+{\bf b}_k(I)$;
+  \item ${\bf p}_{N}(I) ~=~ {\bf H}_{N}^{-1}(I){\bf J}_{N}(I)$;
   \item \it For $k=N-1,\dots,1$:
-  \item $~$\hspace{0.5cm} ${\bf p}_k(I) ~=~ {\bf H}_k^{-1}(I)\left({\bf A}_{k,k+1}(I){\bf p}_{k+1}(I)+{\bf P}_k(I)\right)$;
+  \item $~$\hspace{0.5cm} ${\bf p}_k(I) ~=~ {\bf H}_k^{-1}(I)\left({\bf A}_{k,k+1}(I){\bf p}_{k+1}(I)+{\bf J}_k(I)\right)$;
 \end{description}
 \vspace{0.5cm}
 
-\par Finally, probabilities $p_{(m,n,S)}$ can be computed from Eq. \eqref{eqn:4} by following exactly the same arguments than when solving Eq. \eqref{eqn:7}. In
-particular, we note that Eqs. \eqref{eqn:4} and \eqref{eqn:7} only differ in terms $\frac{\beta mni_{(m,n)}}{\theta_{(m,n)}}p_{{\tilde \Delta}}$ (in Eq. \eqref{eqn:7})
-and $\frac{\beta mni_{(m,n)}}{\theta_{(m,n)}}p_{(m-1,n+1,I)}$ (in Eq. \eqref{eqn:4}). Thus, first steps of {\bf Algorithm 2} directly apply for solving
-Eq. \eqref{eqn:4}.
-
+\par Finally, probabilities $p_{(m,n,S)}$ can be computed from Eq. \eqref{eqn:4} by following exactly the same arguments than the ones used for solving Eq. \eqref{eqn:7}. In
+particular, we note that Eqs. \eqref{eqn:4} and \eqref{eqn:7} only differ in addends $\beta_{\bullet\rightarrow A}np_{{\tilde \Delta}}$ (in Eq. \eqref{eqn:7})
+and $\beta_{\bullet\rightarrow A}np_{(m-1,n+1,I)}$ (in Eq. \eqref{eqn:4}). Thus, first steps of {\bf Algorithm 2} directly apply for solving
+Eq. \eqref{eqn:4}, using same matrices ${\bf A}_{k,k'}(S)$, but with new vector ${\bf b}(S)$ instead of ${\bf b}(S_I)$,
+\begin{eqnarray*}
+{\bf b}(S) &=& \left(\begin{array}{c}
+                          {\bf b}_2(S)\\
+{\bf b}_3(S)\\
+\vdots\\
+{\bf b}_N(S)
+                         \end{array}\right),\quad
+{\bf b}_k(S) \ = \ \left(\begin{array}{c}
+               \frac{\beta_{\bullet\rightarrow A}p_{(k-2,2,I)}}{\theta_{(k-1,1,S)}}\\
+\frac{\beta_{\bullet\rightarrow A}2p_{(k-3,3,I)}}{\theta_{(k-2,2,S)}}\\
+\vdots\\
+\frac{\beta_{\bullet\rightarrow A}(k-1)p_{(0,k,I)}}{\theta_{(1,k-1,S)}}\\
+                         \end{array}\right).
+\end{eqnarray*}
 %\subsection{Local Sensitivity Analysis}
 
 %\par Once probabilities $p_{(m,a)}$, for $a\in\{S,S_I,I\}$ (ND-SIS Model), and $p_{(m,n,a)}$, for $a\in\{S,S_I,I,R\}$ (TPI-SIR, TI-SIR and PI-SIR Models),
-%are in hand, a particular question that arises is the role played by each of the parameter values in these re-infection probabilities. In particular,
+%are in hand, a particular question that arises is the role played by each of the parameter values in these reinfection probabilities. In particular,
 %given particular values of the parameters $\beta$, $\gamma$, $\alpha_I$, $\alpha_R$ and $\sigma$, our interest here is to analyse the impact that perturbations of
-%these values have on the re-infection probabilities. A particular feature of our analysis in previous sections is that it allows to compute, in order
-%to address this question, the exact partial derivatives of the re-infection probabilities with respect the parameters under study.
+%these values have on the reinfection probabilities. A particular feature of our analysis in previous sections is that it allows to compute, in order
+%to address this question, the exact partial derivatives of the reinfection probabilities with respect the parameters under study.
 
 %\subsubsection{ND-SIS Model}
 
@@ -662,16 +759,16 @@ Eq. \eqref{eqn:4}.
 %                                    \end{array}\right.$
 %  \item \it For $m=N-2,\dots,1$:
 %  \item $~$\hspace{0.5cm} $h_{m}^{(3,w)} ~=~ \left\{\begin{array}{ll}
-%\frac{\gamma(N-m)^2m}{\theta_m^2}\cdot\frac{f_{m+1}^{(3)}}{h_{m+1}^{(3)}}-\frac{\gamma(N-m)}{\theta_m}\cdot\frac{f_{m+1}^{(3,w)}h_{m+1}^{(3)}-f_{m+1}^{(3)}h_{m+1}^{(3,w)}}{(h_{m+1}^{(3)})^2},& %\hbox{\it if $w=\beta$},\\
-%-\frac{(N-m)\theta_m-\gamma(N-m)^2}{\theta_m^2}\cdot\frac{f_{m+1}^{(3)}}{h_{m+1}^{(3)}}-\frac{\gamma(N-m)}{\theta_m}\cdot\frac{f_{m+1}^{(3,w)}h_{m+1}^{(3)}-f_{m+1}^{(3)}h_{m+1}^{(3,w)}}{(h_{m+1}^{(3)})^2},& %\hbox{\it if $w=\gamma$};
+%\frac{\gamma(N-m)^2m}{\theta_m^2}\bullet\frac{f_{m+1}^{(3)}}{h_{m+1}^{(3)}}-\frac{\gamma(N-m)}{\theta_m}\bullet\frac{f_{m+1}^{(3,w)}h_{m+1}^{(3)}-f_{m+1}^{(3)}h_{m+1}^{(3,w)}}{(h_{m+1}^{(3)})^2},& %\hbox{\it if $w=\beta$},\\
+%-\frac{(N-m)\theta_m-\gamma(N-m)^2}{\theta_m^2}\bullet\frac{f_{m+1}^{(3)}}{h_{m+1}^{(3)}}-\frac{\gamma(N-m)}{\theta_m}\bullet\frac{f_{m+1}^{(3,w)}h_{m+1}^{(3)}-f_{m+1}^{(3)}h_{m+1}^{(3,w)}}{(h_{m+1}^{(3)})^2},& %\hbox{\it if $w=\gamma$};
 %                                                    \end{array}\right.$
 %  \item $~$\hspace{0.5cm} $f_{m}^{(3,w)} ~=~ \left\{\begin{array}{ll}
 %\frac{m(N-m){\bar i_m}\theta_m-\beta m^2(N-m)^2{\bar i_m}}{\theta_m^2},& \hbox{\it if $w=\beta$},\\
 %-\frac{\beta m(N-m)^2{\bar i_m}}{\theta_m^2},& \hbox{\it if $w=\gamma$};
 %                                                   \end{array}\right.$
 %  \item $~$\hspace{0.5cm} $g_{m}^{(3,w)} ~=~ \left\{\begin{array}{ll}
-%-\frac{\gamma(N-m)^2m}{\theta_m^2}\cdot %\frac{g_{m+1}^{(3)}}{h_{m+1}^{(3)}}+\frac{\gamma(N-m)}{\theta_m}\cdot\frac{g_{m+1}^{(3,w)}h_{m+1}^{(3)}-g_{m+1}^{(3)}h_{m+1}^{(3,w)}}{(h_{m+1}^{(3)})^2}+\frac{m(N-m)i_m\theta_m-\beta %m^2(N-m)^2i_m}{\theta_m^2},& \hbox{\it if $w=\beta$},\\
-%\frac{(N-m)\theta_m-\gamma(N-m)^2}{\theta_m^2}\cdot \frac{g_{m+1}^{(3)}}{h_{m+1}^{(3)}}+\frac{\gamma(N-m)}{\theta_m}\cdot\frac{g_{m+1}^{(3,w)}h_{m+1}^{(3)}-g_{m+1}^{(3)}h_{m+1}^{(3,w)}}{(h_{m+1}^{(3)})^2}-\frac{\beta m(N-m)^2i_m}{\theta_m^2},& \hbox{\it if $w=\gamma$};
+%-\frac{\gamma(N-m)^2m}{\theta_m^2}\bullet %\frac{g_{m+1}^{(3)}}{h_{m+1}^{(3)}}+\frac{\gamma(N-m)}{\theta_m}\bullet\frac{g_{m+1}^{(3,w)}h_{m+1}^{(3)}-g_{m+1}^{(3)}h_{m+1}^{(3,w)}}{(h_{m+1}^{(3)})^2}+\frac{m(N-m)i_m\theta_m-\beta %m^2(N-m)^2i_m}{\theta_m^2},& \hbox{\it if $w=\beta$},\\
+%\frac{(N-m)\theta_m-\gamma(N-m)^2}{\theta_m^2}\bullet \frac{g_{m+1}^{(3)}}{h_{m+1}^{(3)}}+\frac{\gamma(N-m)}{\theta_m}\bullet\frac{g_{m+1}^{(3,w)}h_{m+1}^{(3)}-g_{m+1}^{(3)}h_{m+1}^{(3,w)}}{(h_{m+1}^{(3)})^2}-\frac{\beta m(N-m)^2i_m}{\theta_m^2},& \hbox{\it if $w=\gamma$};
 %                                                   \end{array}\right.$
 %  \item $\frac{\partial p_{(1,S_I)}}{\partial w} ~=~ \frac{g_1^{(3,w)}h_1^{(3)}-g_1^{(3)}h_1^{(3,w)}}{(h_{1}^{(3)})^2}$;
 %  \item \it For $m=2,\dots,N-1$:
@@ -685,18 +782,18 @@ Eq. \eqref{eqn:4}.
 %  \item $g_{N-1}^{(2,w)} ~=~ 0$;
 %  \item \it For $m=N-2,\dots,0$:
 %  \item $~$\hspace{0.5cm} $h_{m}^{(2,w)} ~=~ \left\{\begin{array}{ll}
-%\frac{\gamma(N-m)^2m{\bar s_m}}{\theta_m^2}\cdot\frac{f_{m+1}^{(2)}}{h_{m+1}^{(2)}}-\frac{\gamma(N-m){\bar s_m}}{\theta_m}\cdot\frac{f_{m+1}^{(2,w)}h_{m+1}^{(2)}-f_{m+1}^{(2)}h_{m+1}^{(2,w)}}{(h_{m+1}^{(2)})^2},& \hbox{\it if $w=\beta$},\\
-%-\frac{(N-m){\bar s_m}\theta_m-\gamma(N-m)^2{\bar s_m}}{\theta_m^2}\cdot\frac{f_{m+1}^{(2)}}{h_{m+1}^{(2)}}-\frac{\gamma(N-m){\bar s_m}}{\theta_m}\cdot\frac{f_{m+1}^{(2,w)}h_{m+1}^{(2)}-f_{m+1}^{(2)}h_{m+1}^{(2,w)}}{(h_{m+1}^{(2)})^2},& \hbox{\it if $w=\gamma$};
+%\frac{\gamma(N-m)^2m{\bar s_m}}{\theta_m^2}\bullet\frac{f_{m+1}^{(2)}}{h_{m+1}^{(2)}}-\frac{\gamma(N-m){\bar s_m}}{\theta_m}\bullet\frac{f_{m+1}^{(2,w)}h_{m+1}^{(2)}-f_{m+1}^{(2)}h_{m+1}^{(2,w)}}{(h_{m+1}^{(2)})^2},& \hbox{\it if $w=\beta$},\\
+%-\frac{(N-m){\bar s_m}\theta_m-\gamma(N-m)^2{\bar s_m}}{\theta_m^2}\bullet\frac{f_{m+1}^{(2)}}{h_{m+1}^{(2)}}-\frac{\gamma(N-m){\bar s_m}}{\theta_m}\bullet\frac{f_{m+1}^{(2,w)}h_{m+1}^{(2)}-f_{m+1}^{(2)}h_{m+1}^{(2,w)}}{(h_{m+1}^{(2)})^2},& \hbox{\it if $w=\gamma$};
 %                                                    \end{array}\right.$
 %  \item $~$\hspace{0.5cm} $f_{m}^{(2,w)} ~=~ \left\{\begin{array}{ll}
 %\frac{m(N-m)\theta_m-\beta m^2(N-m)^2}{\theta_m^2},& \hbox{\it if $w=\beta$},\\
 %-\frac{\beta m(N-m)^2}{\theta_m^2},& \hbox{\it if $w=\gamma$};
 %                                                   \end{array}\right.$
 %  \item $~$\hspace{0.5cm} $g_{m}^{(2,w)} ~=~ \left\{\begin{array}{ll}
-%-\frac{\gamma(N-m)^2m{\bar s_m}}{\theta_m^2}\cdot \frac{g_{m+1}^{(2)}}{h_{m+1}^{(2)}}+\frac{\gamma(N-m){\bar s_m}}{\theta_m}\cdot\frac{g_{m+1}^{(2,w)}h_{m+1}^{(2)}-g_{m+1}^{(2)}h_{m+1}^{(2,w)}}{(h_{m+1}^{(2)})^2}-\frac{\gamma m(N-m)^2s_m}{\theta_m^2}p_{(m+1,S_I)} & \\
-%+\frac{\gamma(N-m)s_m}{\theta_m}\cdot\frac{\partial p_{(m+1,S_I)}}{\partial w},& \hbox{\it if $w=\beta$},\\
-%\frac{(N-m){\bar s_m}\theta_m-\gamma(N-m)^2{\bar s_m}}{\theta_m^2}\cdot \frac{g_{m+1}^{(2)}}{h_{m+1}^{(2)}}+\frac{\gamma(N-m){\bar s_m}}{\theta_m}\cdot\frac{g_{m+1}^{(2,w)}h_{m+1}^{(2)}-g_{m+1}^{(2)}h_{m+1}^{(2,w)}}{(h_{m+1}^{(2)})^2}& \\
-%+\frac{(N-m)s_m\theta_m-\gamma(N-m)^2s_m}{\theta_m^2}p_{(m+1,S_I)}+\frac{\gamma(N-m)s_m}{\theta_m}\cdot\frac{\partial p_{(m+1,S_I)}}{\partial w},& \hbox{\it if $w=\gamma$};
+%-\frac{\gamma(N-m)^2m{\bar s_m}}{\theta_m^2}\bullet \frac{g_{m+1}^{(2)}}{h_{m+1}^{(2)}}+\frac{\gamma(N-m){\bar s_m}}{\theta_m}\bullet\frac{g_{m+1}^{(2,w)}h_{m+1}^{(2)}-g_{m+1}^{(2)}h_{m+1}^{(2,w)}}{(h_{m+1}^{(2)})^2}-\frac{\gamma m(N-m)^2s_m}{\theta_m^2}p_{(m+1,S_I)} & \\
+%+\frac{\gamma(N-m)s_m}{\theta_m}\bullet\frac{\partial p_{(m+1,S_I)}}{\partial w},& \hbox{\it if $w=\beta$},\\
+%\frac{(N-m){\bar s_m}\theta_m-\gamma(N-m)^2{\bar s_m}}{\theta_m^2}\bullet \frac{g_{m+1}^{(2)}}{h_{m+1}^{(2)}}+\frac{\gamma(N-m){\bar s_m}}{\theta_m}\bullet\frac{g_{m+1}^{(2,w)}h_{m+1}^{(2)}-g_{m+1}^{(2)}h_{m+1}^{(2,w)}}{(h_{m+1}^{(2)})^2}& \\
+%+\frac{(N-m)s_m\theta_m-\gamma(N-m)^2s_m}{\theta_m^2}p_{(m+1,S_I)}+\frac{\gamma(N-m)s_m}{\theta_m}\bullet\frac{\partial p_{(m+1,S_I)}}{\partial w},& \hbox{\it if $w=\gamma$};
 %                                                   \end{array}\right.$
 %  \item $\frac{\partial p_{(0,I)}}{\partial w} ~=~ \frac{g_0^{(2,w)}h_0^{(2)}-g_0^{(2)}h_0^{(2,w)}}{(h_0^{(2)})^2}$;
 %  \item \it For $m=1,\dots,N-1$:
@@ -708,23 +805,23 @@ Eq. \eqref{eqn:4}.
 %-\frac{\beta(N-1){\bar i_{N-1}}}{\theta_{N-1}^2},& \hbox{\it if $w=\gamma$};
 %                                    \end{array}\right.$
 %  \item $g_{N-1}^{(1,w)} ~=~ \left\{\begin{array}{ll}
-%                                     \frac{(N-1)i_{N-1}\theta_{N-1}-\beta(N-1)^2i_{N-1}}{\theta_{N-1}^2}p_{(N-2,I)}+\frac{\beta(N-1)i_{N-1}}{\theta_{N-1}}\cdot\frac{\partial p_{(N-2,I)}}{\partial w},& \hbox{\it if $w=\beta$,}\\
-%-\frac{\beta(N-1)i_{N-1}}{\theta_{N-1}^2}p_{(N-2,I)}+\frac{\beta(N-1)i_{N-1}}{\theta_{N-1}}\cdot\frac{\partial p_{(N-2,I)}}{\partial w},& \hbox{\it if $w=\gamma$};
+%                                     \frac{(N-1)i_{N-1}\theta_{N-1}-\beta(N-1)^2i_{N-1}}{\theta_{N-1}^2}p_{(N-2,I)}+\frac{\beta(N-1)i_{N-1}}{\theta_{N-1}}\bullet\frac{\partial p_{(N-2,I)}}{\partial w},& \hbox{\it if $w=\beta$,}\\
+%-\frac{\beta(N-1)i_{N-1}}{\theta_{N-1}^2}p_{(N-2,I)}+\frac{\beta(N-1)i_{N-1}}{\theta_{N-1}}\bullet\frac{\partial p_{(N-2,I)}}{\partial w},& \hbox{\it if $w=\gamma$};
 %                                    \end{array}\right.$
 %  \item \it For $m=N-2,\dots,1$:
 %  \item $~$\hspace{0.5cm} $h_{m}^{(1,w)} ~=~ \left\{\begin{array}{ll}
-%\frac{\gamma(N-m)^2m}{\theta_m^2}\cdot\frac{f_{m+1}^{(1)}}{h_{m+1}^{(1)}}-\frac{\gamma(N-m)}{\theta_m}\cdot\frac{f_{m+1}^{(1,w)}h_{m+1}^{(1)}-f_{m+1}^{(1)}h_{m+1}^{(1,w)}}{(h_{m+1}^{(1)})^2},& \hbox{\it if $w=\beta$},\\
-%-\frac{(N-m)\theta_m-\gamma(N-m)^2}{\theta_m^2}\cdot\frac{f_{m+1}^{(1)}}{h_{m+1}^{(1)}}-\frac{\gamma(N-m)}{\theta_m}\cdot\frac{f_{m+1}^{(1,w)}h_{m+1}^{(1)}-f_{m+1}^{(1)}h_{m+1}^{(1,w)}}{(h_{m+1}^{(1)})^2},& \hbox{\it if $w=\gamma$};
+%\frac{\gamma(N-m)^2m}{\theta_m^2}\bullet\frac{f_{m+1}^{(1)}}{h_{m+1}^{(1)}}-\frac{\gamma(N-m)}{\theta_m}\bullet\frac{f_{m+1}^{(1,w)}h_{m+1}^{(1)}-f_{m+1}^{(1)}h_{m+1}^{(1,w)}}{(h_{m+1}^{(1)})^2},& \hbox{\it if $w=\beta$},\\
+%-\frac{(N-m)\theta_m-\gamma(N-m)^2}{\theta_m^2}\bullet\frac{f_{m+1}^{(1)}}{h_{m+1}^{(1)}}-\frac{\gamma(N-m)}{\theta_m}\bullet\frac{f_{m+1}^{(1,w)}h_{m+1}^{(1)}-f_{m+1}^{(1)}h_{m+1}^{(1,w)}}{(h_{m+1}^{(1)})^2},& \hbox{\it if $w=\gamma$};
 %                                                    \end{array}\right.$
 %  \item $~$\hspace{0.5cm} $f_{m}^{(1,w)} ~=~ \left\{\begin{array}{ll}
 %\frac{m(N-m){\bar i_m}\theta_m-\beta m^2(N-m)^2{\bar i_m}}{\theta_m^2},& \hbox{\it if $w=\beta$},\\
 %-\frac{\beta m(N-m)^2{\bar i_m}}{\theta_m^2},& \hbox{\it if $w=\gamma$};
 %                                                   \end{array}\right.$
 %  \item $~$\hspace{0.5cm} $g_{m}^{(1,w)} ~=~ \left\{\begin{array}{ll}
-%-\frac{\gamma(N-m)^2m}{\theta_m^2}\cdot \frac{g_{m+1}^{(1)}}{h_{m+1}^{(1)}}+\frac{\gamma(N-m)}{\theta_m}\cdot\frac{g_{m+1}^{(1,w)}h_{m+1}^{(1)}-g_{m+1}^{(1)}h_{m+1}^{(1,w)}}{(h_{m+1}^{(1)})^2}+\frac{m(N-m)i_m\theta_m-\beta m^2(N-m)^2i_m}{\theta_m^2}p_{(m-1,I)} & \\
-%+\frac{\beta m(N-m)i_{m}}{\theta_{m}}\cdot\frac{\partial p_{(m-1,I)}}{\partial w},& \hbox{\it if $w=\beta$},\\
-%\frac{(N-m)\theta_m-\gamma(N-m)^2}{\theta_m^2}\cdot \frac{g_{m+1}^{(1)}}{h_{m+1}^{(1)}}+\frac{\gamma(N-m)}{\theta_m}\cdot\frac{g_{m+1}^{(1,w)}h_{m+1}^{(1)}-g_{m+1}^{(1)}h_{m+1}^{(1,w)}}{(h_{m+1}^{(1)})^2}-\frac{\beta m(N-m)^2i_m}{\theta_m^2}p_{(m-1,I)} & \\
-%+\frac{\beta m(N-m)i_m}{\theta_m}\cdot\frac{\partial p_{(m-1,I)}}{\partial w},& \hbox{\it if $w=\gamma$};
+%-\frac{\gamma(N-m)^2m}{\theta_m^2}\bullet \frac{g_{m+1}^{(1)}}{h_{m+1}^{(1)}}+\frac{\gamma(N-m)}{\theta_m}\bullet\frac{g_{m+1}^{(1,w)}h_{m+1}^{(1)}-g_{m+1}^{(1)}h_{m+1}^{(1,w)}}{(h_{m+1}^{(1)})^2}+\frac{m(N-m)i_m\theta_m-\beta m^2(N-m)^2i_m}{\theta_m^2}p_{(m-1,I)} & \\
+%+\frac{\beta m(N-m)i_{m}}{\theta_{m}}\bullet\frac{\partial p_{(m-1,I)}}{\partial w},& \hbox{\it if $w=\beta$},\\
+%\frac{(N-m)\theta_m-\gamma(N-m)^2}{\theta_m^2}\bullet \frac{g_{m+1}^{(1)}}{h_{m+1}^{(1)}}+\frac{\gamma(N-m)}{\theta_m}\bullet\frac{g_{m+1}^{(1,w)}h_{m+1}^{(1)}-g_{m+1}^{(1)}h_{m+1}^{(1,w)}}{(h_{m+1}^{(1)})^2}-\frac{\beta m(N-m)^2i_m}{\theta_m^2}p_{(m-1,I)} & \\
+%+\frac{\beta m(N-m)i_m}{\theta_m}\bullet\frac{\partial p_{(m-1,I)}}{\partial w},& \hbox{\it if $w=\gamma$};
 %                                                   \end{array}\right.$
 %  \item $\frac{\partial p_{(1,S)}}{\partial w} ~=~ \frac{g_1^{(1,w)}h_1^{(1)}-g_1^{(1)}h_1^{(1,w)}}{(h_{1}^{(1)})^2}$;
 %  \item \it For $m=2,\dots,N-1$:
@@ -745,7 +842,7 @@ Eq. \eqref{eqn:4}.
 %
 %\par The basic underlying idea in Ref. \cite{LopezGarcia15} is that, once Algorithm 2 is constructed and probabilities $p_{(m,n,a)}$ are in hand, one
 %may compute partial derivatives $\frac{\partial p_{(m,n,a)}}{\partial w}$ for $a\in\{S,S_I,I,R\}$, $w\in\{\beta,\gamma,\alpha_I,\alpha_R,\sigma\}$, by directly
-%differentiating steps in Algorithm 2. In order to do this, matrices within Algorithm 2 are transformed into column vectors through the operator $vec(\cdot)$,
+%differentiating steps in Algorithm 2. In order to do this, matrices within Algorithm 2 are transformed into column vectors through the operator $vec(\bullet)$,
 %and well-known matrix calculus properties are used. In particular, we make use from now on of the following notation and properties:
 %
 %\begin{itemize}
@@ -784,7 +881,7 @@ Eq. \eqref{eqn:4}.
 %matrices ${\bf A}$, ${\bf B}$ and ${\bf C}$ (depending on values within ${\bf w}$), and matrices ${\bf W}$ and ${\bf V}$:
 %\begin{enumerate}
 %  \item ${\bf y}={\bf W}{\bf x}+{\bf V}{\bf z}$ $\Rightarrow$ $\frac{d{\bf y}}{d{\bf w}^T}={\bf W}\frac{d{\bf x}}{d{\bf w}^T}+{\bf V}\frac{d{\bf z}}{d{\bf w}^T}$.
-%  \item $\frac{dvec({\bf A}^{-1})}{d{\bf w}^T}=-\left(({\bf A}^{-1})^T\otimes{\bf A}^{-1}\right)\cdot\frac{dvec{\bf A}}{d{\bf w}^T}$, where $\otimes$ represents Kronecker's product.
+%  \item $\frac{dvec({\bf A}^{-1})}{d{\bf w}^T}=-\left(({\bf A}^{-1})^T\otimes{\bf A}^{-1}\right)\bullet\frac{dvec{\bf A}}{d{\bf w}^T}$, where $\otimes$ represents Kronecker's product.
 %  \item $\frac{dvecD({\bf x)}}{d{\bf w}^T}=D(vec{\bf I}_m)({\bf 1}_m\otimes{\bf I}_m)\frac{d{\bf x}}{d{\bf w}^T}$, where $m$ is the dimension of
 %column vector ${\bf x}$, and ${\bf 1}_m$ represents a column vector of ones with dimension $m$.
 %  \item $vec({\bf A}{\bf B}{\bf C})=\left({\bf C}^T\otimes{\bf A}\right)vec{\bf B}$.
@@ -803,82 +900,243 @@ Eq. \eqref{eqn:4}.
 %\par \noindent{\bf Algorithm 2S}
 %\begin{description}
 %  \item $\frac{dvec{\bf H}_2(S_I)}{d{\bf w}^T} ~=~ -\frac{dvec{\bf A}_{2,2}(S_I)}{d{\bf w}^T}$;
-%  \item $\frac{d{\bf P}_2(S_I)}{d{\bf w}^T} ~=~ \frac{d{\bf b}_2(S_I)}{d{\bf w}^T}$;
+%  \item $\frac{d{\bf J}_2(S_I)}{d{\bf w}^T} ~=~ \frac{d{\bf b}_2(S_I)}{d{\bf w}^T}$;
 %  \item \it For $k=3,\dots,N$:
-%  \item $~$\hspace{0.5cm} $\frac{dvec{\bf H}_k(S_I)}{d{\bf w}^T} ~=~ -\frac{dvec{\bf A}_{k,k}(S_I)}{d{\bf w}^T}-\left(({\bf H}_{k-1}^{-1}(S_I){\bf A}_{k-1,k}(S_I))^T\otimes{\bf I}_{J(S_I;k)}\right)\cdot\frac{dvec{\bf A}_{k,k-1}(S_I)}{d{\bf w}^T}+\left(({\bf H}^{-1}_{k-1}(S_I){\bf A}_{k-1,k}(S_I))^T)\right.$
-%  \item $~$\hspace{2.5cm} $\left.\otimes({\bf A}_{k,k-1}(S_I){\bf H}_{k-1}^{-1}(S_I))\right)\cdot\frac{dvec{\bf H}_{k-1}(S_I)}{d{\bf w}^T}-\left({\bf I}_{J(S_I;k)}\otimes({\bf A}_{k,k-1}(S_I){\bf H}_{k-1}^{-1}(S_I))\right)\cdot\frac{dvec{\bf A}_{k-1,k}(S_I)}{d{\bf w}^T}$;
-%  \item $~$\hspace{0.5cm} $\frac{d{\bf P}_k(S_I)}{d{\bf w}^T} ~=~ \left(({\bf H}_{k-1}^{-1}(S_I){\bf P}_{k-1}(S_I))^T\otimes{\bf I}_{J(S_I;k)}\right)\cdot \frac{dvec{\bf A}_{k,k-1}(S_I)}{d{\bf w}^T}-\left(({\bf H}^{-1}_{k-1}(S_I){\bf P}_{k-1}(S_I))^T\otimes({\bf A}_{k,k-1}(S_I){\bf H}^{-1}_{k-1}(S_I))\right)$
-%  \item $~$\hspace{2.5cm} $\times\frac{dvec{\bf H}_{k-1}(S_I)}{d{\bf w}^T}+\left(1\otimes({\bf A}_{k,k-1}(S_I){\bf H}_{k-1}^{-1}(S_I))\right)\cdot\frac{d{\bf P}_{k-1}(S_I)}{d{\bf w}^T}+\frac{d{\bf b}_k(S_I)}{d{\bf w}^T}$;
-%  \item $\frac{d{\bf p}_N(S_I)}{d{\bf w}^T} ~=~ -\left(({\bf H}_N^{-1}(S_I){\bf P}_{N}(S_I))^T\otimes{\bf H}_{N}^{-1}(S_I)\right)\cdot\frac{dvec{\bf H}_{N}(S_I)}{d{\bf w}^T}+\left(1\otimes{\bf H}_{N}^{-1}(S_I)\right)\cdot\frac{d{\bf P}_{N}(S_I)}{d{\bf w}^T}$;
+%  \item $~$\hspace{0.5cm} $\frac{dvec{\bf H}_k(S_I)}{d{\bf w}^T} ~=~ -\frac{dvec{\bf A}_{k,k}(S_I)}{d{\bf w}^T}-\left(({\bf H}_{k-1}^{-1}(S_I){\bf A}_{k-1,k}(S_I))^T\otimes{\bf I}_{J(S_I;k)}\right)\bullet\frac{dvec{\bf A}_{k,k-1}(S_I)}{d{\bf w}^T}+\left(({\bf H}^{-1}_{k-1}(S_I){\bf A}_{k-1,k}(S_I))^T)\right.$
+%  \item $~$\hspace{2.5cm} $\left.\otimes({\bf A}_{k,k-1}(S_I){\bf H}_{k-1}^{-1}(S_I))\right)\bullet\frac{dvec{\bf H}_{k-1}(S_I)}{d{\bf w}^T}-\left({\bf I}_{J(S_I;k)}\otimes({\bf A}_{k,k-1}(S_I){\bf H}_{k-1}^{-1}(S_I))\right)\bullet\frac{dvec{\bf A}_{k-1,k}(S_I)}{d{\bf w}^T}$;
+%  \item $~$\hspace{0.5cm} $\frac{d{\bf J}_k(S_I)}{d{\bf w}^T} ~=~ \left(({\bf H}_{k-1}^{-1}(S_I){\bf J}_{k-1}(S_I))^T\otimes{\bf I}_{J(S_I;k)}\right)\bullet \frac{dvec{\bf A}_{k,k-1}(S_I)}{d{\bf w}^T}-\left(({\bf H}^{-1}_{k-1}(S_I){\bf J}_{k-1}(S_I))^T\otimes({\bf A}_{k,k-1}(S_I){\bf H}^{-1}_{k-1}(S_I))\right)$
+%  \item $~$\hspace{2.5cm} $\times\frac{dvec{\bf H}_{k-1}(S_I)}{d{\bf w}^T}+\left(1\otimes({\bf A}_{k,k-1}(S_I){\bf H}_{k-1}^{-1}(S_I))\right)\bullet\frac{d{\bf J}_{k-1}(S_I)}{d{\bf w}^T}+\frac{d{\bf b}_k(S_I)}{d{\bf w}^T}$;
+%  \item $\frac{d{\bf p}_N(S_I)}{d{\bf w}^T} ~=~ -\left(({\bf H}_N^{-1}(S_I){\bf J}_{N}(S_I))^T\otimes{\bf H}_{N}^{-1}(S_I)\right)\bullet\frac{dvec{\bf H}_{N}(S_I)}{d{\bf w}^T}+\left(1\otimes{\bf H}_{N}^{-1}(S_I)\right)\bullet\frac{d{\bf J}_{N}(S_I)}{d{\bf w}^T}$;
 %  \item \it For $k=N-1,\dots,2$:
-%  \item $~$\hspace{0.5cm} $\frac{d{\bf p}_k(S_I)}{d{\bf w}^T} ~=~ -\left(({\bf H}_k^{-1}(S_I)({\bf A}_{k,k+1}(S_I){\bf p}_{k+1}(S_I)+{\bf P}_k(S_I)))^T\otimes{\bf H}_k^{-1}(S_I)\right)\cdot\frac{dvec{\bf H}_k(S_I)}{d{\bf w}^T}+\left({\bf p}_{k+1}(S_I)^T\otimes{\bf H}_k^{-1}(S_I)\right)$
-%  \item $~$\hspace{2cm} $\times\frac{dvec{\bf A}_{k,k+1}(S_I)}{d{\bf w}^T}+\left(1\otimes({\bf H}_k^{-1}(S_I){\bf A}_{k,k+1}(S_I))\right)\cdot\frac{d{\bf p}_{k+1}(S_I)}{d{\bf w}^T}+\left(1\otimes{\bf H}_k^{-1}(S_I)\right)\cdot\frac{d{\bf P}_k(S_I)}{d{\bf w}^T}$;
+%  \item $~$\hspace{0.5cm} $\frac{d{\bf p}_k(S_I)}{d{\bf w}^T} ~=~ -\left(({\bf H}_k^{-1}(S_I)({\bf A}_{k,k+1}(S_I){\bf p}_{k+1}(S_I)+{\bf J}_k(S_I)))^T\otimes{\bf H}_k^{-1}(S_I)\right)\bullet\frac{dvec{\bf H}_k(S_I)}{d{\bf w}^T}+\left({\bf p}_{k+1}(S_I)^T\otimes{\bf H}_k^{-1}(S_I)\right)$
+%  \item $~$\hspace{2cm} $\times\frac{dvec{\bf A}_{k,k+1}(S_I)}{d{\bf w}^T}+\left(1\otimes({\bf H}_k^{-1}(S_I){\bf A}_{k,k+1}(S_I))\right)\bullet\frac{d{\bf p}_{k+1}(S_I)}{d{\bf w}^T}+\left(1\otimes{\bf H}_k^{-1}(S_I)\right)\bullet\frac{d{\bf J}_k(S_I)}{d{\bf w}^T}$;
 %  \item (continuation I), omitted here, follows the same arguments
 %  \item (continuation II), omitted here, follows the same arguments
 %\end{description}
 %\vspace{0.5cm}
 
-\section{Probability of suffering at least $M$ infections}
+\subsection{The number of individuals suffering at least one reinfection}
+\label{SubSect23}
 
-\par In this section, we focus on the probability of a marked individual $A$ to suffer at least $M$ infections, with $M\geq2$. We point out
-here that, in previous section, we computed the probability of individual $A$ suffering at least $M=2$ infections (that is, suffering re-infection).
-Thus, we generalise our arguments in previous section for any value $M\geq2$, for the ND-SIS, TI-SIR, PI-SIR and TPI-SIR models studied above.
+\par We finally point out here that, under the homogeneous case and for the SIS model (same arguments apply for the TPI-SIR
+model), if the individual starting the infection is chosen randomly from the population, we have
+\begin{eqnarray*}
+p &=& \mathbb{P}(\hbox{\it $A$ suffering at least $2$ infections}) \ = \ p_{(m-1,S)}\frac{N-1}{N}+p_{(m-1,I)}\frac{1}{N}.
+\end{eqnarray*}
+\par\noindent Then, if we are interested in the random variable
+\begin{eqnarray*}
+ Y &=& \hbox{\it ``Number of individuals in the population suffering at least $2$ infections''},
+\end{eqnarray*}
+\par\noindent it is clear that
+\begin{eqnarray*}
+ p &=& \sum\limits_{y=0}^N\mathbb{P}(\hbox{\it $A$ suffering at least $2$ infections $|$ $Y=y$})\mathbb{P}(Y=y)
+\end{eqnarray*}
+\par\noindent and, since all the individuals are {\it symmetric}, we get
+\begin{eqnarray*}
+ p &=& \sum\limits_{y=0}^N\frac{y}{N}\mathbb{P}(Y=y) \ = \ \frac{E[Y]}{N}.
+\end{eqnarray*}
+\par\noindent Thus, once probabilities $p_{(m,a)}$ are in hand, we can easily obtain $E[Y]$ as
+\begin{eqnarray*}
+E[Y] &=& (N-1)p_{(m-1,S)}+p_{(m-1,I)}.
+\end{eqnarray*}
+\par\noindent We finally note that the complete probability mass function of $Y$ could also be computed by means of first-step arguments, which is out of the scope of this paper.
 
-\subsection{ND-SIS Model}
+
+\section{Results}
+\label{Sect3}
+
+\par For numerical results in this Section, we focus on the SIS model, as well as a number of temporary and/or partial immunity models that arise from the general TPI-SIR model, inspired from hypotheses considered in Ref. \cite{camacho2011explaining} for explaining a multiple-wave influenza outbreak occurred in Tristan da Cunha in $1971$. In particular, we focus on the following models depicted in Figure \ref{fig:models}:
+\begin{itemize}
+\item The All-or-Nothing (AoN) immunity model \cite{camacho2011explaining} represents the situation in which, after infection, some individuals develop with probability $p$ long-term protection against the infection, while others become fully susceptible.
+\item The Partially Protective Immunity (PPI) model \cite{camacho2011explaining} accounts for the situation in which, following recovery, all individuals have a partial protection against the infection.
+\item The SIRS model, widely considered in the literature, where immunity fades away after some time.
+\end{itemize}
+
+\begin{figure}[h!]
+  \centering
+ \includegraphics[width=\textwidth]{Figure_Models.jpg}
+ \caption{a) All-or-Nothing (AoN) immunity hypothesis \cite{camacho2011explaining}; b) Partially protective immunity (PPI) hypothesis \cite{camacho2011explaining}; c) SIRS model.}
+  \label{fig:models}
+\end{figure}
+
+\subsection{Global sensitivity analysis for an homogeneous population}
+\label{SubSect31}
+
+\par In this SubSection, we consider an individual that behaves equally than the rest of individuals in the population (that is, the population is fully homogeneous). We consider in this section $N=100$ and $\gamma=1$, so that the time unit is the average recovery period of an individual. Our interest is in analysing the probability of this individual suffering exactly $M$ infections for the different values of $M\geq0$, when the different epidemic parameter values change for the SIS and the TPI-SIR models. In particular:
+
+\begin{itemize}
+    \item In Figure \ref{fig:sis_homogeneous} we focus on the SIS model, and we plot the probability $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ of individual $A$, initially susceptible, suffering exactly $M$ infections, for $M\in\{0,1,2,3\}$, versus different values of $R_0=\beta N$.
+    \item In Figure \ref{fig:sirs} our interest is in analysing the SIRS model. We plot probabilities $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ as in Figure \ref{fig:sis_homogeneous}, while varying the value of $\alpha_R\in\{0.1,0.2,0.5,1.0\}$.
+    \item In Figure \ref{fig:siri} we plot the same probabilities for the PPI model, while varying $\sigma\in\{0.1,0.2,0.5\}$.
+    \item In Figure \ref{fig:aon} we consider the AoN model, and we vary $p\in\{0.1,0.25,0.5,0.75\}$.
+    %\item In Figure \ref{fig:siris} we consider the TPI-SIR model for $\alpha_I=0$, where both partial and temporary immunity are present. We consider $\sigma\in\{0.1,0.2,0.5\}$ and $\alpha_R\in\{0.1,0.2,0.5\}$. Since we have here several parameters to vary, we focus only on probabilities $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ for $M\in\{1,2\}$.
+\end{itemize}
+
+\begin{figure}[h!]
+  \centering
+ \includegraphics[width=\textwidth]{SIS_Homogeneous.jpg}
+ \caption{SIS Model. Probability $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ of individual $A$, initially susceptible, suffering exactly $M$ infections, for $M\in\{0,1,2,3\}$, versus different values of $R_0=\beta N$. $N=100$, $\gamma=1$. Left y-axis: $M=0$; Right y-axis: $M\in\{1,2,3\}$.}
+  \label{fig:sis_homogeneous}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+ \includegraphics[width=\textwidth]{SIRS.jpg}
+ \caption{TPI-SIR Model with $\alpha_I=\sigma=0$, accounting only for temporary immunity ($\alpha_R>0$). Probability $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ of individual $A$, initially susceptible, suffering exactly $M$ infections, for $M\in\{0,1,2,3\}$, versus different values of $R_0=\beta N$. $\gamma=1$ and $N=100$. Immunity is lost at rate
+$\alpha_R=0.1$ ({\it top-left}), $\alpha_R=0.2$ ({\it bottom-left}), $\alpha_R=0.5$ ({\it top-right}) and $\alpha_R=1.0$ ({\it bottom-right}).
+Left y-axis: $M=0$; Right y-axis: $M\in\{1,2,3\}$.}
+  \label{fig:sirs}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+ \includegraphics[width=\textwidth]{SIRI.jpg}
+ \caption{TPI-SIR Model with $\alpha_I=\alpha_R=0$, accounting only for partial immunity ($\sigma>0$). Probability $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ of individual $A$, initially susceptible, suffering exactly $M$ infections, for $M\in\{0,1,2,3\}$, versus different values of $R_0=\beta N$. $\gamma=1$ and $N=100$.
+Partial immunity is represented here by parameter $\sigma=0.1$ ({\it top-left}), $\sigma=0.2$ ({\it bottom-left}), $\sigma=0.5$ ({\it top-right}) and
+$\sigma=1.0$ ({\it bottom-right}). Left y-axis: $M=0$; Right y-axis: $M\in\{1,2,3\}$.}
+ \label{fig:siri}
+\end{figure}
+
+%\begin{figure}[h!]
+%  \centering
+% \includegraphics[width=0.6\textwidth]{SIRIS.jpg}
+% \caption{TPI-SIR Model with $\alpha_I=0$. Probability $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ of individual $A$, initially susceptible, suffering exactly $M$
+%infections, for $M\in\{1,2\}$, versus different values of $R_0=\beta N$. $\gamma=1$ and $N=100$. Partial immunity is represented here by parameter $\sigma=0.1$ ({\it top-left}), $\sigma=0.2$ ({\it %bottom-left}), $\sigma=0.5$ ({\it top-right}) and
+%$\sigma=1.0$ ({\it bottom-right}). Temporary immunity is given by $\alpha_R\in\{0.1,0.2,0.5\}$ ({\it black}, {\it blue} and {\it red} curves, respectively).}
+% \label{fig:siris}
+%\end{figure}
+
+\subsection{The probabilities of suffering exactly $M$ infections as the likelihood for estimation of parameters: Tristan da Cunha as a case study}
+\label{SubSect32}
+
+\par Here, we can fit every model to Tristan da Cunha data and compare. The idea would be to explain how these probabilities can be used as the likelihood when estimating parameters. Moreover, given the large amount of parameters ($\beta$, $\gamma$, $\alpha_R$,...) that we can vary, setting the parameters (at least for the SIRS type models in Figure \ref{fig:4}) by means of this fitting would allow us to keep these parameter values when analysing an heterogeneous individual in SubSection \ref{SubSect33}.
+
+\par We consider... then, we propose the approximated likelihood...
+\begin{eqnarray*}
+L(\theta;{\underline x}) &=& \dots
+\end{eqnarray*}
+
+\begin{table}[h!]
+{\small
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+MLE & SIS & AoN & PI-SIR & SIRS\\
+\hline
+$\beta$ & & & & \\
+\hline
+$\gamma$ & & & & \\
+\hline
+$\sigma$ & $-$ & $-$ & & \\
+\hline
+$\alpha_R$ & $-$ & & $-$ & \\
+\hline
+$\alpha_I$ & $-$ & & $-$ & \\
+\hline
+\end{tabular}
+\caption{Maximum likelihood estimates (MLEs)...}
+\label{tab:tristan}}
+\end{table}
+
+
+\subsection{Analysis of special individuals}
+\label{SubSect33}
+
+\par In this SubSection, we can plot the histogram of the number of reinfections suffered by individual $A$ (that is, probabilities for $M\in\{0,1,2,3,4\}$ within a histogram) for models SIS, TI-SIR, PI-SIR and TPI-SIR just when parameter values are chosen from Table \ref{tab:tristan}. Now, the question is how the reinfection dynamics of individual A are, when this individual is somehow special. In particular, we consider how these histograms vary when we consider:
+\begin{itemize}
+ \item Individual $A$ is a {\it super-infectious} individual ($\beta_{A\rightarrow\bullet}=2\beta$),
+ \item Individual $A$ is a {\it super-susceptible} individual ($\beta_{\bullet\rightarrow A}=2\beta$),
+ \item Individual $A$ is a {\it super-recoverable} individual ($\gamma(A)=2\gamma$).
+\end{itemize}
+
+\par Depending on the results that we get, we might also consider for the TI-SIR, PI-SIR and TPI-SIR models:
+\begin{itemize}
+ \item Individual $A$ has better partial immunity ($\sigma(A)=2\sigma$),
+ \item Individual $A$ losses immunity faster ($\alpha_R(A)=2\alpha_R$).
+\end{itemize}
+
+\vspace{1cm}
+
+\par\noindent{\large \bf Acknowledgments}\\
+
+\par\noindent This research has been supported by the Medical Research Council through the project MR/N014855/1 (M. L\'opez-Garc\'ia), and by... {\bf Anton Camacho}.\\
+
+\vspace{1cm}
+
+\par\noindent{\large \bf References}
+\bibliography{ReinfectionProbability}
+\bibliographystyle{plain}
+
+\vspace{1cm}
+
+\par\noindent{\large \bf Appendix A. Probability of suffering at least $M$ infections}\\
+
+\par In this appendix, we show how to generalise our arguments in order to compute the probability of a marked individual $A$ suffering at least $M$
+infections, with $M\geq2$. We point out here that, in Section 2, we computed the probability of individual $A$ suffering at least $M=2$ infections
+(that is, suffering reinfection). Thus, we generalise our arguments in previous section for any value $M\geq2$, for the SIS and the general TPI-SIR model.\\
+
+\vspace{0.5cm}
+
+\par\noindent{\bf A.1. SIS Model}\\
 
 \par We consider here the extended process ${\cal X}^{ext,M}=\{{\bf X}^{ext,M}(t)=(S^M(t),A^M(t)):\ t\geq0\}$, where we define $A^M(t)$ as the state of
 individual $A$ at time $t\geq0$, taking values among $a\in\{S_0,\dots,S_{M-1},I_1,\dots,I_{M-1}\}$. In particular, $A^M(t)=S_j$ (or, alternatively,
 $I_j$) represents that individual $A$ is, at current time $t$, susceptible (infected) and suffered exactly $j$ infections up to time $t$. As before, we
-can consider the most general case in which we consider that individual $A$ can be different than the rest of individuals in the population, by
-considering rates $\gamma_A$, $\beta_{A\rightarrow\cdot}$ and $\beta_{\cdot\rightarrow A}$.
+can consider that individual $A$ has a different behavior against the disease than the rest of individuals
+in the population, by considering specific rates $\gamma(A)$, $\beta_{A\rightarrow\bullet}$ and $\beta_{\bullet\rightarrow A}$.
 
 \par The space of states for our extended process ${\cal X}^{ext,M}$ is given by
 \begin{eqnarray*}
- {\cal S}^{ext,M} &=& \left(\{1,\dots,N-1\}\times\{S_0,\dots,S_{M-1},I_1,\dots,I_{M-1}\}\right)\cup\left(\{0\}\times\{I_1,\dots,I_{M-1}\}\right)\cup\left(\{N\}\times\{S_0,\dots,S_{M-1}\}\right)\cup\{\Delta^M\},
+ {\cal S}^{ext,M} &=& \left(\{1,\dots,N-1\}\times\{S_0,\dots,S_{M-1},I_1,\dots,I_{M-1}\}\right)\cup\left(\{0\}\times\{I_1,\dots,I_{M-1}\}\right)\\
+&&\cup\left(\{N\}\times\{S_0,\dots,S_{M-1}\}\right)\cup\{\Delta^M\},
 \end{eqnarray*}
 \par\noindent where $\Delta^M$ is an artificial absorbing state representing that individual $A$ suffered, at least, $M$ infections. Transitions
-between states in ${\cal S}^{ext,M}$ are given in Table \ref{tab:new1}.
+between states in ${\cal S}^{ext,M}$ are given in Table \ref{tab:new1}, and we note that states of the form $(N,a)$ are absorbing states for process ${\cal X}^{ext,M}$
+representing the end of the outbreak without individual $A$ suffering $M$ infections.
 
 \begin{table}[h]
 \centering
-\begin{tabular}{|l|l|l|l|}
+\begin{tabular}{|c|l|l|l|}
 \hline
-Type of event & Original state ($0\leq m\leq N-1$) & Destination state & Rate\\
+Event & Original state & Destination state & Rate\\
 \hline
-Recovery of an infective individual & $(m,S_j)$, $m\geq1$, $0\leq j\leq M-1$ & $(m+1,S_j)$ & $\gamma(N-m)$\\
- & $(m,I_j)$, $1\leq j\leq M-1$ & $(m+1,S_j)$ & $\gamma_A$\\
- & $(m,I_j)$, $m\leq N-2$, $1\leq j\leq M-1$ & $(m+1,I_j)$ & $\gamma(N-m-1)$\\
+Recovery of & $(m,S_j)$, $m\geq1$ & $(m+1,S_j)$ & $\gamma(N-m)$\\
+an infective & $(m,I_j)$, $j\geq1$ & $(m+1,S_j)$ & $\gamma(A)$\\
+individual & $(m,I_j)$, $m\leq N-2$, $j\geq1$ & $(m+1,I_j)$ & $\gamma(N-m-1)$\\
 \hline
-Infection of a susceptible individual & $(m,S_j)$, $m\geq1$, $0\leq j\leq M-2$ & $(m-1,I_{j+1})$ & $\beta_{\cdot\rightarrow A}(N-m)$\\
- & $(m,S_{M-1})$, $m\geq1$ & $\Delta^M$ & $\beta_{\cdot\rightarrow A}(N-m)$\\
- & $(m,S_j)$, $m\geq2$, $0\leq j\leq M-1$ & $(m-1,S_j)$ & $\beta(m-1)(N-m)$\\
- & $(m,I_j)$, $1\leq j\leq M-1$ & $(m-1,I_j)$ & $\beta m(N-m-1)+\beta_{A\rightarrow\cdot}m$\\
+Infection of & $(m,S_j)$, $m\geq1$, $j\leq M-2$ & $(m-1,I_{j+1})$ & $\beta_{\bullet\rightarrow A}(N-m)$\\
+a susceptible & $(m,S_{M-1})$, $m\geq1$ & $\Delta^M$ & $\beta_{\bullet\rightarrow A}(N-m)$\\
+individual & $(m,S_j)$, $m\geq2$ & $(m-1,S_j)$ & $\beta(m-1)(N-m)$\\
+ & $(m,I_j)$, $j\geq1$ & $(m-1,I_j)$ & $\beta m(N-m-1)+\beta_{A\rightarrow\bullet}m$\\
 \hline
 \end{tabular}
-\caption{Transitions among states in ${\cal S}^{ext,M}$.}
+\caption{Transitions among states in ${\cal S}^{ext,M}$, for $0\leq m\leq N-1$, $0\leq j\leq M-1$.}
 \label{tab:new1}
 \end{table}
 
-\par We define $p^M_{(m,a)}$ as the probability of individual $A$ suffering at least $M$ infections, given the current state of the process $(m,a)\in{\cal S}^{ext,M}$,
-with trivial cases $p^M_{\Delta^M}=1$, $p^M_{(N,S_j)}=0$ for all $0\leq j\leq M-1$. These probabilities verify, for $0\leq m\leq N-1$, the equations
-\begin{eqnarray}
- \theta_{(m,S)}p^M_{(m,S_j)} &=& \beta(m-1)(N-m)p^M_{(m-1,S_j)}+\beta_{\cdot\rightarrow A}(N-m)\left(1_{j=M-1}p^M_{\Delta^M}+1_{j<M-1}p^M_{(m-1,I_{j+1})}\right)+\gamma(N-m)p^M_{(m+1,S_j)},\nonumber\\
-&&\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad m\geq1,\ 0\leq j\leq M-1,\ \ (E.S_j) \label{ESj}\nonumber\\
-\theta_{(m,I)}p^M_{(m,I_j)} &=& \left(\beta m(N-m-1)+\beta_{A\rightarrow\cdot}m\right)p^M_{(m-1,I_j)}+\gamma(N-m-1)p^M_{(m+1,I_j)}+\gamma_Ap^M_{(m+1,S_j)},\quad 1\leq j\leq M-1,\quad\quad\quad\quad (E.I_j) \label{EIj}\nonumber
-\end{eqnarray}
-\par\noindent with $\theta_{(m,S)}$ and $\theta_{(m,I)}$ defined in previous section, and $1_{\cal B}$ a boolean function taking value $1$ if condition ${\cal B}$ is verified, and $0$ otherwise. These equations are directly related to the transitions diagram of ${\cal X}^{ext,M}$, given in Figure \ref{fig:3new}.
+\par We define $p^M_{(m,a)}$ as the probability of individual $A$ suffering at least $M$ infections, given the initial state of the process $(m,a)\in{\cal S}^{ext,M}$,
+with trivial probabilities $p^M_{\Delta^M}=1$, $p^M_{(N,S_j)}=0$ for all $0\leq j\leq M-1$. These probabilities satisfy, for $0\leq m\leq N-1$, $0\leq j\leq M-1$, the equations
+\vspace{1cm}
+\begin{eqnarray*}
+ \theta_{(m,S)}p^M_{(m,S_j)} &=& \beta(m-1)(N-m)p^M_{(m-1,S_j)}+\beta_{\bullet\rightarrow A}(N-m)(1_{j=M-1}p^M_{\Delta^M}\\
+&&+1_{j<M-1}p^M_{(m-1,I_{j+1})})+\gamma(N-m)p^M_{(m+1,S_j)},\quad m\geq1,\quad (Equation\ (E.S_j))\\
+\theta_{(m,I)}p^M_{(m,I_j)} &=& \left(\beta m(N-m-1)+\beta_{A\rightarrow\bullet}m\right)p^M_{(m-1,I_j)}+\gamma(N-m-1)p^M_{(m+1,I_j)}\\
+&&+\gamma(A)p^M_{(m+1,S_j)},\quad j\geq 1,\quad (Equation\ (E.I_j))
+\end{eqnarray*}
+\par\noindent with $\theta_{(m,S)}$ and $\theta_{(m,I)}$ defined in Section 2, and $1_{\cal B}$ a boolean function taking value $1$ if condition ${\cal B}$ is verified, and $0$ otherwise. These equations are directly related to the transitions diagram of ${\cal X}^{ext,M}$, given in Figure \ref{fig:3new}.
 
 \begin{figure}[h!]
 \centering
  \includegraphics[width=\textwidth]{Figure3_new.jpg}
-\caption{Transitions diagram of ${\cal X}^{ext,M}$.}
+\caption{Transitions diagram for process ${\cal X}^{ext,M}$.}
 \label{fig:3new}
 \end{figure}
 
-\par This diagram also gives some clue on how to iteratively solve the system of equations given by $(E.S_j)-(E.I_j)$. In particular, we can start
-solving Equations $(E.S_{M-1})$ for all values of $m$ and, once probabilities in this equations are in hand, Equations $(E.I_j)$ are solved after $(E.S_j)$, while Equations
-$(E.S_{j-1})$ are solved after Equations $(E.I_j)$. In particular, if we developed Algorithms $S_j$ and $I_j$ (following the same arguments than in
-previous section), probabilities of interest are computed as follows:
+\par This diagram also gives some clue on how to iteratively solve the system of equations given by Eqs. $(E.S_j)-(E.I_j)$. In particular, we can start
+solving Equations $(E.S_{M-1})$ for $1\leq m\leq N$ and, once probabilities $p^M_{(m,S_{M-1})}$ are in hand, Equations $(E.I_{M-1})$ can be solved, obtaining
+probabilities $p^M_{(m,I_{M-1})}$ for $0\leq m\leq N-1$. Then, we can continue working in an algorithmic fashion solving Eqs. $(E.I_j)$ after Eqs.
+$(E.S_j)$. In particular, if we develop {\bf Algorithms} $S_j$ and $I_j$ (following the same arguments than in Section 2), probabilities of interest
+are computed as follows:
 
 \begin{description}
   \item \it Run Algorithm $S_{M-1}$;
@@ -887,141 +1145,119 @@ previous section), probabilities of interest are computed as follows:
   \item $~$\hspace{0.5cm} \it Run Algorithm $S_{j}$;
 \end{description}
 
-\par\noindent with Algorithms $S_j$ and $I_j$ described below.
+\par\noindent with {\bf Algorithms $S_j$} and $I_j$ described below.\\
 
-\newpage
-
-%\vspace{0.5cm}
-\par \noindent{\bf Algorithm $S_j$, $0\leq j\leq M-1$}\\
-
-\begin{minipage}{9cm}
+\par \noindent{\bf Algorithm $S_j$, $0\leq j\leq M-1$}
 \begin{description}
-  \item $h_{(N-1,S)} ~=~ 1$;
-  \item $f_{(N-1,S)} ~=~ \frac{\beta(N-2)}{\theta_{(N-1,S)}}$;
-  \item $g_{(N-1,S_j)} ~=~ \frac{\beta_{\cdot\rightarrow A}}{\theta_{(N-1,S)}}\left(1_{j=M-1}+1_{j<M-1}p^M_{(N-2,I_{j+1})}\right)$;
+  \item $g_{(N-1,S_j)} ~=~ \frac{\beta_{\bullet\rightarrow A}}{\theta_{(N-1,S)}}\left(1_{j=M-1}+1_{j<M-1}p^M_{(N-2,I_{j+1})}\right)$;
   \item \it For $m=N-2,\dots,1$:
-  \item $~$\hspace{0.5cm} $h_{(m,S)} ~=~ 1-\frac{\gamma(N-m)}{\theta_{(m,S)}}h_{(m+1,S)}^{-1}f_{(m+1,S)}$;
-  \item $~$\hspace{0.5cm} $f_{(m,S)} ~=~ \frac{\beta (m-1)(N-m)}{\theta_{(m,S)}}$;
-\end{description}
-\end{minipage}\begin{minipage}{9cm}
-\begin{description}
-  \item $~$\hspace{0.5cm} $g_{(m,S_j)} ~=~ \frac{\beta_{\cdot\rightarrow A}(N-m)}{\theta_{(m,S)}}\left(1_{j=M-1}+1_{j<M-1}p^M_{(m-1,I_{j+1})}\right)$\\
-  \item $~$\hspace{1.8cm} $+\frac{\gamma(N-m)}{\theta_{(m,S)}}h_{(m+1,S)}^{-1}g_{(m+1,S_j)}$;
+  \item $~$\hspace{0.5cm} $g_{(m,S_j)} ~=~ \frac{\beta_{\bullet\rightarrow A}(N-m)}{\theta_{(m,S)}}\left(1_{j=M-1}+1_{j<M-1}p^M_{(m-1,I_{j+1})}\right)+\frac{\gamma(N-m)}{\theta_{(m,S)}}h_{(m+1,S)}^{-1}g_{(m+1,S_j)}$;
   \item $p^M_{(1,S_j)} ~=~ h_{(1,S)}^{-1}g_{(1,S_j)}$;
   \item \it For $m=2,\dots,N-1$:
   \item $~$\hspace{0.5cm} $p^M_{(m,S_j)} ~=~ h_{(m,S)}^{-1}\left(f_{(m,S)}p^M_{(m-1,S_j)}+g_{(m,S_j)}\right)$;
-  \item $~$
 \end{description}
-\end{minipage}
-\vspace{0.5cm}
-\par \noindent{\bf Algorithm $I_j$, $1\leq j\leq M-1$}\\
 
-\begin{minipage}{9cm}
+\vspace{0.5cm}
+\par \noindent{\bf Algorithm $I_j$, $1\leq j\leq M-1$}
 \begin{description}
-  \item $h_{(N-1,I)} ~=~ 1$;
-  \item $f_{(N-1,I)} ~=~ \frac{\beta_{A\rightarrow\cdot}(N-1)}{\theta_{(N-1,I)}}$;
-  \item $g_{(N-1,I_j)} ~=~ \frac{\gamma_A}{\theta_{(N-1,I)}}p^M_{(N,S_{j})}$;
+  \item $g_{(N-1,I_j)} ~=~ \frac{\gamma(A)}{\theta_{(N-1,I)}}p^M_{(N,S_{j})}$;
   \item \it For $m=N-2,\dots,0$:
-  \item $~$\hspace{0.5cm} $h_{(m,I)} ~=~ 1-\frac{\gamma(N-m-1)}{\theta_{(m,I)}}h_{(m+1,I)}^{-1}f_{(m+1,I)}$;
-  \item $~$\hspace{0.5cm} $f_{(m,I)} ~=~ \frac{\beta m(N-m-1)+\beta_{A\rightarrow\cdot}m}{\theta_{(m,I)}}$;
-\end{description}
-\end{minipage}\begin{minipage}{9cm}
-\begin{description}
-  \item $~$\hspace{0.5cm} $g_{(m,I_j)} ~=~ \frac{\gamma_A}{\theta_{(m,I)}}p^M_{(m+1,S_j)}+\frac{\gamma(N-m-1)}{\theta_{(m,I)}}h_{(m+1,I)}^{-1}g_{(m+1,I_j)}$;
+  \item $~$\hspace{0.5cm} $g_{(m,I_j)} ~=~ \frac{\gamma(A)}{\theta_{(m,I)}}p^M_{(m+1,S_j)}+\frac{\gamma(N-m-1)}{\theta_{(m,I)}}h_{(m+1,I)}^{-1}g_{(m+1,I_j)}$;
   \item $p^M_{(0,I_j)} ~=~ h_{(0,I)}^{-1}g_{(0,I_j)}$;
   \item \it For $m=1,\dots,N-1$:
   \item $~$\hspace{0.5cm} $p^M_{(m,I_j)} ~=~ h_{(m,I)}^{-1}\left(f_{(m,I)}p^M_{(m-1,I_j)}+g_{(m,I_j)}\right)$;
-  \item $~$
-  \item $~$
-  \item $~$
 \end{description}
-\end{minipage}
 
-\par\noindent We note here that $h_{(m,S)}$ and $f_{(m,S)}$ have been computed in Algorithm 1 for all values of $m$. Finally, it is worth to
-point out that, once probabilities $p^M_{(m,a)}$ are in hand for different values of $M$, the probability of individual $A$
-suffering exactly $M$ infections given the initial state $(m,a)$ is given by $p^M_{(m,a)}-p^{M+1}_{(m,a)}$.
+\par\noindent We note here that quantities $h_{(m,S)}$, $f_{(m,S)}$, $h_{(m,I)}$ and $f_{(m,I)}$ are the ones computed in {\bf Algorithm 1}, since they do not depend
+on the value of $j$. Finally, it is worth to point out that, once probabilities $p^M_{(m,a)}$ are in hand for different values of $M$, the probability
+of individual $A$ suffering exactly $M$ infections given the initial state $(m,a)$ is given by $p^M_{(m,a)}-p^{M+1}_{(m,a)}$.\\
 
-\subsection{TI-, PI- and TPI-SIR models}
+\vspace{0.5cm}
 
-\par We proceed here as before and define the extended process ${\cal \tilde X}^{ext,M}=\{{\bf \tilde X}^{ext,M}(t)=({\tilde S}^M(t),{\tilde A}^M(t)):\ t\geq0\}$ where
-${\tilde A}^M(t)$ takes values among $a\in\{S_0,\dots,S_{M-1},I_1,\dots,I_{M-1},R_1,\dots,R_{M-1}\}$. ${\cal \tilde X}^{ext,M}$ is defined over the
+\par\noindent{\bf A.2. TPI-SIR model}\\
+
+\par We proceed here as before and define the extended process ${\cal \tilde X}^{ext,M}=\{{\bf \tilde X}^{ext,M}(t)=({\tilde S}^M(t),{\tilde I}^M(t),{\tilde A}^M(t)):\ t\geq0\}$ where
+${\tilde A}^M(t)$ takes values among $a\in\{S_0,\dots,S_{M-1},I_1,\dots,I_{M-1},\linebreak R_1,\dots,R_{M-1}\}$. ${\cal \tilde X}^{ext,M}$ is defined over the
 space of states
 \begin{eqnarray*}
- {\cal \tilde S}^{ext,M} &=& \left({\cal \tilde S}^{ext,M}(S)\times\{S_0,\dots,S_{M-1}\}\right)\cup\left({\cal \tilde S}^{ext,M}(I)\times\{I_1,\dots,I_{M-1}\}\right)\cup\left({\cal \tilde S}^{ext,M}(R)\times\{R_1,\dots,R_{M-1}\}\right)\cup\{{\tilde \Delta}^M\},
+ {\cal \tilde S}^{ext,M} &=& \left({\cal \tilde S}^{ext,M}(S)\times\{S_0,\dots,S_{M-1}\}\right)\cup\left({\cal \tilde S}^{ext,M}(I)\times\{I_1,\dots,I_{M-1}\}\right)\\
+ &&\cup\left({\cal \tilde S}^{ext,M}(R)\times\{R_1,\dots,R_{M-1}\}\right)\cup\{{\tilde \Delta}^M\},
 \end{eqnarray*}
 \par\noindent where ${\tilde \Delta}^M$ is the artificial absorbing state representing that individual $A$ suffered at least $M$ infections, and
 where
 \begin{eqnarray*}
  {\cal \tilde S}^{ext,M}(S) &=& \{(m,n)\in\mathbb{N}_0^2:\ m>0,\ m+n\leq N\},\\
 {\cal \tilde S}^{ext,M}(I) &=& \{(m,n)\in\mathbb{N}_0^2:\ n>0,\ m+n\leq N\},\\
-{\cal \tilde S}^{ext,M}(R) &=& \{(m,n)\in\mathbb{N}_0^2:\ m+n<N\}.
+{\cal \tilde S}^{ext,M}(R) &=& \{(m,n)\in\mathbb{N}_0^2:\ m+n<N\},
 \end{eqnarray*}
 
-\par\noindent Possible transitions among states in our extended process are given in Table \ref{tab:2new}, where states
-with $n=0$ are considered as absorbing states, and where $i_{(m,n)}$, ${\bar i}_{(m,n)}$, $e_{(m,n)}$, ${\bar e}_{(m,n)}$, $r_{(m,n)}$, ${\bar r}_{(m,n)}$,
-$d_{(m,n)}$, ${\bar d}_{(m,n)}$, $w_{(m,n)}$ and ${\bar w}_{(m,n)}$ are defined in previous section.
+\par\noindent relate to the numbers of susceptible and infective individuals when individual $A$ is susceptible, infective or recovered, respectively.
+Possible transitions among states in our extended process are given in Table \ref{tab:2new}, where states of the form $(m,0,a)$ are considered as
+absorbing states, since they represent the situation where no infective individuals remain in the population.
 
 \begin{table}[h]
+{\small
 \centering
-\begin{tabular}{|l|l|l|l|}
+\begin{tabular}{|c|l|l|l|}
 \hline
-Type of event & Original state ($n\geq1$, $m+n\leq N$, $m\geq0$) & Destination state & Rate\\
+Event & Original state & Destination state & Rate\\
 \hline
-Recovery of an infective & $(m,n,S_j)$, $m\geq1$, $0\leq j\leq M-1$ & $(m,n-1,S_j)$ & $\gamma n$\\
- & $(m,n,I_j)$, $1\leq j\leq M-1$, $n\geq2$ & $(m,n-1,I_j)$ & $\gamma(n-1)$\\
- & $(m,n,I_j)$, $1\leq j\leq M-1$ & $(m,n-1,R_j)$ & $\gamma_A$\\
- & $(m,n,R_j)$, $m+n<N$, $1\leq j\leq M-1$ & $(m,n-1,R_j)$ & $\gamma n$\\
+Recovery & $(m,n,S_j)$, $m\geq1$, & $(m,n-1,S_j)$ & $\gamma n$\\
+of an & $(m,n,I_j)$,  $n\geq2$, $j\geq1$ & $(m,n-1,I_j)$ & $\gamma(n-1)$\\
+infective & $(m,n,I_j)$, $j\geq1$ & $(m,n-1,R_j)$ & $\gamma(A)$\\
+individual & $(m,n,R_j)$, $m+n<N$, $j\geq1$ & $(m,n-1,R_j)$ & $\gamma n$\\
 \hline
-Infection of a susceptible & $(m,n,S_{M-1})$, $m\geq1$ & ${\tilde \Delta}^M$ & $\beta_{\cdot\rightarrow A}n$\\
- & $(m,n,S_j)$, $m\geq2$, $0\leq j\leq M-1$ & $(m-1,n+1,S_j)$ & $\beta(m-1)n$\\
- & $(m,n,S_j)$, $m\geq1$, $0\leq j\leq M-2$ & $(m-1,n+1,I_{j+1})$ & $\beta_{\cdot\rightarrow A}n$\\
- & $(m,n,I_j)$, $m\geq1$, $1\leq j\leq M-1$ & $(m-1,n+1,I_j)$ & $\beta m(n-1)+\beta_{A\rightarrow\cdot}m$\\
- & $(m,n,R_j)$, $m\geq1,\ m+n<N$, $1\leq j\leq M-1$ & $(m-1,n+1,R_j)$ & $\beta mn$\\
+Infection & $(m,n,S_{M-1})$, $m\geq1$ & ${\tilde \Delta}^M$ & $\beta_{\bullet\rightarrow A}n$\\
+of a & $(m,n,S_j)$, $m\geq2$ & $(m-1,n+1,S_j)$ & $\beta(m-1)n$\\
+susceptible & $(m,n,S_j)$, $m\geq1$, $j\leq M-2$ & $(m-1,n+1,I_{j+1})$ & $\beta_{\bullet\rightarrow A}n$\\
+individual & $(m,n,I_j)$, $m\geq1$, $j\geq1$ & $(m-1,n+1,I_j)$ & $\beta m(n-1)+\beta_{A\rightarrow\bullet}m$\\
+ & $(m,n,R_j)$, $m\geq1,\ m+n<N$, $j\geq1$ & $(m-1,n+1,R_j)$ & $\beta mn$\\
 \hline
-Infection of a recovered & $(m,n,S_j)$, $m\geq1,\ m+n<N$, $1\leq j\leq M-1$ & $(m,n+1,S_j)$ & $\sigma\beta n(N-m-n)$\\
- & $(m,n,I_j)$, $m+n<N$, $1\leq j\leq M-1$ & $(m,n+1,I_j)$ & $\sigma\beta(n-1)(N-m-n)+\sigma\beta_{A\rightarrow\cdot}(N-m-n)$\\
- & $(m,n,R_j)$, $m+n<N-1$, $1\leq j\leq M-1$ & $(m,n+1,R_j)$ & $\sigma\beta n(N-m-n-1)$\\
- & $(m,n,R_j)$, $m+n<N$, $1\leq j\leq M-2$ & $(m,n+1,I_{j+1})$ & $\sigma_A\beta_{\cdot\rightarrow A} n$\\
- & $(m,n,R_{M-1})$, $m+n<N$ & ${\tilde \Delta}^{M}$ & $\sigma_A\beta_{\cdot\rightarrow A} n$\\
+Infection & $(m,n,S_j)$, $m\geq1,\ m+n<N$, $j\geq1$ & $(m,n+1,S_j)$ & $\sigma\beta n(N-m-n)$\\
+of a & $(m,n,I_j)$, $m+n<N$, $j\geq1$ & $(m,n+1,I_j)$ & $\sigma\beta(n-1)(N-m-n)$\\
+recovered & & & $+\sigma\beta_{A\rightarrow\bullet}(N-m-n)$\\
+individual & $(m,n,R_j)$, $m+n<N-1$, $j\geq1$ & $(m,n+1,R_j)$ & $\sigma\beta n(N-m-n-1)$\\
+ & $(m,n,R_j)$, $m+n<N$, $1\leq j\leq M-2$ & $(m,n+1,I_{j+1})$ & $\sigma(A)\beta_{\bullet\rightarrow A} n$\\
+ & $(m,n,R_{M-1})$, $m+n<N$ & ${\tilde \Delta}^{M}$ & $\sigma(A)\beta_{\bullet\rightarrow A} n$\\
 \hline
-Immunity loss of an infective & $(m,n,S_j)$, $m\geq1$, $0\leq j\leq M-1$ & $(m+1,n-1,S_j)$ & $\alpha_I n$\\
- & $(m,n,I_j)$, $n\geq2$, $1\leq j\leq M-1$ & $(m+1,n-1,I_j)$ & $\alpha_I(n-1)$\\
- & $(m,n,I_j)$, $1\leq j\leq M-1$ & $(m+1,n-1,S_j)$ & $\alpha_I(A)$\\
- & $(m,n,R_j)$, $m+n<N$, $1\leq j\leq M-1$ & $(m+1,n-1,R_j)$ & $\alpha_I n$\\
+Immunity & $(m,n,S_j)$, $m\geq1$ & $(m+1,n-1,S_j)$ & $\alpha_I n$\\
+loss of an & $(m,n,I_j)$, $n\geq2$, $j\geq1$ & $(m+1,n-1,I_j)$ & $\alpha_I(n-1)$\\
+infective & $(m,n,I_j)$, $j\geq1$ & $(m+1,n-1,S_j)$ & $\alpha_I(A)$\\
+individual & $(m,n,R_j)$, $m+n<N$, $j\geq1$ & $(m+1,n-1,R_j)$ & $\alpha_I n$\\
 \hline
-Immunity loss of a recovered & $(m,n,S_j)$, $m\geq1,\ m+n<N$, $0\leq j\leq M-1$ & $(m+1,n,S_j)$ & $\alpha_R (N-m-n)$\\
- & $(m,n,I_j)$, $m+n<N$, $1\leq j\leq M-1$ & $(m+1,n,I_j)$ & $\alpha_R (N-m-n)$\\
- & $(m,n,R_j)$, $m+n<N-1$, $1\leq j\leq M-1$ & $(m+1,n,R_j)$ & $\alpha_R (N-m-n-1)$\\
- & $(m,n,R_j)$, $m+n<N$, $1\leq j\leq M-1$ & $(m+1,n,S_j)$ & $\alpha_R(A)$\\
+Immunity & $(m,n,S_j)$, $m\geq1,\ m+n<N$ & $(m+1,n,S_j)$ & $\alpha_R (N-m-n)$\\
+loss of a & $(m,n,I_j)$, $m+n<N$, $j\geq1$ & $(m+1,n,I_j)$ & $\alpha_R (N-m-n)$\\
+recovered & $(m,n,R_j)$, $m+n<N-1$, $j\geq1$ & $(m+1,n,R_j)$ & $\alpha_R (N-m-n-1)$\\
+individual & $(m,n,R_j)$, $m+n<N$, $j\geq1$ & $(m+1,n,S_j)$ & $\alpha_R(A)$\\
 \hline
 \end{tabular}
-\caption{Transitions among states in ${\cal \tilde S}^{ext,M}$.}
-\label{tab:2new}
+\caption{Transitions among states in ${\cal \tilde S}^{ext,M}$, for $m\geq0$, $n\geq1$, $m+n\leq N$, and $0\leq j\leq M-1$.}
+\label{tab:2new}}
 \end{table}
 
 \par If we define
 \begin{eqnarray*}
- p^M_{(m,n,a)} &=& \hbox{\it ``probability of individual $A$ suffering at least $M$ infections, given the current state of the process}\\
-&& \hbox{\it $(m,n,a)\in{\cal \tilde S}^{ext,M}$''},
+ p^M_{(m,n,a)} &=& \hbox{\it ``probability of individual $A$ suffering at least $M$ infections, given}\\
+&& \hbox{\it the initial state of the process $(m,n,a)\in{\cal \tilde S}^{ext,M}$''},
 \end{eqnarray*}
-\par\noindent these probabilities verify equations (for $n\geq1$, $m+n\leq N$, $m\geq0$)
+\par\noindent these probabilities satisfy the following equations, for $m\geq0$, $n\geq1$, $m+n\leq N$ and $0\leq j\leq M-1$,
 \begin{eqnarray*}
- \theta_{(m,n,S)}p^M_{(m,n,S_j)} &=& \beta(m-1)np^M_{(m-1,n+1,S_j)}+\beta_{\cdot\rightarrow A}n\left(1_{j=M-1}p^M_{{\tilde \Delta}^M}+1_{j<M-1}p^M_{(m-1,n+1,I_{j+1})}\right)+\gamma np^M_{(m,n-1,S_j)}+\alpha_I n\\
-&& \times p^M_{(m+1,n-1,S_j)}+\alpha_R(N-m-n)p^M_{(m+1,n,S_j)}+\sigma\beta n(N-m-n)p^M_{(m,n+1,S_j)},\quad m\geq1,\ 0\leq j\leq M-1,\ ({\tilde E}.S_j)\\
- \theta_{(m,n,I)}p^M_{(m,n,I_j)} &=& \left(\beta m(n-1)+\beta_{A\rightarrow\cdot}m\right)p^M_{(m-1,n+1,I_j)}+\gamma(n-1)p^M_{(m,n-1,I_j)}+\gamma_Ap^M_{(m,n-1,R_j)}+\alpha_I(n-1)p^M_{(m+1,n-1,I_j)}\\
-&& +\alpha_I(A)p^M_{(m+1,n-1,S_j)}+\left(\sigma\beta(n-1)(N-m-n)+\sigma\beta_{A\rightarrow\cdot}(N-m-n)\right)p^M_{(m,n+1,I_j)}\\
-&& +\alpha_R(N-m-n)p^M_{(m+1,n,I_j)},\quad 1\leq j\leq M-1,\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad ({\tilde E}.I_j)\\
- \theta_{(m,n,R)}p^M_{(m,n,R_j)} &=& \beta mnp^M_{(m-1,n+1,R_j)}+\gamma np^M_{(m,n-1,R_j)}+\alpha_I np^M_{(m+1,n-1,R_j)}+\alpha_R(N-m-n-1)p^M_{(m+1,n,R_j)}\\
-&&+\alpha_R(A)p^M_{(m+1,n,S_j)}+\sigma\beta n(N-m-n-1)p^M_{(m,n+1,R_j)}+\sigma_A\beta_{\cdot\rightarrow A}n\\
-&&\times\left(1_{j=M-1}p^M_{{\tilde \Delta}^M}+1_{j<M-1}p^M_{(m,n+1,I_{j+1})}\right),\quad m+n<N,\ 1\leq j \leq M-1,\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\ ({\tilde E}.R_j)
+ \theta_{(m,n,S)}p^M_{(m,n,S_j)} &=& \beta(m-1)np^M_{(m-1,n+1,S_j)}+\beta_{\bullet\rightarrow A}n\left(1_{j=M-1}p^M_{{\tilde \Delta}^M}+1_{j<M-1}p^M_{(m-1,n+1,I_{j+1})}\right)\\
+&&+\gamma np^M_{(m,n-1,S_j)}+\alpha_I np^M_{(m+1,n-1,S_j)}+\alpha_R(N-m-n)p^M_{(m+1,n,S_j)}\\
+&&+\sigma\beta n(N-m-n)p^M_{(m,n+1,S_j)},\quad m\geq1,\ (Equation\ ({\tilde E}.S_j))\\
+ \theta_{(m,n,I)}p^M_{(m,n,I_j)} &=& \left(\beta m(n-1)+\beta_{A\rightarrow\bullet}m\right)p^M_{(m-1,n+1,I_j)}+\gamma(n-1)p^M_{(m,n-1,I_j)}\\
+&&+\gamma(A)p^M_{(m,n-1,R_j)}+\alpha_I(n-1)p^M_{(m+1,n-1,I_j)}+\alpha_I(A)p^M_{(m+1,n-1,S_j)}\\
+&&+\left(\sigma\beta(n-1)(N-m-n)+\sigma\beta_{A\rightarrow\bullet}(N-m-n)\right)p^M_{(m,n+1,I_j)}\\
+&& +\alpha_R(N-m-n)p^M_{(m+1,n,I_j)},\quad j\geq1,\quad (Equation\ ({\tilde E}.I_j))\\
+ \theta_{(m,n,R)}p^M_{(m,n,R_j)} &=& \beta mnp^M_{(m-1,n+1,R_j)}+\gamma np^M_{(m,n-1,R_j)}+\alpha_I np^M_{(m+1,n-1,R_j)}\\
+&&+\alpha_R(N-m-n-1)p^M_{(m+1,n,R_j)}+\alpha_R(A)p^M_{(m+1,n,S_j)}\\
+&&+\sigma\beta n(N-m-n-1)p^M_{(m,n+1,R_j)}+\sigma(A)\beta_{\bullet\rightarrow A}n\left(1_{j=M-1}p^M_{{\tilde \Delta}^M}\right.\\
+&&\left.+1_{j<M-1}p^M_{(m,n+1,I_{j+1})}\right),\quad m+n<N,\ j\geq1,\quad (Equation\ ({\tilde E}.R_j))
 \end{eqnarray*}
-\par\noindent with $\theta_{(m,n,S)}$, $\theta_{(m,n,I)}$ and $\theta_{(m,n,R)}$ defined before, and boundary conditions $p^M_{{\tilde \Delta}^M}=1$, $p_{(m,0,S_j)}=p_{(m,0,R_j)}=0$ for any $m$ and $j$. These equations can be solved one after the other as follows:\\
-
-{\centering
-\includegraphics[width=0.8\textwidth]{FigureSolutionNew.jpg}}
-
-\par This iterative procedure can be carried out by means of implementing a series of algorithms. In particular:
-
+\par\noindent with $\theta_{(m,n,S)}$, $\theta_{(m,n,I)}$ and $\theta_{(m,n,R)}$ defined in Section 2, and boundary conditions
+$p^M_{{\tilde \Delta}^M}=1$, $p_{(m,0,S_j)}=p_{(m,0,R_j)}=0$ for any $m$ and $j$. These equations can be solved one after the other following the diagram
+in Figure \ref{fig:diag}. This iterative procedure can be carried out by means of implementing a series of algorithms ({\bf Algorithms} ${\tilde S}_{j}$,
+${\tilde I}_{j}$ and ${\tilde R}_{j}$). In particular:
 \begin{description}
   \item \it Run Algorithm ${\tilde S}_{M-1}$;
   \item \it For $j=M-2,\dots,0$:
@@ -1030,78 +1266,85 @@ Immunity loss of a recovered & $(m,n,S_j)$, $m\geq1,\ m+n<N$, $0\leq j\leq M-1$ 
   \item $~$\hspace{0.5cm} \it Run Algorithm ${\tilde S}_{j}$;
 \end{description}
 
-\par\noindent with these algorithms defined below. Algorithm ${\tilde I}_j$ follows the same steps than Algorithm ${\tilde R_j}$ but replacing matrices
-and vectors ${\bf A}^M_{k,k'}(R)$ and ${\bf b}^M_k(R)$ by ${\bf A}^M_{k,k'}(I)$ and ${\bf b}^M_k(I)$, and is thus omitted.
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{FigureSolutionNew.jpg}
+\caption{Diagram for solving Eqs. $({\tilde E}.S_j)-({\tilde E}.I_j)-({\tilde E}.R_j)$ for all values of $j$.}
+\label{fig:diag}
+\end{figure}
 
 \vspace{0.5cm}
 \par \noindent{\bf Algorithm ${\tilde S_j}$}
 \begin{description}
-  \item ${\bf H}^M_2(S) ~=~ {\bf I}_{J(S;2)}-{\bf A}^M_{2,2}(S)$;
-  \item ${\bf P}^M_2(S_j) ~=~ {\bf b}^M_2(S_j)$;
+  \item ${\bf J}^M_2(S_j) ~=~ {\bf b}^M_2(S_j)$;
   \item \it For $k=3,\dots,N$:
-  \item $~$\hspace{0.5cm} ${\bf H}^M_k(S) ~=~ {\bf I}_{J(S;k)}-{\bf A}^M_{k,k}(S)-{\bf A}^M_{k,k-1}(S){\bf H}^M_{k-1}(S)^{-1}{\bf A}^M_{k-1,k}(S)$;
-  \item $~$\hspace{0.5cm} ${\bf P}^M_k(S_j) ~=~ {\bf A}^M_{k,k-1}(S){\bf H}^M_{k-1}(S)^{-1}{\bf P}^M_{k-1}(S_j)+{\bf b}^M_k(S_j)$;
-  \item ${\bf p}^M_N(S_j) ~=~ {\bf H}^M_N(S)^{-1}{\bf P}^M_N(S_j)$;
+  \item $~$\hspace{0.5cm} ${\bf J}^M_k(S_j) ~=~ {\bf A}_{k,k-1}(S){\bf H}_{k-1}(S)^{-1}{\bf J}^M_{k-1}(S_j)+{\bf b}^M_k(S_j)$;
+  \item ${\bf p}^M_N(S_j) ~=~ {\bf H}_N(S)^{-1}{\bf J}^M_N(S_j)$;
   \item \it For $k=N-1,\dots,2$:
-  \item $~$\hspace{0.5cm} ${\bf p}^M_k(S_j) ~=~ {\bf H}^M_k(S)^{-1}\left({\bf A}^M_{k,k+1}(S){\bf p}^M_{k+1}(S_j)+{\bf P}^M_k(S_j)\right)$;
+  \item $~$\hspace{0.5cm} ${\bf p}^M_k(S_j) ~=~ {\bf H}_k(S)^{-1}\left({\bf A}_{k,k+1}(S){\bf p}^M_{k+1}(S_j)+{\bf J}^M_k(S_j)\right)$;
 \end{description}
-\vspace{0.5cm}
 
 \vspace{0.5cm}
 \par \noindent{\bf Algorithm ${\tilde R_j}$}
 \begin{description}
-  \item ${\bf H}^M_1(R) ~=~ {\bf I}_{J(R;1)}-{\bf A}^M_{1,1}(R)$;
-  \item ${\bf P}^M_1(R_j) ~=~ {\bf b}^M_1(R_j)$;
+  \item ${\bf J}^M_1(R_j) ~=~ {\bf b}^M_1(R_j)$;
   \item \it For $k=2,\dots,N-1$:
-  \item $~$\hspace{0.5cm} ${\bf H}^M_k(R) ~=~ {\bf I}_{J(R;k)}-{\bf A}^M_{k,k}(R)-{\bf A}^M_{k,k-1}(R){\bf H}^M_{k-1}(R)^{-1}{\bf A}^M_{k-1,k}(R)$;
-  \item $~$\hspace{0.5cm} ${\bf P}^M_k(R_j) ~=~ {\bf A}^M_{k,k-1}(R){\bf H}^M_{k-1}(R)^{-1}{\bf P}^M_{k-1}(R_j)+{\bf b}^M_k(R_j)$;
-  \item ${\bf p}^M_{N-1}(R_j) ~=~ {\bf H}^M_{N-1}(R)^{-1}{\bf P}^M_{N-1}(R_j)$;
+  \item $~$\hspace{0.5cm} ${\bf J}^M_k(R_j) ~=~ {\bf A}_{k,k-1}(R){\bf H}_{k-1}(R)^{-1}{\bf J}^M_{k-1}(R_j)+{\bf b}^M_k(R_j)$;
+  \item ${\bf p}^M_{N-1}(R_j) ~=~ {\bf H}_{N-1}(R)^{-1}{\bf J}^M_{N-1}(R_j)$;
   \item \it For $k=N-2,\dots,1$:
-  \item $~$\hspace{0.5cm} ${\bf p}^M_k(R_j) ~=~ {\bf H}^M_k(R)^{-1}\left({\bf A}^M_{k,k+1}(R){\bf p}^M_{k+1}(R_j)+{\bf P}^M_k(R_j)\right)$;
+  \item $~$\hspace{0.5cm} ${\bf p}^M_k(R_j) ~=~ {\bf H}_k(R)^{-1}\left({\bf A}_{k,k+1}(R){\bf p}^M_{k+1}(R_j)+{\bf J}^M_k(R_j)\right)$;
 \end{description}
-\vspace{0.5cm}
 
-\par We point out here that:
+\vspace{0.5cm}
+\par \noindent{\bf Algorithm ${\tilde I_j}$}
+\begin{description}
+  \item ${\bf J}^M_1(I_j) ~=~ {\bf b}^M_1(I_j)$;
+  \item \it For $k=2,\dots,N-1$:
+  \item $~$\hspace{0.5cm} ${\bf J}^M_k(I_j) ~=~ {\bf A}_{k,k-1}(I){\bf H}_{k-1}(I)^{-1}{\bf J}^M_{k-1}(I_j)+{\bf b}^M_k(I_j)$;
+  \item ${\bf p}^M_{N-1}(I_j) ~=~ {\bf H}_{N-1}(I)^{-1}{\bf J}^M_{N-1}(I_j)$;
+  \item \it For $k=N-2,\dots,1$:
+  \item $~$\hspace{0.5cm} ${\bf p}^M_k(I_j) ~=~ {\bf H}_k(I)^{-1}\left({\bf A}_{k,k+1}(I){\bf p}^M_{k+1}(I_j)+{\bf J}^M_k(I_j)\right)$;
+\end{description}
+
+\par\noindent We note that:
 \begin{itemize}
- \item Matrices ${\bf A}^M_{k,k'}(S)={\bf A}_{k,k'}(S_I)$, ${\bf A}^M_{k,k'}(I)={\bf A}_{k,k'}(I)$ and ${\bf A}^M_{k,k'}(R)={\bf A}_{k,k'}(R)$ are
-defined in previous section. Thus, matrices ${\bf H}^M_k(S)$, ${\bf H}^M_k(I)$ and ${\bf H}^M_k(R)$ are also the same than those ones
-in previous section.
-  \item Value of $j$ only affects matrices ${\bf P}^M_k(S_j)$, ${\bf P}^M_k(I_j)$ and ${\bf P}^M_k(R_j)$ (and not ${\bf H}^M_k(\cdot)$ matrices).
-  \item Probability vectors ${\bf p}^M_k(S_j)$, ${\bf p}^M_k(I_j)$ and ${\bf p}^M_k(R_j)$ contain the desired probabilities, and are
-structured and defined as vectors ${\bf p}_k(\cdot)$ in previous section.
+  \item Matrices ${\bf A}_{k,k'}(S)$, ${\bf A}_{k,k'}(I)$, ${\bf A}_{k,k'}(R)$, ${\bf H}_k(S)$, ${\bf H}_k(I)$ and ${\bf H}_k(R)$ are defined in Section 2.
+  \item Probability vectors ${\bf p}^M_k(S_j)$, ${\bf p}^M_k(I_j)$ and ${\bf p}^M_k(R_j)$ contain the desired probabilities $p^M_{(m,n,a)}$, and are structured in a similar
+fashion than vectors ${\bf p}_k(S)$, ${\bf p}_k(I)$ and ${\bf p}_k(R)$ in Section 2.
   \item Vectors ${\bf b}^M_k(\cdot)$ are given as follows
 \begin{eqnarray*}
  {\bf b}^M_k(S_j) & = & \left(\begin{array}{c}
-               \frac{\beta_{\cdot\rightarrow A}}{\theta_{(k-1,1,S)}}\left(1_{j=M-1}+1_{j<M-1}p^M_{(k-2,2,I_{j+1})}\right)\\
-\frac{\beta_{\cdot\rightarrow A}2}{\theta_{(k-2,2,S)}}\left(1_{j=M-1}+1_{j<M-1}p^M_{(k-3,3,I_{j+1})}\right)\\
+               \frac{\beta_{\bullet\rightarrow A}}{\theta_{(k-1,1,S)}}\left(1_{j=M-1}+1_{j<M-1}p^M_{(k-2,2,I_{j+1})}\right)\\
+\frac{\beta_{\bullet\rightarrow A}2}{\theta_{(k-2,2,S)}}\left(1_{j=M-1}+1_{j<M-1}p^M_{(k-3,3,I_{j+1})}\right)\\
 \vdots\\
-\frac{\beta_{\cdot\rightarrow A}(k-1)}{\theta_{(1,k-1,S)}}\left(1_{j=M-1}+1_{j<M-1}p^M_{(0,k,I_{j+1})}\right)\\
-                         \end{array}\right),\quad 2\leq k\leq N,\quad 0\leq j\leq M-1,\\
+\frac{\beta_{\bullet\rightarrow A}(k-1)}{\theta_{(1,k-1,S)}}\left(1_{j=M-1}+1_{j<M-1}p^M_{(0,k,I_{j+1})}\right)\\
+                         \end{array}\right),\\
 {\bf b}^M_k(I_j) & = & \left(\begin{array}{c}
                0\\
-\frac{\gamma_Ap^M_{(k-2,1,R_j)}+\alpha_I(A)p^M_{(k-1,1,S_j)}}{\theta_{(k-2,2,I)}}\\
+\frac{\gamma(A)p^M_{(k-2,1,R_j)}+\alpha_I(A)p^M_{(k-1,1,S_j)}}{\theta_{(k-2,2,I)}}\\
 \vdots\\
-\frac{\gamma_Ap^M_{(0,k-1,R_j)}+\alpha_I(A)p^M_{(1,k-1,S_j)}}{\theta_{(0,k,I)}}
-                         \end{array}\right),\quad 1\leq k\leq N,\quad 1\leq j\leq M-1,\\
+\frac{\gamma(A)p^M_{(0,k-1,R_j)}+\alpha_I(A)p^M_{(1,k-1,S_j)}}{\theta_{(0,k,I)}}
+                         \end{array}\right),\\
 {\bf b}^M_k(R_j) & = & \left(\begin{array}{c}
-\frac{\alpha_R(A)p^M_{(k,1,S_j)}+\sigma_A\beta_{\cdot\rightarrow A}\left(1_{j=M-1}+1_{j<M-1}p^M_{(k-1,2,I_{j+1})}\right)}{\theta_{(k-1,1,R)}}\\
-\frac{\alpha_R(A)p^M_{(k-1,2,S_j)}+2\sigma_A\beta_{\cdot\rightarrow A}\left(1_{j=M-1}+1_{j<M-1}p^M_{(k-2,3,I_{j+1})}\right)}{\theta_{(k-2,2,R)}}\\
+\frac{\alpha_R(A)p^M_{(k,1,S_j)}+\sigma(A)\beta_{\bullet\rightarrow A}\left(1_{j=M-1}+1_{j<M-1}p^M_{(k-1,2,I_{j+1})}\right)}{\theta_{(k-1,1,R)}}\\
+\frac{\alpha_R(A)p^M_{(k-1,2,S_j)}+2\sigma(A)\beta_{\bullet\rightarrow A}\left(1_{j=M-1}+1_{j<M-1}p^M_{(k-2,3,I_{j+1})}\right)}{\theta_{(k-2,2,R)}}\\
 \vdots\\
-\frac{\alpha_R(A)p^M_{(1,k,S_j)}+k\sigma_A\beta_{\cdot\rightarrow A}\left(1_{j=M-1}+1_{j<M-1}p^M_{(0,k+1,I_{j+1})}\right)}{\theta_{(0,k,R)}}
-                         \end{array}\right),\quad 1\leq k\leq N-1,\quad 1\leq j\leq M-1.
+\frac{\alpha_R(A)p^M_{(1,k,S_j)}+k\sigma(A)\beta_{\bullet\rightarrow A}\left(1_{j=M-1}+1_{j<M-1}p^M_{(0,k+1,I_{j+1})}\right)}{\theta_{(0,k,R)}}
+                         \end{array}\right).
 \end{eqnarray*}
 
 \end{itemize}
 
-\par\noindent Again, once probabilities $p^M_{(m,n,a)}$ are in hand for different values of $M$, the probability of individual $A$
-suffering exactly $M$ infections is given by $p^M_{(m,n,a)}-p^{M+1}_{(m,n,a)}$.
+\par\noindent Finally, once probabilities $p^M_{(m,n,a)}$ are in hand for different values of $M$, the probability of individual $A$ suffering exactly
+$M$ infections is given by $p^M_{(m,n,a)}-p^{M+1}_{(m,n,a)}$.\\
 
-\subsection{The number of individuals suffering at least $M$ infections}
+\vspace{0.5cm}
 
-\par We finally point out here that, under the homogeneous case and the ND-SIS model (these arguments also apply in the SIR models), if we mark an individual, $A$, and randomly choose the individual starting
-the infection, it is clear that
+\par\noindent{\bf A.3. The number of individuals suffering at least $M$ infections}\\
+
+\par We finally point out here that, for a completely homogeneous population and the SIS model (same arguments apply for the general TPI-SIR model), if the individual starting the infection is randomly chosen among individuals in the population, it is clear that
 \begin{eqnarray*}
-\mathbb{P}(\hbox{\it $A$ suffering at least $M$ infections}) &=& p^M_{(m-1,S_0)}\frac{N-1}{N}+p^M_{(m-1,I_1)}\frac{1}{N}.
+p^M &=& \mathbb{P}(\hbox{\it $A$ suffering at least $M$ infections}) \ = \ p^M_{(m-1,S_0)}\frac{N-1}{N}+p^M_{(m-1,I_1)}\frac{1}{N}.
 \end{eqnarray*}
 \par\noindent Then, if we are interested in the random variable
 \begin{eqnarray*}
@@ -1109,266 +1352,17 @@ the infection, it is clear that
 \end{eqnarray*}
 \par\noindent it is clear that
 \begin{eqnarray*}
- \mathbb{P}(\hbox{\it $A$ suffering at least $M$ infections}) &=& \sum\limits_{y=0}^N\mathbb{P}(\hbox{\it $A$ suffering at least $M$ infections $|$ $Y^M=y$})\mathbb{P}(Y^M=y)
+ p^M &=& \sum\limits_{y=0}^N\mathbb{P}(\hbox{\it $A$ suffering at least $M$ infections $|$ $Y^M=y$})\mathbb{P}(Y^M=y)
 \end{eqnarray*}
-\par\noindent and, since all the individuals are symmetric we get
+\par\noindent and, since all the individuals are {\it symmetric}, we get
 \begin{eqnarray*}
- \mathbb{P}(\hbox{\it $A$ suffering at least $M$ infections}) &=& \sum\limits_{y=0}^N\frac{y}{N}\mathbb{P}(Y^M=y) \ = \ \frac{E[Y^M]}{N}
+ p^M &=& \sum\limits_{y=0}^N\frac{y}{N}\mathbb{P}(Y^M=y) \ = \ \frac{E[Y^M]}{N}
 \end{eqnarray*}
 \par\noindent Thus, once probabilities $p^M_{(m,a)}$ are in hand, we can easily obtain $E[Y^M]$ as
 \begin{eqnarray*}
 E[Y^M] &=& (N-1)p^M_{(m-1,S_0)}+p^M_{(m-1,I_1)},
 \end{eqnarray*}
-\par\noindent while the probability distribution of $Y^M$ could also be exactly computed, although it is out of the scope of this manuscript.
+\par\noindent while the probability mass function of $Y^M$ could also be computed by following first-step arguments, which is out of the scope of
+this paper.
 
-\section{Preliminary Numerical Results}
-
-\par Here we present some preliminary numerical results, in order to illustrate the analysis developed in previous sections.
-
-\begin{figure}
- \centering
-\includegraphics[width=0.5\textwidth]{Figure5.jpg}
-\label{fig:5}
-\caption{Individual re-infection probability of a marked individual in the ND-SIS model, for initial states $(m=49,a=S)$, $(m=40,a=S)$ and $(m=30,a=S)$,
-versus $\beta$. $N=50$, $\gamma=10.0$ and completely homogeneous conditions assumed.}
-\end{figure}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{|c|c|c|c|c|}
-\hline
- &  &  & $m$ & \\
-\hline
-Partial Derivative & $\beta$ & $49$ & $40$ & $30$ \\
-\hline
- & $0.1$ & $0.022165$ & $0.407553$ & $0.980190$ \\
-\cline{2-5}
- & $0.2$ & $1.113791$ & $6.231223$ & $7.480233$ \\
-\cline{2-5}
-$\frac{\partial  p_{(m,S)}}{\partial \beta}$ & $0.3$ & $2.730335$ & $2.868503$ & $1.501273$ \\
-\cline{2-5}
-& $0.4$ & $1.382281$ & $0.121160$ & $0.014431$ \\
-\cline{2-5}
-& $0.5$ & $0.851877$ & $0.008741$ & $0.000126$ \\
-\hline
- & $0.1$ & $-0.000222$ & $-0.004076$ & $-0.009802$ \\
-\cline{2-5}
- & $0.2$ & $-0.022276$ & $-0.124624$ & $-0.149605$ \\
-\cline{2-5}
-$\frac{\partial  p_{(m,S)}}{\partial \gamma}$ & $0.3$ & $-0.081910$ & $-0.086055$ & $-0.045038$ \\
-\cline{2-5}
-& $0.4$ & $-0.055291$ & $-0.004846$ & $-0.000577$ \\
-\cline{2-5}
-& $0.5$ & $-0.042594$ & $-0.000437$ & $-0.000006$ \\
-\hline
-\end{tabular}
-\caption{Partial derivatives $\frac{\partial p_{(m,S)}}{\partial \beta}$ and $\frac{\partial p_{(N-1,S)}}{\partial \gamma}$ for $\beta\in\{0.1,0.2,0.3,0.4,0.5\}$, $\gamma=10.0$
-and $m\in\{49,40,30\}$. Completely homogeneous population of $N=50$ individuals.}
-\label{tab:3}
-\end{table}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{|c|c|c|c|c|}
-\hline
- &  &  & $m$ & \\
-\hline
-Elasticity & $\beta$ & $49$ & $40$ & $30$ \\
-\hline
- & $0.1$ & $4.546984$ & $3.640737$ & $3.201317$ \\
-\cline{2-5}
- & $0.2$ & $7.185391$ & $4.952715$ & $3.766895$ \\
-\cline{2-5}
-$\frac{\frac{\partial  p_{(m,S)}}{\partial \beta}}{\frac{p_{(m,S)}}{\beta}}$ & $0.3$ & $2.907580$ & $0.948323$ & $0.466677$ \\
-\cline{2-5}
-& $0.4$ & $1.158382$ & $0.048682$ & $0.005774$ \\
-\cline{2-5}
-& $0.5$ & $0.727392$ & $0.004372$ & $0.000063$ \\
-\hline
- & $0.1$ & $-4.546984$ & $-3.640737$ & $-3.201317$ \\
-\cline{2-5}
- & $0.2$ & $-7.185391$ & $-4.952715$ & $-3.766895$ \\
-\cline{2-5}
-$\frac{\frac{\partial  p_{(m,S)}}{\partial \gamma}}{\frac{p_{(m,S)}}{\gamma}}$ & $0.3$ & $-2.907580$ & $-0.948323$ & $-0.466677$ \\
-\cline{2-5}
-& $0.4$ & $-1.158382$ & $-0.048682$ & $-0.005774$ \\
-\cline{2-5}
-& $0.5$ & $-0.727392$ & $-0.004372$ & $-0.000063$ \\
-\hline
-\end{tabular}
-\caption{Elasticities $\frac{\frac{\partial p_{(m,S)}}{\partial \beta}}{\frac{p_{(m,S)}}{\beta}}$ and $\frac{\frac{\partial p_{(N-1,S)}}{\partial \gamma}}{\frac{p_{(N-1,S)}}{\gamma}}$ for
-$\beta\in\{0.1,0.2,0.3,0.4,0.5\}$, $\gamma=10.0$ and $m\in\{49,40,30\}$. Completely homogeneous population of $N=50$ individuals.}
-\label{tab:3bis}
-\end{table}
-
-\begin{figure}
- \centering
-\includegraphics[width=0.5\textwidth]{Figure6.jpg}
-\label{fig:6}
-\caption{Individual re-infection probability of a marked individual in the TI-SIR model, for initial states $(m=49,n=1,a=S)$, $(m=40,n=10,a=S)$ and $(m=30,n=20,a=S)$,
-versus $\beta$. $N=50$, $\gamma=10.0$, completely homogeneous conditions assumed and, from {\it top} to {\it bottom}, $\alpha=0.5$, $\alpha=1.0$ and
-$\alpha=1.5$}
-\end{figure}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{|c|c|c|c|c|c|}
-\hline
-& &  &  & $m$ & \\
-\hline
-$\alpha$ & Partial Derivative & $\beta$ & $49$ & $40$ & $30$ \\
-\hline
- & & $0.1$ & $0.001766$ & $0.024500$ & $0.046938$ \\
-\cline{3-6}
- & $\frac{\partial  p_{(m,S)}}{\partial \beta}$ & $1.0$ & $0.077692$ & $0.071199$ & $0.078480$ \\
-\cline{3-6}
-  & & $2.0$ & $0.042325$ & $0.037895$ & $0.038967$ \\
-\cline{2-6}
- & & $0.1$ & $-0.000021$ & $-0.000305$ & $-0.000619$ \\
-\cline{3-6}
-$0.5$ & $\frac{\partial  p_{(m,S)}}{\partial \gamma}$ & $1.0$ & $-0.020441$ & $-0.022949$ & $-0.023252$ \\
-\cline{3-6}
- &  & $2.0$ & $-0.029789$ & $-0.031443$ & $-0.031563$ \\
-\cline{2-6}
- & & $0.1$ & $0.000057$ & $0.001210$ & $0.002983$ \\
-\cline{3-6}
- & $\frac{\partial  p_{(m,S)}}{\partial \alpha}$ & $1.0$ & $0.253442$ & $0.316586$ & $0.308078$ \\
-\cline{3-6}
- & & $2.0$ & $0.426490$ & $0.477271$ & $0.475387$ \\
-\hline	
- & & $0.1$ & $0.002586$ & $0.039711$ & $0.080666$ \\
-\cline{3-6}		
- & $\frac{\partial  p_{(m,S)}}{\partial \beta}$ & $1.0$ & $0.223218$ & $0.209263$ & $0.225033$ \\
-\cline{3-6}		
-  & & $2.0$ & $0.106888$ & $0.093271$ & $0.094984$ \\
-\cline{2-6}		
- & & $0.1$ & $-0.000029$ & $-0.000469$ & $-0.001006$ \\
-\cline{3-6}		
-$1.0$ & $\frac{\partial  p_{(m,S)}}{\partial \gamma}$ & $1.0$ & $-0.054961$ & $-0.063630$ & $-0.064782$ \\
-\cline{3-6}		
- &  & $2.0$ & $-0.072955$ & $-0.077348$ & $-0.077700$ \\
-\cline{2-6}		
- & & $0.1$ & $0.000026$ & $0.000721$ & $0.001996$ \\
-\cline{3-6}		
- & $\frac{\partial  p_{(m,S)}}{\partial \alpha}$ & $1.0$ & $0.326388$ & $0.427034$ & $0.422786$ \\
-\cline{3-6}		
- & & $2.0$ & $0.515773$ & $0.586940$ & $0.587030$ \\
-\hline		
- & & $0.1$ & $0.002889$ & $0.048258$ & $0.103129$ \\
-\cline{3-6}
- & $\frac{\partial  p_{(m,S)}}{\partial \beta}$ & $1.0$ & $0.358424$ & $0.322241$ & $0.343491$ \\
-\cline{3-6}
-  & & $2.0$ & $0.134742$ & $0.106676$ & $0.108356$ \\
-\cline{2-6}
- & & $0.1$ & $-0.000030$ & $-0.000542$ & $-0.001220$ \\
-\cline{3-6}
-$1.5$ & $\frac{\partial  p_{(m,S)}}{\partial \gamma}$ & $1.0$ & $-0.078884$ & $-0.091177$ & $-0.093401$ \\
-\cline{3-6}
- &  & $2.0$ & $-0.080379$ & $-0.083413$ & $-0.083907$ \\
-\cline{2-6}
- & & $0.1$ & $0.000010$ & $0.000394$ & $0.001259$ \\
-\cline{3-6}
- & $\frac{\partial  p_{(m,S)}}{\partial \alpha}$ & $1.0$ & $0.286947$ & $0.393019$ & $0.393679$ \\
-\cline{3-6}
- & & $2.0$ & $0.356206$ & $0.413852$ & $0.414904$ \\
-\hline
-\end{tabular}
-\caption{Partial derivatives $\frac{\partial p_{(m,S)}}{\partial \beta}$ and $\frac{\partial p_{(N-1,S)}}{\partial \gamma}$ for $\beta\in\{0.1,0.2,0.3,0.4,0.5\}$, $\gamma=10.0$
-and $m\in\{49,40,30\}$. Completely homogeneous population of $N=50$ individuals.}
-\label{tab:4}
-\end{table}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{|c|c|c|c|c|c|}
-\hline
-& &  &  & $m$ & \\
-\hline
-$\alpha$ & Elasticity & $\beta$ & $49$ & $40$ & $30$ \\
-\hline
- & & $0.1$ & $4.321577$ & $3.180553$ & $2.617535$ \\
-\cline{3-6}
- & $\frac{\frac{\partial  p_{(m,S)}}{\partial \beta}}{\frac{p_{(m,S)}}{\beta}}$ & $1.0$ & $0.744973$ & $0.559863$ & $0.639478$ \\
-\cline{3-6}
-  & & $2.0$ & $0.523364$ & $0.422672$ & $0.437778$ \\
-\cline{2-6}
- & & $0.1$ & $-5.019562$ & $-3.965867$ & $-3.449388$ \\
-\cline{3-6}
-$0.5$ & $\frac{\frac{\partial  p_{(m,S)}}{\partial \gamma}}{\frac{p_{(m,S)}}{\gamma}}$ & $1.0$ & $-1.960082$ & $-1.804573$ & $-1.894623$ \\
-\cline{3-6}
- &  & $2.0$ & $-1.841794$ & $-1.753501$ & $-1.772977$ \\
-\cline{2-6}
- & & $0.1$ & $0.697985$ & $0.785314$ & $0.831852$ \\
-\cline{3-6}
- & $\frac{\frac{\partial  p_{(m,S)}}{\partial \alpha}}{\frac{p_{(m,S)}}{\alpha}}$ & $1.0$ & $1.215109$ & $1.244710$ & $1.255145$ \\
-\cline{3-6}
- & & $2.0$ & $1.318430$ & $1.330829$ & $1.335199$ \\
-\hline
- & & $0.1$ & $4.240466$ & $3.189058$ & $2.664724$ \\
-\cline{3-6}
- & $\frac{\frac{\partial  p_{(m,S)}}{\partial \beta}}{\frac{p_{(m,S)}}{\beta}}$ & $1.0$ & $0.882267$ & $0.658871$ & $0.726329$ \\
-\cline{3-6}
-  & & $2.0$ & $0.522423$ & $0.406700$ & $0.415744$ \\
-\cline{2-6}
- & & $0.1$ & $-4.674571$ & $-3.768197$ & $-3.324236$ \\
-\cline{3-6}
-$1.0$ & $\frac{\frac{\partial  p_{(m,S)}}{\partial \gamma}}{\frac{p_{(m,S)}}{\gamma}}$ & $1.0$ & $-2.172313$ & $-2.003400$ & $-2.090933$ \\
-\cline{3-6}
- &  & $2.0$ & $-1.782858$ & $-1.686350$ & $-1.700450$ \\
-\cline{2-6}
- & & $0.1$ & $0.434105$ & $0.579139$ & $0.659512$ \\
-\cline{3-6}
- & $\frac{\frac{\partial  p_{(m,S)}}{\partial \alpha}}{\frac{p_{(m,S)}}{\alpha}}$ & $1.0$ & $1.290046$ & $1.344530$ & $1.364604$ \\
-\cline{3-6}
- & & $2.0$ & $1.260435$ & $1.279651$ & $1.284706$ \\
-\hline
- & & $0.1$ & $4.151906$ & $3.178136$ & $2.691634$ \\
-\cline{3-6}
- & $\frac{\frac{\partial  p_{(m,S)}}{\partial \beta}}{\frac{p_{(m,S)}}{\beta}}$ & $1.0$ & $0.872929$ & $0.609871$ & $0.660846$ \\
-\cline{3-6}
-  & & $2.0$ & $0.425574$ & $0.298017$ & $0.303300$ \\
-\cline{2-6}
- & & $0.1$ & $-4.358226$ & $-3.567772$ & $-3.184622$ \\
-\cline{3-6}
-$1.5$ & $\frac{\frac{\partial  p_{(m,S)}}{\partial \gamma}}{\frac{p_{(m,S)}}{\gamma}}$ & $1.0$ & $-1.921201$ & $-1.725610$ & $-1.796948$ \\
-\cline{3-6}
- &  & $2.0$ & $-1.269365$ & $-1.165141$ & $-1.174317$ \\
-\cline{2-6}
- & & $0.1$ & $0.206320$ & $0.389636$ & $0.492987$ \\
-\cline{3-6}
- & $\frac{\frac{\partial  p_{(m,S)}}{\partial \alpha}}{\frac{p_{(m,S)}}{\alpha}}$ & $1.0$ & $1.048272$ & $1.115739$ & $1.136102$ \\
-\cline{3-6}
- & & $2.0$ & $0.843791$ & $0.867125$ & $0.871017$ \\
-\hline
-\end{tabular}
-\caption{Elasticities $\frac{\frac{\partial p_{(m,S)}}{\partial \beta}}{\frac{p_{(m,S)}}{\beta}}$ and $\frac{\frac{\partial p_{(N-1,S)}}{\partial \gamma}}{\frac{p_{(N-1,S)}}{\gamma}}$ for $\beta\in\{0.1,0.2,0.3,0.4,0.5\}$, $\gamma=10.0$
-and $m\in\{49,40,30\}$. Completely homogeneous population of $N=50$ individuals.}
-\label{tab:5}
-\end{table}
-
-
-\begin{thebibliography}{5}
-
-\bibitem{Caswell11}
-Caswell H (2011)
-Perturbation analysis of continuous-time absorbing Markov chains.
-Numerical Linear Algebra with Applications 19: 901-917.
-
-\bibitem{Gomes04}
-Gomes MGM, White LJ, Medley GF (2004)
-Infection, reinfection and vaccination under suboptimal immune protection: epidemiological perspectives.
-Journal of Theoretical Biology 228: 539-549.
-
-\bibitem{GomezCorral15}
-G\'omez-Corral A, L\'opez-Garc\'ia M (2015)
-Lifetime and reproduction of a marked individual in a two-species competition process.
-Applied Mathematics and Computation 264: 223-245.
-
-\bibitem{LopezGarcia15}
-L\'opez-Garc\'ia M (2015)
-Perturbation analysis in finite-state level-dependent QBD processes: a matrix-algorithmic approach.
-In preparation.
-
-\end{thebibliography}
-
-\end{document} 
+\end{document}
