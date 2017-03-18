@@ -122,7 +122,7 @@ logLike_SIRS <- function(i = 1, x, data, D_infection, n_pop, S_0, I_0, R_0) {
 	x <- system.time(ans <- logLike_0123(data, p_reinfection_SIRS, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0))
 	# ans <- logLike_0123(data, p_reinfection_SIRS, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0)
 
-	print(paste("Iteration:", i, "time:", as.numeric(x[["elapsed"]])))
+	print(paste("Iteration:", i, "R0 =", R0, "D_immunity =", D_immunity, "time:", as.numeric(x[["elapsed"]])))
 
 	return(ans)
 
@@ -138,7 +138,7 @@ logLike_AoN <- function(i = 1, x, data, D_infection, n_pop, S_0, I_0, R_0) {
 	x <- system.time(ans <- logLike_0123(data, p_reinfection_AoN, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0))
 	# ans <- logLike_0123(data, p_reinfection_AoN, R0, D_infection, prop_immunity, n_pop, S_0, I_0, R_0)
 
-	print(paste("Iteration:", i, "time:", as.numeric(x[["elapsed"]])))
+	print(paste("Iteration:", i, "R0 =", R0, "prop_immunity =", prop_immunity, "time:", as.numeric(x[["elapsed"]])))
 
 	return(ans)
 
@@ -154,7 +154,8 @@ logLike_PPI <- function(i = 1, x, data, D_infection, n_pop, S_0, I_0, R_0) {
 	x <- system.time(ans <- logLike_0123(data, p_reinfection_PPI, R0, D_infection, partial_protection, n_pop, S_0, I_0, R_0))
 	# ans <- logLike_0123(data, p_reinfection_PPI, R0, D_infection, partial_protection, n_pop, S_0, I_0, R_0)
 
-	print(paste("Iteration:", i, "time:", as.numeric(x[["elapsed"]])))
+	print(paste("Iteration:", i, "R0 =", R0, "partial_protection =", partial_protection, "time:", as.numeric(x[["elapsed"]])))
+	
 
 	return(ans)
 
@@ -379,7 +380,7 @@ main_cluster <- function() {
 	analysis <- Sys.getenv("analysis")
 	jobDir <- Sys.getenv("jobDir")
 	i_job <- as.numeric(Sys.getenv("process")) + 1 + 3
-	n_job <- as.numeric(Sys.getenv("replicate"))
+	n_job <- as.numeric(Sys.getenv("replicate")) + 3
 
 	message("Model:",sQuote(model), "\nanalysis:", analysis, "\ni_job:", i_job, "\nn_job:", n_job)
 
