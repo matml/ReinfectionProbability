@@ -962,16 +962,11 @@ E[Y] &=& (N-1)p_{(m-1,S)}+p_{(m-1,I)}.
 \subsection{Global sensitivity analysis for an homogeneous population}
 \label{SubSect31}
 
-\par In this SubSection, we consider an individual that behaves equally than the rest of individuals in the population (that is, the population is fully homogeneous). We consider in this section $N=100$ and $\gamma=1$, so that the time unit is the average recovery period of an individual. Our interest is in analysing the probability of this individual suffering exactly $M$ infections for the different values of $M\geq0$, when the different epidemic parameter values change for the SIS and the TPI-SIR models. In particular:
+\par In this SubSection, we consider an individual that behaves equally than the rest of individuals in the population (that is, the population is fully homogeneous). We consider in this section $N=100$ and $\gamma=1$, so that the time unit is the average recovery period of an individual. Our interest is in analysing the probability of this individual suffering exactly $M$ infections for the different values of $M\geq0$, when the different epidemic parameter values change for the SIS and the TPI-SIR models. 
 
-\begin{itemize}
-    \item In Figure \ref{fig:sis_homogeneous} we focus on the SIS model, and we plot the probability $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ of individual $A$, initially susceptible, suffering exactly $M$ infections, for $M\in\{0,1,2,3\}$, versus different values of $R_0=\beta N$.
-    \item In Figure \ref{fig:sirs} our interest is in analysing the SIRS model. We plot probabilities $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ as in Figure \ref{fig:sis_homogeneous}, while varying the value of $\alpha_R\in\{0.1,0.2,0.5,1.0\}$.
-    \item In Figure \ref{fig:siri} we plot the same probabilities for the PPI model, while varying $\sigma\in\{0.1,0.2,0.5\}$.
-    \item In Figure \ref{fig:aon} we consider the AoN model, and we vary $p\in\{0.1,0.25,0.5,0.75\}$.
-    %\item In Figure \ref{fig:siris} we consider the TPI-SIR model for $\alpha_I=0$, where both partial and temporary immunity are present. We consider $\sigma\in\{0.1,0.2,0.5\}$ and $\alpha_R\in\{0.1,0.2,0.5\}$. Since we have here several parameters to vary, we focus only on probabilities $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ for $M\in\{1,2\}$.
-\end{itemize}
+\subsubsection{SIS Model: no immunity}
 
+\par In Figure \ref{fig:sis_homogeneous} we focus on the SIS model, where individuals develop no immunity after infection. We plot in Figure \ref{fig:sis_homogeneous} the probability $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ of individual $A$, initially susceptible, suffering exactly $M$ infections, for $M\in\{0,1,2,3\}$, versus different values of $R_0=\beta N$.
 \begin{figure}[h!]
   \centering
  \includegraphics[width=\textwidth]{SIS_Homogeneous.jpg}
@@ -979,6 +974,13 @@ E[Y] &=& (N-1)p_{(m-1,S)}+p_{(m-1,I)}.
   \label{fig:sis_homogeneous}
 \end{figure}
 
+\par The probability of individual $A$ suffering exactly $0$ infections during the outbreak is $1$ for $R_0=0$, and has a sharp decrease once the value $R_0=1$ is reached, as we could expect. It is interesting to note that the probabilities of individual $A$ suffering exactly $M$ infections, for $M\in\{1,2,3\}$, have maximums for values slightly larger than $1$. This is directly related to the identification of endemic scenarios. For large values of $R_0>1$, endemicity corresponds to the individual suffering much more than two or three infections. On the other hand, for this individual suffering exactly $1$, exactly $2$ or exactly $3$ infections, very precise values of $R_0$ near but larger than $1$ are required. 
+
+\subsubsection{SIRS Model: temporary immunity}
+
+\par In Figure \ref{fig:sirs} our interest is in analysing the SIRS model, where individuals recover susceptibility after a temporary immunity period. We plot in Figure \ref{fig:sirs} probabilities $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ as in Figure \ref{fig:sis_homogeneous}, while varying the value of $\alpha_R\in\{0.1,0.2,0.5,1.0\}$. We note first that $\alpha_R\rightarrow 0$ represents the $SIR$ model, while $\alpha_R\rightarrow\infty$ corresponds to the $SIS$ model. Thus, for $\alpha_R=1.0$ in Figure \ref{fig:sirs} we already can identify the same behaviours than the ones identified for the SIS model in the previous SubSection. Small value $\alpha_R=0.1$ in Figure \ref{fig:sirs} represents that individuals only recover susceptibility after a long immunity period. This means that, unless we consider a highly infectious disease (large values of $R_0$), individual $A$ will only suffer at most $1$ infection. This can be observed from the maximum corresponding to the probability of suffering exactly $M$ infections, which occurs for a value of $R_0$ slightly larger than $3$, and this curve slowly decreasing for larger values of $R_0$. 
+
+\par Shorter immunity periods ({\it e.g.,} $\alpha_R\in\{0.2,0.5}$) allow the individual to get infected several times, which translates into the maximum for the curve corresponding to $M=0$ occurring closer to $R_0=1$ and decreasing faster after this value. It is also worth to point out that for large values of $R_0$ all the curves for $M\in\{1,2,3\}$ join before reaching values near $0$, which means that for large values of $R_0$, the individual can suffer exactly $1$, exactly $2$ or exactly $3$ infections with equal probability.
 \begin{figure}[h!]
   \centering
  \includegraphics[width=\textwidth]{SIRS.jpg}
@@ -988,6 +990,9 @@ Left y-axis: $M=0$; Right y-axis: $M\in\{1,2,3\}$.}
   \label{fig:sirs}
 \end{figure}
 
+\subsubsection{PPI Model: partial immunity}
+
+\par In Figure \ref{fig:siri} we consider the PPI model, where individuals get partial immunity after infection, so that recovered individuals can become infected with some probability $\sigma\in(0,1)$. We plot in Figure \ref{fig:siri} the probabilities for the PPI model, while varying $\sigma\in\{0.1,0.2,0.5,1.0\}$. Although the qualitative behaviour of curves in Figures \ref{fig:sirs} and \ref{fig:siri} is similar, we can see that parameter $\sigma$ has a more significant impact than $\alpha_R$ for avoiding re-infection of individuals. That is, temporary immunity allows for the individual to suffer more infections than partial immunity. This can be observed by looking at curves corresponding to $M\in\{1,2,3\}$ for values $alpha_R=0.1$ and $\sigma=0.1$ in these figures. Same behaviour can be observed when comparing these figures for values $alpha_R=0.2$ and $\sigma=0.2$. 
 \begin{figure}[h!]
   \centering
  \includegraphics[width=\textwidth]{PPI.jpg}
@@ -997,22 +1002,17 @@ $\sigma=1.0$ ({\it bottom-right}). Left y-axis: $M=0$; Right y-axis: $M\in\{1,2,
  \label{fig:siri}
 \end{figure}
 
+\subsubsection{AoN Model: random immunity}
+
+\par In Figure \ref{fig:aon} we consider the AoN model, where individuals can gain immunity with probability $p$ after infection. In Figure \ref{fig:aon}, we plot probability $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ of individual $A$, initially susceptible, suffering exactly $M$ infections, for $p\in\{0.1,0.25,0.5,0.75\}$.
 \begin{figure}[h!]
   \centering
  \includegraphics[width=\textwidth]{AoN.jpg}
- \caption{AoN Model. Probability $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ of individual $A$, initially susceptible, suffering exactly $M$ infections, for $M\in\{0,1,2,3\}$, versus different values of $R_0=\beta N$. $\gamma=1$ and $N=100$.
-All-or-Nothing parameter $p=0.1$ ({\it top-left}), $p=0.25$ ({\it bottom-left}), $p=0.5$ ({\it top-right}) and
+ \caption{AoN Model. Probability $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ of individual $A$, initially susceptible, suffering exactly $M$ infections, for $M\in\{0,1,2,3\}$, versus different values of $R_0=\beta N$. $\gamma=1$ and $N=100$. All-or-Nothing probability $p=0.1$ ({\it top-left}), $p=0.25$ ({\it bottom-left}), $p=0.5$ ({\it top-right}) and
 $p=0.75$ ({\it bottom-right}). Left y-axis: $M=0$; Right y-axis: $M\in\{1,2,3\}$.}
  \label{fig:aon}
 \end{figure}
-%\begin{figure}[h!]
-%  \centering
-% \includegraphics[width=0.6\textwidth]{SIRIS.jpg}
-% \caption{TPI-SIR Model with $\alpha_I=0$. Probability $p_{(N-1,S)}^M-p_{(N-1,S)}^{M+1}$ of individual $A$, initially susceptible, suffering exactly $M$
-%infections, for $M\in\{1,2\}$, versus different values of $R_0=\beta N$. $\gamma=1$ and $N=100$. Partial immunity is represented here by parameter $\sigma=0.1$ ({\it top-left}), $\sigma=0.2$ ({\it %bottom-left}), $\sigma=0.5$ ({\it top-right}) and
-%$\sigma=1.0$ ({\it bottom-right}). Temporary immunity is given by $\alpha_R\in\{0.1,0.2,0.5\}$ ({\it black}, {\it blue} and {\it red} curves, respectively).}
-% \label{fig:siris}
-%\end{figure}
+
 
 \subsection{The probabilities of suffering exactly $M$ infections as the likelihood for estimation of parameters: Tristan da Cunha as a case study}
 \label{SubSect32}
@@ -1047,7 +1047,7 @@ $\alpha_I$ & $-$ & & $-$ & \\
 \end{table}
 
 
-\subsection{Analysis of special individuals}
+\subsection{Analysis of a especial individual}
 \label{SubSect33}
 
 \par In this SubSection, we can plot the histogram of the number of reinfections suffered by individual $A$ (that is, probabilities for $M\in\{0,1,2,3,4\}$ within a histogram) for models SIS, AoN, PPI and SIRS just when parameter values are chosen from Table \ref{tab:tristan}. Now, the question is how the reinfection dynamics of individual A are, when this individual is somehow special. In particular, we consider how these histograms vary when we consider:
