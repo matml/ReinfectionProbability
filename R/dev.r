@@ -39,6 +39,7 @@ start_me <- function() {
 	my_library("dplyr")
 	my_library("tidyr")
 	my_library("readr")
+	my_library("ggplot2")
 	# my_library("multidplyr")
 
 	python.load(file.path(dir_python, "SIR_Reinfection.py"))
@@ -122,7 +123,7 @@ logLike_SIRS <- function(i = 1, x, data, D_infection, n_pop, S_0, I_0, R_0) {
 	x <- system.time(ans <- logLike_0123(data, p_reinfection_SIRS, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0))
 	# ans <- logLike_0123(data, p_reinfection_SIRS, R0, D_infection, D_immunity, n_pop, S_0, I_0, R_0)
 
-	print(paste("Iteration:", i, "R0 =", R0, "D_immunity =", D_immunity, "time:", as.numeric(x[["elapsed"]])))
+	message(paste("Iteration:", i, "R0 =", R0, "D_immunity =", D_immunity, "time:", as.numeric(x[["elapsed"]])))
 
 	return(ans)
 
@@ -295,14 +296,14 @@ test <- function() {
 
 	n_reinfection <- 2
 	
-	R0 <- 10
+	R0 <- 47.5
 	D_infection <- 3
 	n_pop <- 284
 	S_0 <- n_pop - 1
 	I_0 <- 1
 	R_0 <- 0
 
-	D_immunity <- 60
+	D_immunity <- 42
 	prop_immunity <- 0.45
 	partial_protection <- 0.95
 
@@ -420,17 +421,152 @@ main_cluster <- function() {
 
 }
 
+main_local <- function() {
+
+	model <- "SIRS"
+	analysis <- "large"
+	jobDir <- file.path("rds", model)
+	i_job <- 1
+	n_job <- 1
+
+	message("Model:",sQuote(model), "\nanalysis:", analysis, "\ni_job:", i_job, "\nn_job:", n_job)
+
+	D_infection <- 2
+	n_pop <- 284
+	S_0 <- n_pop - 1
+	I_0 <- 1
+	R_0 <- 0
+
+	R0 <- seq(0.5, 50, 0.5)
+	# R0 <- seq(9, 10, 1)
+	# R0 <- 10
+	prop_immunity <- seq(0.01,1, 0.01)
+	# prop_immunity <- seq(0.5, 0.6, 0.1)
+	# prop_immunity <- 0.8
+	partial_protection <- prop_immunity
+	D_immunity <- prop_immunity*100
+
+	data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)
+	
+	ans <- grid_logLike_SIRS_parallel(R0 = R0, D_immunity = D_immunity, i_job = i_job, n_job = n_job,  data, D_infection, n_pop, S_0, I_0, R_0)
+
+	saveRDS(ans, file.path(jobDir, sprintf("ans_%s_job_%s_of_%s.rds", analysis, i_job, n_job)))
+
+
+}
+
+combine_outputs <- function() {
+
+	import_res <- function(model) {
+		
+		files <- list.files(file.path("rds", model))
+		files <- files[grepl("ans", files)]
+
+		df_ans <- NULL
+
+		for(file in files){
+			df_ans <- df_ans %>% bind_rows(readRDS(file.path("rds", model, file)))
+		}
+
+		x_var <- names(df_ans)[1]
+		y_var <- names(df_ans)[2]
+
+		names(df_ans)[1:2] <- c("x", "y")
+
+		df_ans <- mutate(df_ans, x_var = x_var, y_var = y_var)
+
+		return(df_ans)
+	}
+
+
+
+	df_res_raw <- data_frame(model = c("AoN", "PPI", "SIRS")) %>% group_by(model) %>% do(import_res(.$model)) %>% ungroup 
+
+	# parameters without logLike (negative p_1)
+	# put p_1 = 0 and renormalise
+	# and compute log-like
+	data <- c(n_0 = 11, n_1 = 181, n_2 = 92, n_3_or_more = 0)
+	df_res_edit <- df_res_raw %>% filter(is.na(logLike)) %>% mutate(
+		p_1 = 0, 
+		sum_p = p_0 + p_1 + p_2 + p_3_or_more, 
+		p_0 = p_0/sum_p,
+		p_1 = p_1/sum_p,
+		p_2 = p_2/sum_p,
+		p_3_or_more = p_3_or_more/sum_p
+		) %>% 
+	select(-sum_p) %>% 
+	group_by(x,y) %>% 
+	mutate(logLike = dmultinom(x = data, prob = c(p_0, p_1, p_2, p_3_or_more), log = TRUE))
+
+	df_res <- df_res_raw %>% filter(!is.na(logLike)) %>% bind_rows(df_res_edit) %>% gather(variable, value, c(p_0, p_1, p_2, p_3_or_more, logLike))
+
+
+	# TdC paper MLE
+	df_MLE_TdC <- frame_data(
+		~model, ~x, ~y,
+		"AoN", 11.20, 0.53,
+		"PPI", 6.92, 0.83
+		)
+
+	# optimal probabilities
+	df_optimal_prob <- data_frame(variable = c("p_0", "p_1", "p_2", "p_3_or_more"), n = data) %>% mutate(p_optim  = n/sum(n))
+
+
+
+	# logLike + confidence intervals
+	df_plot_ll <- df_res %>% filter(variable == "logLike")
+	df_plot_ll_max_CI <- df_plot_ll %>% group_by(model) %>% filter(value == max(value)) %>% ungroup %>% mutate(min_logLike_CI = value - qchisq(0.95, 2)/2)
+
+	all_models <- c("AoN", "PPI", "SIRS")
+
+	for(my_model in all_models) {
+
+		df_plot_ll_model <- df_plot_ll %>% filter(model == my_model) #%>% filter(y > 0.9)
+		df_plot_ll_max_CI_model <- df_plot_ll_max_CI %>% filter(model == my_model)
+		df_MLE_TdC_model <- df_MLE_TdC %>% filter(model == my_model)
+
+		p <- ggplot(df_plot_ll_model, aes(x = x, y = y)) #+ facet_grid(model~variable, scales = "free_y")
+		p <- p + geom_tile(aes(fill = -log(-value))) 
+		p <- p + geom_contour(aes(z = value), breaks = df_plot_ll_max_CI_model$min_logLike_CI, linetype = "dashed", color = "black")
+		p <- p + geom_point(data = df_plot_ll_max_CI_model)
+		p <- p + geom_point(data = df_MLE_TdC_model, aes(x = x, y = y), shape = 17)
+		p <- p + scale_fill_distiller("Log-Likelihood", palette = "Reds", direction = 1, labels = function(x) {round(-exp(-x))})
+		p <- p + theme_minimal() + xlab("R0") + ylab(switch(my_model, AoN = "Proportion with immunity", "PPI" = "Partial protection", SIRS = "Duration of immunity"))
+		# print(p)
+		ggsave(paste0("../Manuscript/fig/", my_model, "_loglike.pdf"), width = 8, height = 6)
+
+		# probabilities
+		df_plot_prob_model <- df_res %>% filter(variable != "logLike", model == my_model) %>% left_join(df_optimal_prob, "variable") %>% mutate(diff_prob = abs(value - p_optim))
+		df_plot_ll_model_prob <-  data_frame(variable = df_plot_prob_model$variable %>% unique, df = list(df_plot_ll_model %>% select(-variable))) %>% unnest(df)
+		df_plot_ll_max_CI_model_prob <- data_frame(variable = df_plot_prob_model$variable %>% unique, df = list(df_plot_ll_max_CI_model %>% select(-variable))) %>% unnest(df)
+
+		p <- ggplot(df_plot_prob_model, aes(x = x, y = y)) + facet_wrap(~variable, nrow = 1)
+		p <- p + geom_raster(aes(fill = diff_prob), interpolate = TRUE) 
+		p <- p + geom_contour(data = df_plot_ll_model_prob, aes(z = value), breaks = df_plot_ll_max_CI_model$min_logLike_CI, linetype = "dashed", color = "black")
+		p <- p + geom_point(data = df_plot_ll_max_CI_model_prob)
+		p <- p + geom_point(data = df_MLE_TdC_model, aes(x = x, y = y), shape = 17)
+		p <- p + scale_fill_distiller("Diff P", palette = "Reds", direction = -1)
+		p <- p + theme_minimal() + xlab("R0") + ylab(switch(my_model, AoN = "Proportion with immunity", "PPI" = "Partial protection", SIRS = "Duration of immunity"))
+		# print(p)
+		ggsave(paste0("../Manuscript/fig/", my_model, "_prob.pdf"), width = 8, height = 3)
+
+	}
+
+
+}
 
 main <- function() {
 
 	start_me()
 
-	test()
+	# test()
+	# main_local()
+
 
 }
 
 
-# main()
-main_cluster()
+main()
+# main_cluster()
 
 

@@ -17,6 +17,11 @@ Source: CRAN
 Version: 2.2.0
 Hash: 712773a3439bd32db5c40938e1a9aac2
 
+Package: RColorBrewer
+Source: CRAN
+Version: 1.1-2
+Hash: c0d56cd15034f395874c870141870c25
+
 Package: RJSONIO
 Source: CRAN
 Version: 1.3-0
@@ -32,10 +37,25 @@ Source: CRAN
 Version: 0.1
 Hash: 0afb92b59b02593c70ff8046700ba9d3
 
+Package: colorspace
+Source: CRAN
+Version: 1.3-2
+Hash: 0bf8618b585fa98eb23414cd3ab95118
+
 Package: curl
 Source: CRAN
 Version: 2.3
 Hash: 9a0b969942c61511002e103f7b047b98
+
+Package: dichromat
+Source: CRAN
+Version: 2.0-0
+Hash: 08eed0c80510af29bb15f840ccfe37ce
+
+Package: digest
+Source: CRAN
+Version: 0.6.12
+Hash: e53fb8c58673df868183697e39a6a4d6
 
 Package: dplyr
 Source: CRAN
@@ -43,10 +63,26 @@ Version: 0.5.0
 Requires: BH, DBI, R6, Rcpp, assertthat, lazyeval, magrittr, tibble
 Hash: fd282da553f66376f85a0539c51db030
 
+Package: ggplot2
+Source: CRAN
+Version: 2.2.1
+Requires: digest, gtable, lazyeval, plyr, reshape2, scales, tibble
+Hash: 46e5cb78836848aa44655e577433f54b
+
+Package: gtable
+Source: CRAN
+Version: 0.2.0
+Hash: cd78381a9d3fea966ac39bd0daaf5554
+
 Package: hms
 Source: CRAN
 Version: 0.3
 Hash: 3fca8a1c97e6cfb297fe3f4690f82c58
+
+Package: labeling
+Source: CRAN
+Version: 0.3
+Hash: ecf589b42cd284b03a4beb9665482d3e
 
 Package: lazyeval
 Source: CRAN
@@ -58,10 +94,22 @@ Source: CRAN
 Version: 1.5
 Hash: bdc4d48c3135e8f3b399536ddf160df4
 
+Package: munsell
+Source: CRAN
+Version: 0.4.3
+Requires: colorspace
+Hash: f96d896947fcaf9b6d0074002e9f4f9d
+
 Package: packrat
 Source: CRAN
 Version: 0.4.8-1
 Hash: 6ad605ba7b4b476d84be6632393f5765
+
+Package: plyr
+Source: CRAN
+Version: 1.8.4
+Requires: Rcpp
+Hash: ce3897d2ea6dabdb2c0a217b25f5fe99
 
 Package: rPython
 Source: CRAN
@@ -75,10 +123,28 @@ Version: 1.0.0
 Requires: BH, R6, Rcpp, curl, hms, tibble
 Hash: a4a59750c17b197e18cc52606eea068d
 
+Package: reshape2
+Source: CRAN
+Version: 1.4.2
+Requires: Rcpp, plyr, stringr
+Hash: 85d9947f8a5e187dff7f18265b96cb13
+
+Package: scales
+Source: CRAN
+Version: 0.4.1
+Requires: RColorBrewer, Rcpp, dichromat, labeling, munsell, plyr
+Hash: bc8d2233a63b068b0f60b18303d60c55
+
 Package: stringi
 Source: CRAN
 Version: 1.1.2
 Hash: 1ad6b1cc11d982ac233bf2fa2f7c9684
+
+Package: stringr
+Source: CRAN
+Version: 1.2.0
+Requires: magrittr, stringi
+Hash: 25a86d7f410513ebb7c0bc6a5e16bdc3
 
 Package: tibble
 Source: CRAN

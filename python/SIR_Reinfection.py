@@ -296,20 +296,20 @@ def p_reinfection_SIR(gam,gamA,bet,betAc,betcA,alpI,alpIA,alpR,alpRA,sig,sigA,N,
 	return (N-1.0)/N*pS[0][s0+i0-1][i0-1,0]+1.0/N*pI[0][s0+i0-1][i0-1,0]
 	
 
-# gam=0.5/7.0
-# gamA=1.5/7.0
-# bet=10.0/(7.0*285)
-# betcA=15.0/(7.0*285)
-# betAc=5.0/(7.0*285)
-# alpI=0.2
-# alpIA=0.1
-# alpR=0.2
-# alpRA=0.1
-# sig=0.3
-# sigA=0.4
+# gam=0.5
+# gamA=gam
+# bet=23.0/(2*284)
+# betcA=bet
+# betAc=bet
+# alpI=0.0
+# alpIA=0.0
+# alpR=0.0
+# alpRA=0.0
+# sig=(1-0.98)
+# sigA=sig
 
-# N=285
-# M=3
+# N=284
+# M=2
 
 # i0=1
 # s0=N-1
