@@ -501,6 +501,8 @@ combine_outputs <- function() {
 	df_res <- df_res_raw %>% filter(!is.na(logLike)) %>% bind_rows(df_res_edit) %>% gather(variable, value, c(p_0, p_1, p_2, p_3_or_more, logLike))
 
 
+	df_res_raw %>% group_by(model) %>% filter(logLike == max(logLike, na.rm = TRUE))
+
 	# TdC paper MLE
 	df_MLE_TdC <- frame_data(
 		~model, ~x, ~y,
@@ -510,8 +512,6 @@ combine_outputs <- function() {
 
 	# optimal probabilities
 	df_optimal_prob <- data_frame(variable = c("p_0", "p_1", "p_2", "p_3_or_more"), n = data) %>% mutate(p_optim  = n/sum(n))
-
-
 
 	# logLike + confidence intervals
 	df_plot_ll <- df_res %>% filter(variable == "logLike")
@@ -551,6 +551,100 @@ combine_outputs <- function() {
 		ggsave(paste0("../Manuscript/fig/", my_model, "_prob.pdf"), width = 8, height = 3)
 
 	}
+
+}
+
+
+check_PPI_traj <- function() {
+
+	# my_library("devtools")
+	# my_library("httr")
+	# install_github("sbfnk/fitR")
+	# library(fitR)
+	data(SIR)
+
+
+	PPI_state.names <- c("S", "I", "R", "I2", "R2", "I3", "R3", "incidence")	
+	PPI_theta.names <- c("R0", "D_inf", "partial_protection")
+
+	PPI_simulate <- function (theta, init.state, times) 
+	{
+		PPI_transitions <- list(
+			c(S = -1, I = 1, incidence = 1), 
+			c(I = -1, R = 1), 
+			c(I2 = 1, R = -1, incidence = 1), 
+			c(I2 = -1, R2 = 1), 
+			c(R2 = -1, I3 = 1, incidence = 1), 
+			c(I3 = -1, R3 = 1), 
+			c(R3 = -1, I3 = 1, incidence = 1)
+			)
+
+		PPI_rateFunc <- function(x, parameters, t) {
+			beta <- parameters[["R0"]]/parameters[["D_inf"]]
+			nu <- 1/parameters[["D_inf"]]
+			sigma <- parameters[["partial_protection"]]
+
+			S <- x[["S"]]
+			I <- x[["I"]]
+			R <- x[["R"]]
+			I2 <- x[["I2"]]
+			R2 <- x[["R2"]]
+			I3 <- x[["I3"]]
+			R3 <- x[["R3"]]
+			incidence <- x[["incidence"]]
+			N <- S + I + R + I2 + R2 + I3 + R3
+			
+			infection_force <- beta * (I+I2+I3)/N
+
+			return(c(infection_force * S, nu * I, (1-sigma)*infection_force*R, nu * I2, (1-sigma)*infection_force*R2, nu * I3, (1-sigma)*infection_force*R3))
+
+		}
+
+		df <- simulateModelStochastic(theta, init.state, times, 
+			PPI_transitions, PPI_rateFunc)
+
+		df <- df %>% mutate(incidence = c(0, diff(incidence)))
+
+		return(df)
+	}
+
+
+	PPI_rPointObs <- function (model.point, theta) {
+		obs.point <- rpois(n = 1, lambda = model.point[["incidence"]])
+		return(c(obs = obs.point))
+	}
+
+	PPI_dPointObs <- function (data.point, model.point, theta, log = FALSE) {
+		return(dpois(x = data.point[["obs"]], lambda = model.point[["incidence"]], 
+			log = log))
+	}
+
+	PPI_dprior <- function (theta, log = FALSE) {
+		log.prior.R0 <- dunif(theta[["R0"]], min = 1, max = 100, 
+			log = TRUE)
+		log.prior.D <- dunif(theta[["D_inf"]], min = 0, max = 30, 
+			log = TRUE)
+		log.prior.pp <- dunif(theta[["partial_protection"]], min = 0, max = 1, 
+			log = TRUE)
+		log.sum <- log.prior.R0 + log.prior.D + log.prior.pp
+		return(ifelse(log, log.sum, exp(log.sum)))
+	}
+
+
+	PPI <- fitmodel(
+		name = "PPI",
+		state.names = PPI_state.names,
+		theta.names = PPI_theta.names,
+		simulate = PPI_simulate,
+		dprior = PPI_dprior,
+		rPointObs = PPI_rPointObs,
+		dPointObs = PPI_dPointObs)
+
+
+	data(FluTdC1971)
+	df_data <- FluTdC1971 #%>% select(-time) %>% dplyr::rename(time = date) %>% mutate(time = as.Date(time)) %>% as_data_frame
+
+	plotFit(PPI, theta = c("R0" = 23, "D_inf" = 2, "partial_protection" = 0.98), init.state = c(S = 283, I = 1, R = 0, I2 = 0, R2 = 0, I3 = 0, R3 = 0, incidence = 0), data = df_data, n.replicates = 100, all.vars = TRUE, summary = FALSE)
 
 
 }
